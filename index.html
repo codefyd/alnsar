@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجمع تحفيظ القرآن الكريم — منظومة الإدارة الرقمية</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --gold:       #c8a84b;
+  --gold-light: #f0d080;
+  --gold-dark:  #8b6914;
+  --deep:       #0d1f35;
+  --deep-2:     #122840;
+  --deep-3:     #1a3c5e;
+  --primary:    #2563a8;
+  --surface:    #f8f5ee;
+  --border:     #e2d8c0;
+  --text-muted: #5a6a7a;
+  --radius:     16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: var(--surface);
+  color: var(--deep);
+  direction: rtl;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══ خلفية ══ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(13,31,53,.06) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 90%, rgba(200,168,75,.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ══ هيدر ══ */
+.site-header {
+  background: var(--deep);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,.25);
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-wrap {
+  width: 46px; height: 46px;
+  background: var(--gold);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-wrap i { font-size: 20px; color: var(--deep); }
+
+.site-title { flex: 1; }
+.site-title h1 { font-size: 16px; font-weight: 800; color: #fff; line-height: 1.2; margin: 0; }
+.site-title p  { font-size: 11.5px; color: rgba(255,255,255,.55); margin: 0; }
+
+/* ══ Hero ══ */
+.hero {
+  background: linear-gradient(150deg, var(--deep) 0%, var(--deep-2) 55%, #0e2d50 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 80px 20px 90px;
+  text-align: center;
+}
+
+.hero-bg-pattern {
+  position: absolute; inset: 0; opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c8a84b'%3E%3Cpath d='M40 0L50 30H80L56 48L66 80L40 62L14 80L24 48L0 30H30Z'/%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 0%, rgba(200,168,75,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 10% 100%, rgba(37,99,168,.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(200,168,75,.14);
+  border: 1px solid rgba(200,168,75,.32);
+  color: var(--gold-light);
+  padding: 6px 18px; border-radius: 30px;
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 22px;
+  animation: fadeDown .5s ease both;
+}
+
+.hero h2 {
+  position: relative; z-index: 1;
+  font-family: 'Amiri', serif;
+  font-size: clamp(30px, 6vw, 56px);
+  font-weight: 700;
+  color: #fff; line-height: 1.35;
+  margin-bottom: 14px;
+  animation: fadeDown .5s .08s ease both;
+}
+
+.hero h2 span { color: var(--gold-light); }
+
+.hero-sub {
+  position: relative; z-index: 1;
+  font-size: clamp(14px, 2.5vw, 17px);
+  color: rgba(255,255,255,.62);
+  max-width: 520px; margin: 0 auto 48px;
+  line-height: 1.8;
+  animation: fadeDown .5s .16s ease both;
+}
+
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ══ بوابات (بطاقات) ══ */
+.gateways-wrap {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  max-width: 960px;
+  margin: 0 auto;
+  animation: fadeDown .5s .24s ease both;
+}
+
+.gateway-card {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  padding: 32px 22px 26px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .22s, background .22s, box-shadow .22s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.gateway-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255,255,255,.12);
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  text-decoration: none;
+}
+
+.gw-icon {
+  width: 66px; height: 66px;
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+  font-size: 26px;
+  transition: transform .22s;
+}
+
+.gateway-card:hover .gw-icon { transform: scale(1.08); }
+
+.gw-teal   { background: linear-gradient(135deg, rgba(14,124,110,.35), rgba(14,124,110,.2)); border: 1px solid rgba(14,124,110,.4); }
+.gw-teal   i { color: #4dd9c8; }
+.gw-blue   { background: linear-gradient(135deg, rgba(37,99,168,.35), rgba(37,99,168,.2)); border: 1px solid rgba(37,99,168,.4); }
+.gw-blue   i { color: #6db3f5; }
+.gw-gold   { background: linear-gradient(135deg, rgba(200,168,75,.3), rgba(200,168,75,.15)); border: 1px solid rgba(200,168,75,.4); }
+.gw-gold   i { color: var(--gold-light); }
+.gw-purple { background: linear-gradient(135deg, rgba(120,80,180,.35), rgba(120,80,180,.2)); border: 1px solid rgba(120,80,180,.4); }
+.gw-purple i { color: #c4a8f0; }
+
+.gateway-card h3 {
+  font-size: 16px; font-weight: 800;
+  color: #fff; margin-bottom: 8px;
+}
+
+.gateway-card p {
+  font-size: 12.5px; color: rgba(255,255,255,.58);
+  line-height: 1.6; margin: 0;
+}
+
+.gw-arrow {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  background: rgba(255,255,255,.1);
+  border-radius: 50%;
+  color: rgba(255,255,255,.6);
+  font-size: 12px;
+  margin-top: 16px;
+  transition: background .2s, transform .2s;
+}
+
+.gateway-card:hover .gw-arrow {
+  background: rgba(255,255,255,.2);
+  transform: translateX(-4px);
+}
+
+.gw-badge {
+  display: inline-block;
+  background: rgba(200,168,75,.25);
+  border: 1px solid rgba(200,168,75,.4);
+  color: var(--gold-light);
+  font-size: 10.5px; font-weight: 700;
+  padding: 2px 9px; border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* موجة -->  surface */
+.wave-sep {
+  margin-top: -2px; line-height: 0; overflow: hidden;
+  background: var(--deep);
+}
+.wave-sep svg { display: block; width: 100%; }
+
+/* ══ قسم الميزات ══ */
+.features-section {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto;
+  padding: 64px 20px;
+}
+
+.sec-label {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg, rgba(200,168,75,.12), rgba(200,168,75,.05));
+  border: 1px solid rgba(200,168,75,.28);
+  color: var(--gold-dark);
+  padding: 5px 16px; border-radius: 20px;
+  font-size: 12.5px; font-weight: 700;
+  margin-bottom: 12px; letter-spacing: .3px;
+}
+
+.sec-title {
+  font-family: 'Amiri', serif;
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight: 700;
+  color: var(--deep);
+  margin-bottom: 10px;
+}
+
+.sec-sub {
+  font-size: 15px; color: var(--text-muted);
+  line-height: 1.7; max-width: 480px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin-top: 40px;
+}
+
+.feature-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(13,31,53,.1);
+}
+
+.feat-icon {
+  width: 46px; height: 46px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+
+.fi-teal   { background: #e0f5f2; color: #0e7c6e; }
+.fi-blue   { background: #e8eef8; color: var(--deep-3); }
+.fi-gold   { background: #fef9e7; color: var(--gold-dark); }
+.fi-green  { background: #e8f5e9; color: #2e7d32; }
+.fi-purple { background: #f3eeff; color: #6a3fbf; }
+.fi-red    { background: #fdf0ef; color: #c0392b; }
+
+.feature-card h4 { font-size: 14.5px; font-weight: 700; color: var(--deep); margin-bottom: 5px; }
+.feature-card p  { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+/* ══ قسم آية ══ */
+.quran-section {
+  background: linear-gradient(135deg, var(--deep) 0%, var(--deep-2) 100%);
+  padding: 60px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.quran-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(200,168,75,.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.quran-ayah {
+  font-family: 'Amiri', serif;
+  font-size: clamp(20px, 4vw, 30px);
+  color: var(--gold-light);
+  line-height: 1.9;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.quran-ref {
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  position: relative;
+}
+
+/* ══ فوتر ══ */
+footer {
+  background: var(--deep);
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding: 32px 20px;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.footer-links a {
+  color: rgba(255,255,255,.45);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color .2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-links a:hover { color: var(--gold-light); }
+
+.footer-copy {
+  font-size: 12px;
+  color: rgba(255,255,255,.25);
+}
+
+@media(max-width: 600px) {
+  .hero { padding: 56px 16px 72px; }
+  .gateways-wrap { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .gateway-card  { padding: 22px 14px 18px; }
+  .gw-icon       { width: 52px; height: 52px; font-size: 20px; }
+  .gateway-card h3 { font-size: 13.5px; }
+  .gateway-card p  { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- هيدر -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-wrap"><i class="fas fa-book-open-reader"></i></div>
+    <div class="site-title">
+      <h1>مجمع تحفيظ القرآن الكريم</h1>
+      <p>منظومة الإدارة الرقمية المتكاملة</p>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-badge">
+    <i class="fas fa-star fa-xs"></i> منظومة إدارة متكاملة
+  </div>
+  <h2>مرحباً بكم في<br><span>مجمع تحفيظ القرآن الكريم</span></h2>
+  <p class="hero-sub">
+    اختر البوابة المناسبة للوصول إلى خدمات المجمع
+  </p>
+
+  <!-- البوابات الأربع -->
+  <div class="gateways-wrap">
+
+    <!-- بوابة التسجيل -->
+    <a href="register.html" class="gateway-card">
+      <div class="gw-badge">عامة</div>
+      <div class="gw-icon gw-teal"><i class="fas fa-user-plus"></i></div>
+      <h3>بوابة التسجيل والقبول</h3>
+      <p>تسجيل الطلاب الجدد وتقديم طلبات الالتحاق بالمجمع</p>
+      <div class="gw-arrow"><i class="fas fa-arrow-left"></i></div>
+    </a>
+
+    <!-- بوابة بيانات الطالب -->
+    <a href="student.html" class="gateway-card">
+      <div class="gw-badge">عامة</div>
+      <div class="gw-icon gw-blue"><i class="fas fa-id-card"></i></div>
+      <h3>بوابة بيانات الطالب</h3>
+      <p>الاستعلام عن بيانات الطالب وطلب تعديل المعلومات</p>
+      <div class="gw-arrow"><i class="fas fa-arrow-left"></i></div>
+    </a>
+
+    <!-- بوابة العاملين -->
+    <a href="staff.html" class="gateway-card">
+      <div class="gw-badge" style="background:rgba(120,80,180,.2);border-color:rgba(120,80,180,.4);color:#c4a8f0">خاصة</div>
+      <div class="gw-icon gw-purple"><i class="fas fa-users-gear"></i></div>
+      <h3>بوابة العاملين</h3>
+      <p>للمعلمين والمشرفين — يتطلب رمز الدخول</p>
+      <div class="gw-arrow"><i class="fas fa-arrow-left"></i></div>
+    </a>
+
+    <!-- بوابة الإنجازات -->
+    <a href="achievements.html" class="gateway-card">
+      <div class="gw-badge">عامة</div>
+      <div class="gw-icon gw-gold"><i class="fas fa-trophy"></i></div>
+      <h3>إنجازات المجمع</h3>
+      <p>إحصائيات وأرقام ونجوم التحفيظ في المجمع</p>
+      <div class="gw-arrow"><i class="fas fa-arrow-left"></i></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- موجة فاصلة -->
+<div class="wave-sep">
+  <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,28 C360,56 1080,0 1440,28 L1440,56 L0,56 Z" fill="#f8f5ee"/>
+  </svg>
+</div>
+
+<!-- ميزات النظام -->
+<section class="features-section">
+  <div style="text-align:center;margin-bottom:40px;">
+    <div class="sec-label"><i class="fas fa-sparkles fa-sm"></i> ماذا يقدم النظام؟</div>
+    <h2 class="sec-title">منظومة إدارية شاملة</h2>
+    <p class="sec-sub" style="margin:0 auto">
+      نظام رقمي متكامل يغطي جميع احتياجات مجمع تحفيظ القرآن من التسجيل حتى التقارير
+    </p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon fi-teal"><i class="fas fa-user-plus"></i></div>
+      <div>
+        <h4>تسجيل وقبول الطلاب</h4>
+        <p>نموذج تسجيل إلكتروني متكامل مع نظام موافقة وقوائم انتظار وإشعارات فورية</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon fi-blue"><i class="fas fa-users"></i></div>
+      <div>
+        <h4>إدارة الطلاب والحلق</h4>
+        <p>عرض وتعديل وتصفية بيانات الطلاب مع دعم التعديل الجماعي والتصدير</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon fi-gold"><i class="fas fa-triangle-exclamation"></i></div>
+      <div>
+        <h4>نظام الإنذارات الذكي</h4>
+        <p>إنذارات إدارية بنظام عتبات تلقائية للتأخر والغياب، وإنذارات تعليمية مع متابعة الإجراءات</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon fi-green"><i class="fab fa-whatsapp"></i></div>
+      <div>
+        <h4>تواصل فوري بالواتساب</h4>
+        <p>قوالب رسائل جاهزة مع متغيرات ديناميكية وتواصل مباشر مع الطلاب وأولياء الأمور</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon fi-purple"><i class="fas fa-chart-pie"></i></div>
+      <div>
+        <h4>تقارير KPI تفصيلية</h4>
+        <p>لوحة إحصاءات مخصصة لكل دور — معلم، مشرف تعليمي، مشرف إداري</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon fi-red"><i class="fas fa-gear"></i></div>
+      <div>
+        <h4>إعدادات مرنة وكاملة</h4>
+        <p>تحكم كامل في الإجراءات والعتبات والمستخدمين والحلق وقوالب الرسائل</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- آية قرآنية -->
+<section class="quran-section">
+  <div class="quran-ayah">﴿ خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ ﴾</div>
+  <div class="quran-ref">صحيح البخاري</div>
+</section>
+
+<!-- فوتر -->
+<footer>
+  <div class="footer-links">
+    <a href="register.html"><i class="fas fa-user-plus fa-xs"></i> التسجيل</a>
+    <a href="student.html"><i class="fas fa-id-card fa-xs"></i> بيانات الطالب</a>
+    <a href="staff.html"><i class="fas fa-lock fa-xs"></i> بوابة العاملين</a>
+    <a href="achievements.html"><i class="fas fa-trophy fa-xs"></i> الإنجازات</a>
+  </div>
+  <div class="footer-copy">
+    مجمع تحفيظ القرآن الكريم &copy; <span id="yr"></span> — جميع الحقوق محفوظة
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
