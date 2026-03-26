@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة العاملين — مجمع تحفيظ القرآن</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1a3c5e;--primary-light:#2563a8;--accent:#c8a84b;--accent-light:#f0d080;
+  --surface:#f4f2ec;--surface-2:#fff;--text-main:#1a1a2e;--text-muted:#5a6a7a;
+  --border:#ddd5c0;--success:#1e7e4a;--danger:#c0392b;--warning:#d4890a;
+  --radius:14px;--shadow:0 4px 24px rgba(26,60,94,.10);--shadow-lg:0 12px 40px rgba(26,60,94,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tajawal',sans-serif;background:var(--surface);color:var(--text-main);min-height:100vh;direction:rtl;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(26,60,94,.07) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(200,168,75,.06) 0%,transparent 55%);pointer-events:none;z-index:0;}
+
+/* ══ هيدر ══ */
+.site-header{background:var(--primary);position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.18);}
+.header-inner{display:flex;align-items:center;gap:16px;padding:14px 24px;max-width:1200px;margin:0 auto;}
+.header-logo{width:48px;height:48px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.header-logo i{font-size:22px;color:var(--primary);}
+.header-title h1{font-size:18px;font-weight:800;color:#fff;line-height:1.2;}
+.header-title p{font-size:12px;color:rgba(255,255,255,.65);margin:0;}
+.header-right{margin-right:auto;display:flex;align-items:center;gap:12px;}
+.user-chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.user-chip .role-badge{background:var(--accent);color:var(--primary);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;}
+.btn-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);padding:6px 14px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{background:rgba(255,255,255,.2);}
+
+/* ══ شاشة الدخول ══ */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a3c5e 0%,#2563a8 100%);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.login-card{background:#fff;border-radius:20px;padding:44px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.25);text-align:center;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.login-logo{width:72px;height:72px;background:linear-gradient(135deg,#c8a84b,#f0d080);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 24px rgba(200,168,75,.3);}
+.login-logo i{font-size:32px;color:var(--primary);}
+.login-card h2{font-size:22px;font-weight:800;color:var(--primary);margin-bottom:6px;}
+.login-card p{font-size:13px;color:var(--text-muted);margin-bottom:28px;}
+.login-input{width:100%;border:2px solid var(--border);border-radius:12px;padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:18px;text-align:center;letter-spacing:6px;color:var(--primary);font-weight:700;margin-bottom:16px;transition:border-color .2s;}
+.login-input:focus{outline:none;border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(37,99,168,.12);}
+.btn-login{width:100%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,60,94,.3);}
+.login-error{color:var(--danger);font-size:13px;margin-top:8px;display:none;}
+
+/* ══ تخطيط رئيسي ══ */
+#appScreen{display:none;}
+.app-layout{display:flex;min-height:calc(100vh - 76px);position:relative;z-index:1;}
+
+/* شريط جانبي */
+.sidebar{width:240px;background:var(--surface-2);border-left:1px solid var(--border);flex-shrink:0;padding:20px 0;position:sticky;top:76px;height:calc(100vh - 76px);overflow-y:auto;}
+.sidebar-section{padding:0 12px;margin-bottom:6px;}
+.sidebar-label{font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:13.5px;font-weight:600;color:var(--text-muted);position:relative;}
+.nav-item:hover{background:var(--surface);color:var(--primary);}
+.nav-item.active{background:linear-gradient(135deg,rgba(26,60,94,.1),rgba(37,99,168,.08));color:var(--primary);}
+.nav-item.active::before{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--primary);border-radius:2px;}
+.nav-item i{width:18px;text-align:center;font-size:14px;}
+.nav-badge{margin-right:auto;background:var(--danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:700;}
+
+/* محتوى رئيسي */
+.main-content{flex:1;padding:28px;max-width:100%;overflow-x:hidden;}
+
+/* ══ KPI Cards ══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px;}
+.kpi-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:default;}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.kpi-card:hover .bg-icon-float{transform:scale(1.18) rotate(8deg);}
+.bg-icon-float{position:absolute;left:-8px;bottom:-10px;font-size:64px;opacity:.06;color:var(--primary);transition:transform .35s ease;pointer-events:none;}
+.kpi-card .kpi-label{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.kpi-card .kpi-val{font-size:32px;font-weight:800;color:var(--primary);line-height:1;}
+.kpi-card .kpi-sub{font-size:12px;color:var(--text-muted);margin-top:6px;}
+.kpi-card.kpi-success .kpi-val{color:var(--success);}
+.kpi-card.kpi-danger  .kpi-val{color:var(--danger);}
+.kpi-card.kpi-warning .kpi-val{color:var(--warning);}
+.kpi-card.kpi-accent  .kpi-val{color:#8b5e0a;}
+
+/* ══ بطاقة محتوى ══ */
+.content-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+.card-header-bar{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:#fafaf8;}
+.card-header-bar h3{font-size:15px;font-weight:700;color:var(--primary);margin:0;}
+.card-header-bar .card-actions{margin-right:auto;display:flex;gap:8px;flex-wrap:wrap;}
+.card-body{padding:24px;}
+
+/* ══ جداول ══ */
+.data-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.data-table th{background:#f4f2ec;color:var(--text-muted);font-weight:700;font-size:12px;padding:10px 14px;text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;}
+.data-table td{padding:11px 14px;border-bottom:1px solid #f0ece0;vertical-align:middle;}
+.data-table tr:hover td{background:#fafaf8;}
+.data-table tr:last-child td{border-bottom:none;}
+
+/* ══ حالات وشارات ══ */
+.badge-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:11.5px;font-weight:700;}
+.bp-success{background:#eafaf1;color:var(--success);}
+.bp-danger {background:#fdf0ef;color:var(--danger);}
+.bp-warning{background:#fff8e6;color:var(--warning);}
+.bp-info   {background:#eef3ff;color:var(--primary-light);}
+.bp-gray   {background:#f0f0f0;color:#666;}
+
+/* ══ فلاتر ══ */
+.filters-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center;}
+.filter-input{border:1.5px solid var(--border);border-radius:9px;padding:8px 13px;font-family:'Tajawal',sans-serif;font-size:13.5px;background:#fafaf8;color:var(--text-main);transition:border-color .2s;}
+.filter-input:focus{outline:none;border-color:var(--primary-light);}
+.filter-input.search-box{min-width:200px;}
+
+/* ══ تبويبات ثانوية ══ */
+.sub-tabs{display:flex;border-bottom:2px solid var(--border);gap:2px;margin-bottom:20px;overflow-x:auto;}
+.sub-tab{padding:10px 18px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:600;color:var(--text-muted);background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.sub-tab:hover{color:var(--primary);}
+.sub-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+.sub-panel{display:none;}
+.sub-panel.active{display:block;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ══ أزرار ══ */
+.btn-p{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:9px;padding:9px 20px;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,60,94,.25);}
+.btn-o{background:transparent;color:var(--primary);border:1.5px solid var(--primary);border-radius:9px;padding:8px 16px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-o:hover{background:var(--primary);color:#fff;}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:7px;}
+.btn-success{background:var(--success);color:#fff;border:none;border-radius:7px;padding:5px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-danger{background:var(--danger);color:#fff;border:none;border-radius:7px;padding:5px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-warning{background:var(--warning);color:#fff;border:none;border-radius:7px;padding:5px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-wa{background:#25D366;color:#fff;border:none;border-radius:7px;padding:5px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+
+/* ══ ترقيم صفحات ══ */
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 0;font-size:13px;color:var(--text-muted);}
+.page-btns{display:flex;gap:6px;}
+.page-btn{width:32px;height:32px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface-2);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:600;color:var(--text-muted);transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.page-btn:hover,.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+
+/* ══ تفاصيل الطالب ══ */
+.student-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.detail-field{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 14px;}
+.detail-field .df-lbl{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px;}
+.detail-field .df-val{font-size:14px;font-weight:700;color:var(--text-main);}
+
+/* ══ إنذارات ══ */
+.warn-card{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px;transition:box-shadow .2s;}
+.warn-card:hover{box-shadow:var(--shadow);}
+.warn-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.wi-edu  {background:#fdf0ef;color:var(--danger);}
+.wi-late {background:#fff3e0;color:#e65100;}
+.wi-abs  {background:#fff8e6;color:var(--warning);}
+.wi-excused{background:#e8f5e9;color:#2e7d32;}
+.warn-body{flex:1;min-width:0;}
+.warn-body h4{font-size:14px;font-weight:700;margin-bottom:4px;}
+.warn-body p{font-size:12.5px;color:var(--text-muted);line-height:1.5;}
+.warn-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+
+/* ══ spinner ══ */
+.spinner-overlay{position:fixed;inset:0;background:rgba(255,255,255,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(4px);}
+.spinner-ring{width:56px;height:56px;border:4px solid #e0d8c8;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-overlay p{color:var(--primary);font-size:15px;font-weight:600;}
+
+/* ══ حالة فارغة ══ */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.empty-state i{font-size:44px;margin-bottom:14px;opacity:.3;color:var(--primary);display:block;}
+.empty-state h3{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text-main);}
+
+/* ══ section title ══ */
+.section-title{font-size:16px;font-weight:800;color:var(--primary);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ══ responsive ══ */
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main-content{padding:16px;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .student-detail-grid{grid-template-columns:1fr;}
+  .filters-bar{flex-direction:column;align-items:stretch;}
+  .data-table{font-size:12px;}
+  .data-table th,.data-table td{padding:8px 10px;}
+}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr;}}
+
+.swal-rtl{direction:rtl;font-family:'Tajawal',sans-serif!important;}
+.swal2-input,.swal2-select,.swal2-textarea{font-family:'Tajawal',sans-serif!important;}
+</style>
+</head>
+<body>
+
+<!-- ══ شاشة الدخول ══ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><i class="fas fa-book-open-reader"></i></div>
+    <h2>بوابة العاملين</h2>
+    <p>مجمع تحفيظ القرآن الكريم<br>أدخل رمز الدخول الخاص بك</p>
+    <input class="login-input" type="password" id="loginCode" placeholder="● ● ● ●" maxlength="10"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()"><i class="fas fa-right-to-bracket me-2"></i>دخول</button>
+    <div class="login-error" id="loginError"><i class="fas fa-circle-xmark me-1"></i>رمز الدخول غير صحيح</div>
+  </div>
+</div>
+
+<!-- ══ هيدر ══ -->
+<header class="site-header" id="appHeader" style="display:none;">
+  <div class="header-inner">
+    <div class="header-logo"><i class="fas fa-book-open-reader"></i></div>
+    <div class="header-title">
+      <h1>مجمع تحفيظ القرآن الكريم</h1>
+      <p>منظومة الإدارة الرقمية المتكاملة</p>
+    </div>
+    <div class="header-right">
+      <div class="user-chip">
+        <i class="fas fa-user-circle"></i>
+        <span id="headerUserName">—</span>
+        <span class="role-badge" id="headerRole">—</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()"><i class="fas fa-right-from-bracket me-1"></i>خروج</button>
+    </div>
+  </div>
+</header>
+
+<!-- ══ تطبيق رئيسي ══ -->
+<div id="appScreen">
+<div class="app-layout">
+
+  <!-- شريط جانبي -->
+  <nav class="sidebar" id="sidebarNav"></nav>
+
+  <!-- محتوى -->
+  <main class="main-content" id="mainContent">
+    <div class="empty-state" style="padding:80px 20px;">
+      <i class="fas fa-hand-point-right" style="opacity:.2;font-size:48px;display:block;margin-bottom:16px;"></i>
+      <h3>اختر من القائمة الجانبية</h3>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- spinner -->
+<div class="spinner-overlay" id="spinnerOverlay" style="display:none;">
+  <div class="spinner-ring"></div>
+  <p id="spinnerText">جارٍ التحميل…</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+// ══════════════════════════════════════════════════
+const API = 'https://script.google.com/macros/s/AKfycbyfNLsP39SOzW1egWRWBG3OPEXUUJHxqZqa3yylzSY2hY_Dw_YOK9_W_-_iRFF-feUJFw/exec';
+
+let currentUser = null;
+let allStudents = [];
+let studentsPage = 1;
+const PAGE_SIZE = 50;
+
+const GRADES = {
+  'ابتدائي':['الأول الابتدائي','الثاني الابتدائي','الثالث الابتدائي','الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي'],
+  'متوسط':['الأول المتوسط','الثاني المتوسط','الثالث المتوسط'],
+  'ثانوي':['الأول الثانوي','الثاني الثانوي','الثالث الثانوي'],
+  'جامعي':['السنة الأولى','السنة الثانية','السنة الثالثة','السنة الرابعة','أكثر من أربع سنوات'],
+};
+
+// ══ API Helper ══
+async function api(action, data={}) {
+  const r = await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,data})});
+  return r.json();
+}
+function spin(show,txt='جارٍ التحميل…'){
+  document.getElementById('spinnerOverlay').style.display=show?'flex':'none';
+  document.getElementById('spinnerText').textContent=txt;
+}
+function fmtDate(d){
+  if(!d)return'—';
+  try{return new Date(d).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'});}
+  catch{return String(d).split('T')[0];}
+}
+function whatsapp(phone,msg=''){
+  const p=String(phone||'').replace(/\D/g,'');
+  const intl=p.startsWith('0')?'966'+p.slice(1):p;
+  window.open('https://wa.me/'+intl+(msg?'?text='+encodeURIComponent(msg):''),'_blank');
+}
+function buildMsg(template, vars){
+  let t=template||'';
+  Object.entries(vars).forEach(([k,v])=>{t=t.replaceAll('#'+k,v||'');});
+  return t;
+}
+function hijriDate(){
+  return new Date().toLocaleDateString('ar-SA-u-ca-islamic',{year:'numeric',month:'long',day:'numeric'});
+}
+
+// ══ دخول ══
+async function doLogin(){
+  const code=document.getElementById('loginCode').value.trim();
+  if(!code)return;
+  spin(true,'جارٍ التحقق…');
+  try{
+    const r=await api('تحقق_رمز_دخول',{رمز_الدخول:code});
+    spin(false);
+    if(r.نجاح){
+      currentUser=r.عامل;
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('appHeader').style.display='block';
+      document.getElementById('appScreen').style.display='block';
+      document.getElementById('headerUserName').textContent=currentUser['الاسم']||'—';
+      document.getElementById('headerRole').textContent=roleLabel(currentUser['الوظيفة']);
+      buildSidebar();
+      loadFirstPage();
+    } else {
+      document.getElementById('loginError').style.display='block';
+      setTimeout(()=>document.getElementById('loginError').style.display='none',3000);
+    }
+  } catch(e){spin(false);alert('خطأ في الاتصال');}
+}
+function doLogout(){
+  currentUser=null;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('appHeader').style.display='none';
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('loginCode').value='';
+}
+function roleLabel(r){
+  return r==='مشرف_اداري'?'مشرف إداري':r==='مشرف_تعليمي'?'مشرف تعليمي':r==='معلم'?'معلم':'—';
+}
+
+// ══ شريط جانبي حسب الدور ══
+function buildSidebar(){
+  const role=currentUser['الوظيفة'];
+  let html='';
+
+  if(role==='معلم'){
+    html=`
+      <div class="sidebar-label">القائمة</div>
+      <div class="sidebar-section">
+        <div class="nav-item" onclick="loadPage('teacherStudents')"><i class="fas fa-users"></i> طلاب الحلقة</div>
+        <div class="nav-item" onclick="loadPage('teacherKpi')"><i class="fas fa-chart-pie"></i> التقارير</div>
+      </div>`;
+  } else if(role==='مشرف_تعليمي'){
+    html=`
+      <div class="sidebar-label">القائمة</div>
+      <div class="sidebar-section">
+        <div class="nav-item" onclick="loadPage('eduKpi')"><i class="fas fa-chart-pie"></i> التقارير</div>
+        <div class="nav-item" onclick="loadPage('eduWarnings')"><i class="fas fa-triangle-exclamation"></i> إصدار إنذار <span class="nav-badge" id="nbEdu">!</span></div>
+        <div class="nav-item" onclick="loadPage('eduAllStudents')"><i class="fas fa-users"></i> الحلق والطلاب</div>
+      </div>`;
+  } else if(role==='مشرف_اداري'){
+    html=`
+      <div class="sidebar-label">الإدارة</div>
+      <div class="sidebar-section">
+        <div class="nav-item" onclick="loadPage('adminKpi')"><i class="fas fa-chart-pie"></i> لوحة التقارير</div>
+        <div class="nav-item" onclick="loadPage('adminStudents')"><i class="fas fa-users"></i> إدارة الطلاب</div>
+        <div class="nav-item" onclick="loadPage('adminRequests')"><i class="fas fa-inbox"></i> الطلبات الواردة <span class="nav-badge" id="nbReq"></span></div>
+      </div>
+      <div class="sidebar-label">الإنذارات</div>
+      <div class="sidebar-section">
+        <div class="nav-item" onclick="loadPage('adminEduWarnings')"><i class="fas fa-book-open"></i> الإنذارات التعليمية</div>
+        <div class="nav-item" onclick="loadPage('adminAdmWarnings')"><i class="fas fa-user-clock"></i> الإنذارات الإدارية</div>
+        <div class="nav-item" onclick="loadPage('adminAllWarnings')"><i class="fas fa-list-check"></i> جميع الإنذارات</div>
+      </div>
+      <div class="sidebar-label">الإعدادات</div>
+      <div class="sidebar-section">
+        <div class="nav-item" onclick="loadPage('settings')"><i class="fas fa-gear"></i> الإعدادات</div>
+      </div>`;
+  }
+  document.getElementById('sidebarNav').innerHTML=html;
+}
+
+function loadFirstPage(){
+  const role=currentUser['الوظيفة'];
+  if(role==='معلم') loadPage('teacherStudents');
+  else if(role==='مشرف_تعليمي') loadPage('eduKpi');
+  else if(role==='مشرف_اداري') loadPage('adminKpi');
+}
+
+function setActiveNav(id){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+}
+
+// ══════════════════════════════════════════════════
+//  TEACHER PAGES
+// ══════════════════════════════════════════════════
+async function loadPage(page){
+  // mark active
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    n.classList.toggle('active', n.getAttribute('onclick')===`loadPage('${page}')`);
+  });
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`<div class="empty-state"><div class="spinner-ring" style="margin:0 auto 12px"></div><p>جارٍ التحميل…</p></div>`;
+
+  if(page==='teacherStudents') await renderTeacherStudents();
+  else if(page==='teacherKpi')  await renderTeacherKpi();
+  else if(page==='eduKpi')      await renderEduKpi();
+  else if(page==='eduWarnings') await renderEduWarnings();
+  else if(page==='eduAllStudents') await renderEduAllStudents();
+  else if(page==='adminKpi')    await renderAdminKpi();
+  else if(page==='adminStudents') await renderAdminStudents();
+  else if(page==='adminRequests') await renderAdminRequests();
+  else if(page==='adminEduWarnings') await renderAdminEduWarnings();
+  else if(page==='adminAdmWarnings') await renderAdminAdmWarnings();
+  else if(page==='adminAllWarnings') await renderAdminAllWarnings();
+  else if(page==='settings')    await renderSettings();
+}
+
+// ── معلم: طلاب الحلقة ──
+async function renderTeacherStudents(){
+  const حلقة=currentUser['الحلقة']||'';
+  const r=await api('جلب_طلاب_الحلقة',{الحلقة:حلقة});
+  const طلاب=r.طلاب||[];
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-users"></i> طلاب حلقة: ${حلقة}</div>
+    <div class="content-card">
+      <div class="card-header-bar">
+        <h3><i class="fas fa-list fa-sm me-2"></i>قائمة الطلاب (${طلاب.length})</h3>
+        <div class="card-actions">
+          <input class="filter-input search-box" placeholder="بحث باسم الطالب…" oninput="filterTeacherTable(this.value)">
+        </div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="teacherTable">
+            <thead><tr>
+              <th>#</th><th>اسم الطالب</th><th>المرحلة</th><th>الصف</th>
+              <th>مجموع الحفظ</th><th>الحالة</th><th>إجراء</th>
+            </tr></thead>
+            <tbody>
+              ${طلاب.map((ط,i)=>`
+                <tr data-name="${ط['اسم_الطالب']||''}">
+                  <td>${i+1}</td>
+                  <td><strong>${ط['اسم_الطالب']||'—'}</strong></td>
+                  <td>${ط['المرحلة_الدراسية']||'—'}</td>
+                  <td>${ط['الصف_الدراسي']||'—'}</td>
+                  <td><span style="font-weight:800;color:var(--primary)">${ط['مجموع_الحفظ']||0}</span> جزء</td>
+                  <td>${statusBadge(ط['حالة_الطالب'])}</td>
+                  <td><button class="btn-o btn-sm" onclick='openStudentNote(${JSON.stringify(ط)})'><i class="fas fa-pen"></i> ملاحظة</button></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+}
+
+function filterTeacherTable(q){
+  document.querySelectorAll('#teacherTable tbody tr').forEach(tr=>{
+    tr.style.display=tr.dataset.name.includes(q)?'':'none';
+  });
+}
+
+async function openStudentNote(ط){
+  const {value:note,isConfirmed}=await Swal.fire({
+    title:'ملاحظة على: '+ط['اسم_الطالب'],
+    html:`<textarea id="noteInput" class="swal2-textarea" style="font-family:Tajawal;direction:rtl;height:120px"
+      placeholder="اكتب ملاحظتك هنا… (تظهر للمعلم والمشرف الإداري فقط)">${ط['ملاحظات']||''}</textarea>`,
+    confirmButtonText:'حفظ الملاحظة',
+    cancelButtonText:'إلغاء',
+    showCancelButton:true,
+    confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>document.getElementById('noteInput').value.trim(),
+  });
+  if(!isConfirmed)return;
+  spin(true,'جارٍ الحفظ…');
+  const r=await api('حفظ_ملاحظة_معلم',{رقم_الطالب:ط['رقم_الطالب'],ملاحظة:note});
+  spin(false);
+  if(r.نجاح) Swal.fire({icon:'success',title:'تم الحفظ',timer:2000,timerProgressBar:true,showConfirmButton:false});
+}
+
+// ── معلم: تقارير ──
+async function renderTeacherKpi(){
+  const r=await api('جلب_تقارير_معلم',{الحلقة:currentUser['الحلقة']||''});
+  const t=r.تقارير||{};
+  document.getElementById('mainContent').innerHTML=`
+    <div class="section-title"><i class="fas fa-chart-pie"></i> تقارير حلقتي</div>
+    <div class="kpi-grid">
+      ${kpiCard('إجمالي الطلاب',t.إجمالي_طلاب_الحلقة||0,'fa-users','')}
+      ${kpiCard('الطلاب المنتظمون',t.منتظمون||0,'fa-user-check','kpi-success')}
+      ${kpiCard('مجموع الأجزاء المحفوظة',t.مجموع_حفظ_الحلقة||0,'fa-book-open','kpi-accent')}
+      ${kpiCard('متوسط الحفظ/طالب',t.متوسط_الحفظ||0,'fa-chart-bar','')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════
+//  EDUCATIONAL SUPERVISOR
+// ══════════════════════════════════════════════════
+async function renderEduKpi(){
+  const r=await api('جلب_تقارير_مشرف_تعليمي',{});
+  const t=r.تقارير||{};
+  document.getElementById('mainContent').innerHTML=`
+    <div class="section-title"><i class="fas fa-chart-pie"></i> لوحة المشرف التعليمي</div>
+    <div class="kpi-grid">
+      ${kpiCard('إجمالي الطلاب',t.إجمالي_الطلاب||0,'fa-users','')}
+      ${kpiCard('عدد الحلق',t.عدد_الحلق||0,'fa-mosque','')}
+      ${kpiCard('مجموع الأجزاء المحفوظة',t.مجموع_الحفظ||0,'fa-book-open','kpi-accent')}
+      ${kpiCard('إنذارات مفتوحة',t.انذارات_تعليمية_مفتوحة||0,'fa-triangle-exclamation','kpi-danger')}
+      ${kpiCard('إنذارات مكتملة',t.انذارات_تعليمية_مكتملة||0,'fa-check-circle','kpi-success')}
+    </div>`;
+}
+
+async function renderEduWarnings(){
+  const [rWarn,rProc,rCircles]=await Promise.all([
+    api('جلب_الانذارات_التعليمية',{غير_مكتملة_فقط:true}),
+    api('جلب_الاجراءات',{نوع_الاجراء:'تعليمي'}),
+    api('جلب_الحلق',{}),
+  ]);
+  let انذارات=rWarn.انذارات||[];
+  const إجراءات=rProc.إجراءات||[];
+  const حلق=(rCircles.حلق||[]).map(h=>h['اسم_الحلقة']);
+
+  // جلب قالب الرسالة
+  const rTpl=await api('جلب_قوالب_الرسائل',{});
+  const قوالب=rTpl.قوالب||[];
+  const tplStudent=قوالب.find(q=>q['نوع_القالب']==='انذار_تعليمي_للطالب');
+  const tplParent =قوالب.find(q=>q['نوع_القالب']==='انذار_تعليمي_لولي_الامر');
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-triangle-exclamation"></i> إصدار وإدارة الإنذارات التعليمية</div>
+    <div class="content-card mb-4">
+      <div class="card-header-bar">
+        <h3><i class="fas fa-plus-circle fa-sm me-2" style="color:var(--danger)"></i>إصدار إنذار جديد</h3>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px;display:block">اسم الطالب *</label>
+            <input class="filter-input" id="newWarnStudent" placeholder="ابحث باسم الطالب" style="width:100%">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px;display:block">الحلقة</label>
+            <select class="filter-input" id="newWarnCircle" style="width:100%">
+              <option value="">-- اختر --</option>
+              ${حلق.map(h=>`<option>${h}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:5px;display:block">سبب الإنذار *</label>
+            <input class="filter-input" id="newWarnReason" placeholder="سبب الإنذار" style="width:100%">
+          </div>
+          <button class="btn-p" onclick="issueEduWarning()"><i class="fas fa-paper-plane"></i> إصدار</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header-bar">
+        <h3><i class="fas fa-list-check fa-sm me-2"></i>الإنذارات غير المكتملة (${انذارات.length})</h3>
+        <div class="card-actions">
+          <select class="filter-input" id="filterEduCircle" onchange="filterEduWarnings()">
+            <option value="">كل الحلق</option>
+            ${حلق.map(h=>`<option>${h}</option>`).join('')}
+          </select>
+          <input class="filter-input" id="filterEduSearch" placeholder="بحث باسم…" oninput="filterEduWarnings()">
+        </div>
+      </div>
+      <div class="card-body" id="eduWarnList">
+        ${renderEduWarnCards(انذارات,إجراءات,tplStudent,tplParent)}
+      </div>
+    </div>`;
+
+  window._eduWarnings=انذارات;
+  window._eduProc=إجراءات;
+  window._tplStudent=tplStudent;
+  window._tplParent=tplParent;
+}
+
+function renderEduWarnCards(list,إجراءات,tplS,tplP){
+  if(!list.length) return `<div class="empty-state"><i class="fas fa-check-circle" style="color:var(--success)"></i><h3>لا توجد إنذارات مفتوحة</h3></div>`;
+  return list.map(ا=>`
+    <div class="warn-card" id="wc_${ا['رقم_الانذار']}">
+      <div class="warn-icon wi-edu"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="warn-body">
+        <h4>${ا['اسم_الطالب']||'—'} <span style="font-weight:400;font-size:12px;color:var(--text-muted)">· ${ا['الحلقة']||'—'}</span></h4>
+        <p><i class="fas fa-circle-exclamation fa-xs me-1"></i>${ا['سبب_الانذار']||'—'}<br>
+        <i class="fas fa-calendar fa-xs me-1"></i>${fmtDate(ا['تاريخ_الإصدار'])} · الإجراء: <strong>${ا['حالة_الإجراء']||'بانتظار الإجراء'}</strong></p>
+      </div>
+      <div class="warn-actions">
+        <select class="filter-input btn-sm" id="proc_${ا['رقم_الانذار']}" style="font-size:12px;padding:5px 10px">
+          <option value="">تحديث الإجراء</option>
+          ${إجراءات.map(إ=>`<option value="${إ['اسم_الاجراء']}">${إ['اسم_الاجراء']}</option>`).join('')}
+          <option value="__done__">✓ اكتمل الإجراء</option>
+        </select>
+        <button class="btn-p btn-sm" onclick="updateEduProc('${ا['رقم_الانذار']}')"><i class="fas fa-save"></i> حفظ</button>
+        ${ا['رقم_جوال_الطالب']?`<button class="btn-wa btn-sm" onclick='sendWa("${ا['رقم_جوال_الطالب']}","${ا['اسم_الطالب']}","${ا['اسم_ولي_الامر']||''}","${ا['سبب_الانذار']||''}",true)'><i class="fab fa-whatsapp"></i> طالب</button>`:''}
+        ${ا['رقم_جوال_ولي_الامر']?`<button class="btn-wa btn-sm" onclick='sendWa("${ا['رقم_جوال_ولي_الامر']}","${ا['اسم_الطالب']}","${ا['اسم_ولي_الامر']||''}","${ا['سبب_الانذار']||''}",false)'><i class="fab fa-whatsapp"></i> ولي الأمر</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function filterEduWarnings(){
+  const حلقة=document.getElementById('filterEduCircle')?.value||'';
+  const q=document.getElementById('filterEduSearch')?.value||'';
+  let list=window._eduWarnings||[];
+  if(حلقة) list=list.filter(ا=>ا['الحلقة']===حلقة);
+  if(q)    list=list.filter(ا=>String(ا['اسم_الطالب']).includes(q));
+  document.getElementById('eduWarnList').innerHTML=renderEduWarnCards(list,window._eduProc,window._tplStudent,window._tplParent);
+}
+
+async function issueEduWarning(){
+  const name=document.getElementById('newWarnStudent').value.trim();
+  const circle=document.getElementById('newWarnCircle').value;
+  const reason=document.getElementById('newWarnReason').value.trim();
+  if(!name||!reason){Swal.fire({icon:'warning',title:'تنبيه',text:'يرجى إدخال اسم الطالب وسبب الإنذار',confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});return;}
+  spin(true,'جارٍ الإصدار…');
+  const r=await api('إصدار_إنذار_تعليمي',{اسم_الطالب:name,الحلقة:circle,سبب_الانذار:reason,اسم_المشرف:currentUser['الاسم']});
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'success',title:'تم الإصدار',text:r.رقم_الانذار,timer:2500,timerProgressBar:true,showConfirmButton:false,customClass:{popup:'swal-rtl'}});renderEduWarnings();}
+}
+
+async function updateEduProc(id){
+  const sel=document.getElementById('proc_'+id);
+  const val=sel?.value;
+  if(!val){Swal.fire({icon:'warning',title:'اختر إجراءً',confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});return;}
+  const done=val==='__done__';
+  spin(true,'جارٍ الحفظ…');
+  const r=await api('تحديث_إجراء_انذار_تعليمي',{رقم_الانذار:id,الإجراء:done?'مكتمل':val,مكتمل:done});
+  spin(false);
+  if(r.نجاح){
+    if(done) document.getElementById('wc_'+id)?.remove();
+    else sel.value='';
+    Swal.fire({icon:'success',title:'تم التحديث',timer:1800,timerProgressBar:true,showConfirmButton:false});
+  }
+}
+
+function sendWa(phone,studentName,parentName,reason,isStudent){
+  const tpl=isStudent?window._tplStudent:window._tplParent;
+  const msg=buildMsg(tpl?.['نص_القالب']||'',{اسم_الطالب:studentName,اسم_ولي_الطالب:parentName,السبب:reason,تاريخ:hijriDate()});
+  whatsapp(phone,msg);
+}
+
+async function renderEduAllStudents(){
+  const [rStudents,rCircles]=await Promise.all([api('جلب_الطلاب',{حجم_الصفحة:999}),api('جلب_الحلق',{})]);
+  const طلاب=rStudents.طلاب||[];
+  const حلق=(rCircles.حلق||[]).map(h=>h['اسم_الحلقة']);
+  window._allEduStudents=طلاب;
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-users"></i> الحلق والطلاب</div>
+    <div class="content-card">
+      <div class="card-header-bar">
+        <h3><i class="fas fa-table fa-sm me-2"></i>الطلاب (${طلاب.length})</h3>
+        <div class="card-actions">
+          <select class="filter-input" id="filterEduAllCircle" onchange="filterEduAll()">
+            <option value="">كل الحلق</option>
+            ${حلق.map(h=>`<option>${h}</option>`).join('')}
+          </select>
+          <input class="filter-input" id="filterEduAllSearch" placeholder="بحث باسم…" oninput="filterEduAll()">
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="eduAllTable">
+          <thead><tr><th>#</th><th>اسم الطالب</th><th>الحلقة</th><th>المرحلة</th><th>مجموع الحفظ</th><th>إنذارات تعليمية</th><th>الحالة</th></tr></thead>
+          <tbody id="eduAllBody">${buildEduAllRows(طلاب)}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function buildEduAllRows(list){
+  return list.map((ط,i)=>`
+    <tr data-name="${ط['اسم_الطالب']||''}" data-circle="${ط['الحلقة']||''}">
+      <td>${i+1}</td>
+      <td><strong>${ط['اسم_الطالب']||'—'}</strong></td>
+      <td>${ط['الحلقة']||'—'}</td>
+      <td>${ط['المرحلة_الدراسية']||'—'}</td>
+      <td>${ط['مجموع_الحفظ']||0} جزء</td>
+      <td>—</td>
+      <td>${statusBadge(ط['حالة_الطالب'])}</td>
+    </tr>`).join('');
+}
+
+function filterEduAll(){
+  const c=document.getElementById('filterEduAllCircle')?.value||'';
+  const q=document.getElementById('filterEduAllSearch')?.value||'';
+  let list=window._allEduStudents||[];
+  if(c) list=list.filter(ط=>ط['الحلقة']===c);
+  if(q) list=list.filter(ط=>String(ط['اسم_الطالب']).includes(q));
+  document.getElementById('eduAllBody').innerHTML=buildEduAllRows(list);
+}
+
+// ══════════════════════════════════════════════════
+//  ADMIN — KPI
+// ══════════════════════════════════════════════════
+async function renderAdminKpi(){
+  const r=await api('جلب_تقارير_مشرف_اداري',{});
+  const t=r.تقارير||{};
+  document.getElementById('mainContent').innerHTML=`
+    <div class="section-title"><i class="fas fa-chart-pie"></i> لوحة تقارير المشرف الإداري</div>
+    <div class="kpi-grid">
+      ${kpiCard('إجمالي الطلاب',t.إجمالي_الطلاب||0,'fa-users','')}
+      ${kpiCard('الطلاب المنتظمون',t.طلاب_منتظمون||0,'fa-user-check','kpi-success')}
+      ${kpiCard('الطلاب الموقوفون',t.طلاب_موقوفون||0,'fa-user-slash','kpi-danger')}
+      ${kpiCard('طلبات التسجيل الجديدة',t.طلبات_جديدة||0,'fa-inbox','kpi-warning')}
+      ${kpiCard('في قائمة الانتظار',t.طلبات_انتظار||0,'fa-hourglass-half','')}
+    </div>
+    <div class="section-title mt-2"><i class="fas fa-user-clock"></i> إنذارات التأخر</div>
+    <div class="kpi-grid">
+      ${kpiCard('مستحقة',t.إنذارات_اداري_تأخر_مستحقة||0,'fa-clock','kpi-danger')}
+      ${kpiCard('مكتملة',t.ارشيف_تأخر||0,'fa-check','kpi-success')}
+    </div>
+    <div class="section-title mt-2"><i class="fas fa-calendar-xmark"></i> إنذارات الغياب</div>
+    <div class="kpi-grid">
+      ${kpiCard('مستحقة',t.إنذارات_اداري_غياب_مستحقة||0,'fa-calendar-xmark','kpi-danger')}
+      ${kpiCard('مكتملة',t.ارشيف_غياب||0,'fa-check','kpi-success')}
+    </div>
+    <div class="section-title mt-2"><i class="fas fa-calendar-minus"></i> إنذارات الغياب بعذر</div>
+    <div class="kpi-grid">
+      ${kpiCard('مستحقة',t.إنذارات_اداري_عذر_مستحقة||0,'fa-calendar-minus','kpi-warning')}
+      ${kpiCard('مكتملة',t.ارشيف_عذر||0,'fa-check','kpi-success')}
+    </div>
+    <div class="section-title mt-2"><i class="fas fa-book-open"></i> الإنذارات التعليمية</div>
+    <div class="kpi-grid">
+      ${kpiCard('مفتوحة',t.انذ_تعليمية_مفتوحة||0,'fa-triangle-exclamation','kpi-danger')}
+    </div>`;
+}
+
+// ══ ADMIN: إدارة الطلاب ══
+async function renderAdminStudents(){
+  const [rS,rC,rSt]=await Promise.all([
+    api('جلب_الطلاب',{الصفحة:1,حجم_الصفحة:PAGE_SIZE}),
+    api('جلب_الحلق',{}),
+    api('جلب_حالات_الطالب',{}),
+  ]);
+  allStudents=rS.طلاب||[];
+  const حلق=(rC.حلق||[]).map(h=>h['اسم_الحلقة']);
+  const حالات=(rSt.حالات||[]).map(h=>h['اسم_الحالة']);
+  const total=rS.المجموع||0;
+  const pages=rS.عدد_الصفحات||1;
+  studentsPage=1;
+  window._studentsTotal=total; window._studentsPages=pages;
+  window._studentsCircles=حلق; window._studentsStatuses=حالات;
+  window._selectedStudents=new Set();
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-users"></i> إدارة الطلاب</div>
+    <div class="content-card">
+      <div class="card-header-bar">
+        <h3><i class="fas fa-table fa-sm me-2"></i>الطلاب (${total})</h3>
+        <div class="card-actions">
+          <button class="btn-o btn-sm" onclick="exportStudentsCSV()"><i class="fas fa-file-csv"></i> CSV</button>
+          <button class="btn-o btn-sm" onclick="bulkEditStudents()"><i class="fas fa-pen-to-square"></i> تعديل جماعي</button>
+        </div>
+      </div>
+      <div class="card-body" style="padding:16px 24px 0;">
+        <div class="filters-bar">
+          <input class="filter-input search-box" id="filterStudName" placeholder="بحث بالاسم أو الهوية…" oninput="reloadAdminStudents()">
+          <select class="filter-input" id="filterStudCircle" onchange="reloadAdminStudents()">
+            <option value="">كل الحلق</option>
+            ${حلق.map(h=>`<option>${h}</option>`).join('')}
+          </select>
+          <select class="filter-input" id="filterStudStatus" onchange="reloadAdminStudents()">
+            <option value="">كل الحالات</option>
+            ${حالات.map(h=>`<option>${h}</option>`).join('')}
+          </select>
+          <input class="filter-input" id="filterHifzMin" placeholder="حفظ أكثر من" type="number" min="0" max="30" oninput="reloadAdminStudents()" style="width:130px">
+          <input class="filter-input" id="filterHifzMax" placeholder="حفظ أقل من" type="number" min="0" max="30" oninput="reloadAdminStudents()" style="width:130px">
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead><tr>
+            <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th>
+            <th>الاسم</th><th>رقم الهوية</th><th>الحلقة</th>
+            <th>مجموع الحفظ</th><th>الحالة</th><th>إجراء</th>
+          </tr></thead>
+          <tbody id="studentsBody">${buildStudentsRows(allStudents)}</tbody>
+        </table>
+      </div>
+      <div class="card-body">
+        <div class="pagination-bar">
+          <span id="pageInfo">الصفحة 1 من ${pages} · إجمالي ${total}</span>
+          <div class="page-btns" id="pageBtns">${buildPageBtns(1,pages)}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildStudentsRows(list){
+  if(!list.length) return `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">لا توجد نتائج</td></tr>`;
+  return list.map(ط=>`
+    <tr>
+      <td><input type="checkbox" class="stud-chk" value="${ط['رقم_الطالب']||''}" onchange="toggleStudentSelect(this)"></td>
+      <td><a href="#" onclick="openStudentDetail(${JSON.stringify(ط).replace(/"/g,'&quot;')});return false" style="color:var(--primary-light);font-weight:700;text-decoration:none">${ط['اسم_الطالب']||'—'}</a></td>
+      <td style="font-size:12px;color:var(--text-muted)">${ط['رقم_الهوية']||'—'}</td>
+      <td>${ط['الحلقة']||'—'}</td>
+      <td><strong>${ط['مجموع_الحفظ']||0}</strong> جزء</td>
+      <td>${statusBadge(ط['حالة_الطالب'])}</td>
+      <td><button class="btn-o btn-sm" onclick="openStudentDetail(${JSON.stringify(ط).replace(/"/g,'&quot;')})"><i class="fas fa-eye"></i></button></td>
+    </tr>`).join('');
+}
+
+async function reloadAdminStudents(){
+  const data={
+    بحث:document.getElementById('filterStudName')?.value||'',
+    الحلقة:document.getElementById('filterStudCircle')?.value||'',
+    حالة_الطالب:document.getElementById('filterStudStatus')?.value||'',
+    حجم_الصفحة:PAGE_SIZE, الصفحة:studentsPage,
+  };
+  const min=document.getElementById('filterHifzMin')?.value;
+  const max=document.getElementById('filterHifzMax')?.value;
+  if(min) data.حفظ_اكثر_من=min;
+  if(max) data.حفظ_اقل_من=max;
+  spin(true);
+  const r=await api('جلب_الطلاب',data);
+  spin(false);
+  allStudents=r.طلاب||[];
+  document.getElementById('studentsBody').innerHTML=buildStudentsRows(allStudents);
+  document.getElementById('pageInfo').textContent=`الصفحة ${studentsPage} من ${r.عدد_الصفحات} · إجمالي ${r.المجموع}`;
+  document.getElementById('pageBtns').innerHTML=buildPageBtns(studentsPage,r.عدد_الصفحات||1);
+}
+
+function buildPageBtns(cur,total){
+  let h='';
+  const show=(p)=>h+=`<button class="page-btn ${p===cur?'active':''}" onclick="gotoPage(${p})">${p}</button>`;
+  if(total<=7){for(let i=1;i<=total;i++)show(i);}
+  else{
+    show(1);
+    if(cur>3) h+=`<span class="page-btn" style="cursor:default">…</span>`;
+    for(let i=Math.max(2,cur-1);i<=Math.min(total-1,cur+1);i++) show(i);
+    if(cur<total-2) h+=`<span class="page-btn" style="cursor:default">…</span>`;
+    show(total);
+  }
+  return h;
+}
+
+async function gotoPage(p){studentsPage=p; await reloadAdminStudents();}
+
+function toggleSelectAll(cb){
+  document.querySelectorAll('.stud-chk').forEach(c=>{c.checked=cb.checked; toggleStudentSelect(c);});
+}
+function toggleStudentSelect(cb){
+  if(!window._selectedStudents) window._selectedStudents=new Set();
+  if(cb.checked) window._selectedStudents.add(cb.value);
+  else window._selectedStudents.delete(cb.value);
+}
+
+async function exportStudentsCSV(){
+  spin(true,'جارٍ التصدير…');
+  const r=await api('تصدير_الطلاب_csv',{});
+  spin(false);
+  if(r.csv){
+    const blob=new Blob(['\uFEFF'+r.csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='students_'+Date.now()+'.csv';
+    a.click();
+  }
+}
+
+async function bulkEditStudents(){
+  const ids=Array.from(window._selectedStudents||[]);
+  if(!ids.length){Swal.fire({icon:'info',title:'لم تختر طلاباً',confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});return;}
+  const حلق=(window._studentsCircles||[]).map(h=>`<option>${h}</option>`).join('');
+  const حالات=(window._studentsStatuses||[]).map(h=>`<option>${h}</option>`).join('');
+  const {isConfirmed,value}=await Swal.fire({
+    title:`تعديل جماعي (${ids.length} طلاب)`,
+    html:`
+      <p style="font-size:12.5px;color:#5a6a7a;margin-bottom:14px">اترك الحقل فارغاً لعدم تعديله</p>
+      <div style="display:grid;gap:10px;text-align:right">
+        <div><label style="font-size:12px;font-weight:600">الحلقة</label>
+          <select id="bCircle" class="swal2-select" style="font-family:Tajawal"><option value="">-- لا تغيير --</option>${حلق}</select></div>
+        <div><label style="font-size:12px;font-weight:600">حالة الطالب</label>
+          <select id="bStatus" class="swal2-select" style="font-family:Tajawal"><option value="">-- لا تغيير --</option>${حالات}</select></div>
+        <div><label style="font-size:12px;font-weight:600">مجموع الحفظ</label>
+          <input id="bHifz" type="number" min="0" max="30" class="swal2-input" placeholder="عدد الأجزاء"></div>
+      </div>`,
+    confirmButtonText:'تطبيق التعديل',
+    cancelButtonText:'إلغاء',
+    showCancelButton:true,
+    confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>{
+      const t={};
+      const c=document.getElementById('bCircle').value;
+      const s=document.getElementById('bStatus').value;
+      const h=document.getElementById('bHifz').value;
+      if(c) t['الحلقة']=c;
+      if(s) t['حالة_الطالب']=s;
+      if(h) t['مجموع_الحفظ']=h;
+      if(!Object.keys(t).length){Swal.showValidationMessage('يجب تعديل حقل واحد على الأقل');return false;}
+      return t;
+    }
+  });
+  if(!isConfirmed||!value)return;
+  spin(true,'جارٍ التعديل الجماعي…');
+  const r=await api('تعديل_جماعي_طلاب',{أرقام_الطلاب:ids,تعديلات:value});
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'success',title:r.رسالة,timer:2500,timerProgressBar:true,showConfirmButton:false});renderAdminStudents();}
+}
+
+async function openStudentDetail(ط){
+  const حلق=(window._studentsCircles||[]).map(h=>`<option value="${h}" ${h===ط['الحلقة']?'selected':''}>${h}</option>`).join('');
+  const حالات=(window._studentsStatuses||[]).map(h=>`<option value="${h}" ${h===ط['حالة_الطالب']?'selected':''}>${h}</option>`).join('');
+  const stage=ط['المرحلة_الدراسية']||'ابتدائي';
+  const gradeOpts=(GRADES[stage]||[]).map(g=>`<option ${g===ط['الصف_الدراسي']?'selected':''}>${g}</option>`).join('');
+
+  const {isConfirmed}=await Swal.fire({
+    title:'تعديل بيانات: '+ط['اسم_الطالب'],
+    width:'680px',
+    html:`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:right;direction:rtl">
+        ${swalField('الاسم الكامل','sdf_name',ط['اسم_الطالب'],'text',true)}
+        ${swalField('رقم الهوية','sdf_id',ط['رقم_الهوية'],'text',true)}
+        ${swalField('رقم الجوال','sdf_phone',ط['رقم_الجوال'],'text')}
+        ${swalField('الحي/العنوان','sdf_addr',ط['الحي_العنوان'],'text')}
+        <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الحلقة</label>
+          <select id="sdf_circle" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>${حلق}</select></div>
+        <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">حالة الطالب</label>
+          <select id="sdf_status" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>${حالات}</select></div>
+        <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">المرحلة</label>
+          <select id="sdf_stage" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0">
+            ${['ابتدائي','متوسط','ثانوي','جامعي'].map(s=>`<option ${s===stage?'selected':''}>${s}</option>`).join('')}
+          </select></div>
+        <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الصف</label>
+          <select id="sdf_grade" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>${gradeOpts}</select></div>
+        <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">مجموع الحفظ</label>
+          <input id="sdf_hifz" type="number" min="0" max="30" class="swal2-input" value="${ط['مجموع_الحفظ']||0}" style="font-family:Tajawal;width:100%;margin:0"></div>
+        <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">جوال ولي الأمر</label>
+          <input id="sdf_pphone" type="text" class="swal2-input" value="${ط['رقم_جوال_ولي_الامر']||''}" style="font-family:Tajawal;width:100%;margin:0;direction:ltr;text-align:center"></div>
+      </div>`,
+    confirmButtonText:'حفظ التعديلات',
+    cancelButtonText:'إلغاء',
+    showCancelButton:true,
+    confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>({
+      رقم_الجوال:   document.getElementById('sdf_phone').value.trim(),
+      الحي_العنوان: document.getElementById('sdf_addr').value.trim(),
+      الحلقة:       document.getElementById('sdf_circle').value,
+      حالة_الطالب:  document.getElementById('sdf_status').value,
+      المرحلة_الدراسية:document.getElementById('sdf_stage').value,
+      الصف_الدراسي: document.getElementById('sdf_grade').value,
+      مجموع_الحفظ:  document.getElementById('sdf_hifz').value,
+    })
+  });
+  if(!isConfirmed) return;
+  spin(true,'جارٍ الحفظ…');
+  const edits=await Swal.getConfirmResult?.() || {};
+  const pphone=document.getElementById?.('sdf_pphone')?.value?.trim();
+  const r=await api('تعديل_بيانات_طالب',{
+    رقم_الطالب:ط['رقم_الطالب'],
+    تعديلات:Object.fromEntries(Object.entries(edits||{}).filter(([,v])=>v!==''&&v!==undefined)),
+    تعديلات_ولي_الامر:pphone?{رقم_جوال_ولي_الامر:pphone}:{},
+  });
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'success',title:'تم الحفظ',timer:2000,timerProgressBar:true,showConfirmButton:false});reloadAdminStudents();}
+}
+
+function swalField(label,id,val,type='text',disabled=false){
+  return `<div>
+    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">${label}${disabled?' <span style="font-size:10px;color:#aaa">(غير قابل للتعديل)</span>':''}</label>
+    <input id="${id}" type="${type}" class="swal2-input" value="${val||''}" ${disabled?'disabled':''} style="font-family:Tajawal;width:100%;margin:0;${disabled?'background:#f5f5f5;color:#aaa':''}">
+  </div>`;
+}
+
+// ══ ADMIN: الطلبات الواردة ══
+async function renderAdminRequests(){
+  const r=await api('جلب_طلبات_التسجيل',{});
+  const جديد  =(r.طلبات||[]).filter(ط=>ط['حالة_الطلب']==='جديد');
+  const انتظار=(r.طلبات||[]).filter(ط=>ط['حالة_الطلب']==='انتظار');
+  const مرفوض =(r.طلبات||[]).filter(ط=>ط['حالة_الطلب']==='مرفوض');
+  const r2=await api('جلب_طلبات_التعديل',{});
+  const تعديلات=r2.طلبات||[];
+
+  if(document.getElementById('nbReq')) document.getElementById('nbReq').textContent=جديد.length+انتظار.length||'';
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-inbox"></i> الطلبات الواردة</div>
+    <div class="content-card">
+      <div class="sub-tabs">
+        <button class="sub-tab active" onclick="switchSubTab(this,'reqNew')"><i class="fas fa-clock"></i> جديد (${جديد.length})</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'reqWait')"><i class="fas fa-hourglass-half"></i> الانتظار (${انتظار.length})</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'reqRej')"><i class="fas fa-circle-xmark"></i> المرفوضون (${مرفوض.length})</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'reqEdit')"><i class="fas fa-pen"></i> التعديلات (${تعديلات.length})</button>
+      </div>
+      <div class="sub-panel active" id="reqNew">${buildRegTable(جديد,'new')}</div>
+      <div class="sub-panel" id="reqWait">${buildRegTable(انتظار,'wait')}</div>
+      <div class="sub-panel" id="reqRej">${buildRejTable(مرفوض)}</div>
+      <div class="sub-panel" id="reqEdit">${buildEditTable(تعديلات)}</div>
+    </div>`;
+}
+
+function buildRegTable(list,mode){
+  if(!list.length) return `<div class="empty-state"><i class="fas fa-inbox"></i><h3>لا توجد طلبات</h3></div>`;
+  const btns=(ط)=>{
+    let h='';
+    if(mode==='new'){
+      h+=`<button class="btn-success btn-sm" onclick="acceptReg('${ط['رقم_الطلب']}','${ط['اسم_الطالب']}')"><i class="fas fa-check"></i> قبول</button> `;
+      h+=`<button class="btn-warning btn-sm" onclick="waitReg('${ط['رقم_الطلب']}')"><i class="fas fa-hourglass-half"></i> انتظار</button> `;
+    } else {
+      h+=`<button class="btn-success btn-sm" onclick="acceptReg('${ط['رقم_الطلب']}','${ط['اسم_الطالب']}')"><i class="fas fa-check"></i> قبول</button> `;
+    }
+    h+=`<button class="btn-danger btn-sm" onclick="rejectReg('${ط['رقم_الطلب']}')"><i class="fas fa-times"></i> رفض</button>`;
+    return h;
+  };
+  return `<div style="overflow-x:auto;padding:8px 0">
+    <table class="data-table">
+      <thead><tr><th>الاسم</th><th>الجوال</th><th>جوال و.الأمر</th><th>المرحلة</th><th>الصف</th><th>تاريخ الطلب</th><th>إجراء</th></tr></thead>
+      <tbody>${list.map(ط=>`
+        <tr>
+          <td><strong>${ط['اسم_الطالب']||'—'}</strong></td>
+          <td><a href="#" onclick="whatsapp('${ط['رقم_جوال_الطالب']}');return false" style="color:var(--success)"><i class="fab fa-whatsapp me-1"></i>${ط['رقم_جوال_الطالب']||'—'}</a></td>
+          <td><a href="#" onclick="whatsapp('${ط['رقم_جوال_ولي_الامر']}');return false" style="color:var(--success)"><i class="fab fa-whatsapp me-1"></i>${ط['رقم_جوال_ولي_الامر']||'—'}</a></td>
+          <td>${ط['المرحلة_الدراسية']||'—'}</td>
+          <td>${ط['الصف_الدراسي']||'—'}</td>
+          <td style="font-size:12px">${fmtDate(ط['تاريخ_الطلب'])}</td>
+          <td style="white-space:nowrap">${btns(ط)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function buildRejTable(list){
+  if(!list.length) return `<div class="empty-state"><i class="fas fa-check-circle" style="color:var(--success)"></i><h3>لا توجد طلبات مرفوضة</h3></div>`;
+  return `<div style="overflow-x:auto;padding:8px 0">
+    <table class="data-table">
+      <thead><tr><th>الاسم</th><th>الجوال</th><th>المرحلة</th><th>سبب الرفض</th><th>التاريخ</th></tr></thead>
+      <tbody>${list.map(ط=>`
+        <tr>
+          <td><strong>${ط['اسم_الطالب']||'—'}</strong></td>
+          <td><a href="#" onclick="whatsapp('${ط['رقم_جوال_الطالب']}');return false" style="color:var(--success)"><i class="fab fa-whatsapp me-1"></i>${ط['رقم_جوال_الطالب']||'—'}</a></td>
+          <td>${ط['المرحلة_الدراسية']||'—'}</td>
+          <td style="color:var(--danger)">${ط['سبب_الرفض']||'—'}</td>
+          <td style="font-size:12px">${fmtDate(ط['تاريخ_المعالجة'])}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function buildEditTable(list){
+  if(!list.length) return `<div class="empty-state"><i class="fas fa-check-circle" style="color:var(--success)"></i><h3>لا توجد طلبات تعديل</h3></div>`;
+  return `<div style="overflow-x:auto;padding:8px 0">
+    <table class="data-table">
+      <thead><tr><th>اسم الطالب</th><th>الحقل</th><th>القيمة السابقة</th><th>القيمة الجديدة</th><th>إجراء</th></tr></thead>
+      <tbody>${list.map(ط=>`
+        <tr>
+          <td><strong>${ط['اسم_الطالب']||'—'}</strong></td>
+          <td>${ط['الحقل_المراد_تعديله']||'—'}</td>
+          <td style="color:var(--danger)">${ط['القيمة_القديمة']||'—'}</td>
+          <td style="color:var(--success);font-weight:700">${ط['القيمة_الجديدة']||'—'}</td>
+          <td>
+            <button class="btn-success btn-sm" onclick="approveEdit('${ط['رقم_الطلب']}')"><i class="fas fa-check"></i> قبول</button>
+            <button class="btn-danger btn-sm ms-1" onclick="rejectEdit('${ط['رقم_الطلب']}')"><i class="fas fa-times"></i> رفض</button>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function switchSubTab(btn,panelId){
+  btn.closest('.content-card').querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+  btn.closest('.content-card').querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+async function acceptReg(id,name){
+  const حلق=(window._studentsCircles||[]);
+  let حلق_opts='';
+  if(!حلق.length){const r=await api('جلب_الحلق',{});حلق_opts=(r.حلق||[]).map(h=>`<option>${h['اسم_الحلقة']}</option>`).join('');}
+  else حلق_opts=حلق.map(h=>`<option>${h}</option>`).join('');
+
+  const {isConfirmed,value}=await Swal.fire({
+    title:'قبول: '+name,
+    html:`<p style="font-size:13px;color:#5a6a7a;margin-bottom:12px">حدّد الحلقة التي سيُسكَّن فيها الطالب</p>
+      <select id="acceptCircle" class="swal2-select" style="font-family:Tajawal"><option value="">-- اختر الحلقة --</option>${حلق_opts}</select>`,
+    confirmButtonText:'تأكيد القبول',
+    cancelButtonText:'إلغاء',
+    showCancelButton:true,
+    confirmButtonColor:'#1e7e4a',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>{const v=document.getElementById('acceptCircle').value;if(!v)return Swal.showValidationMessage('يجب اختيار حلقة');return v;}
+  });
+  if(!isConfirmed||!value)return;
+  spin(true,'جارٍ قبول الطالب…');
+  const r=await api('قبول_طلب_تسجيل',{رقم_الطلب:id,الحلقة:value});
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'success',title:'تم القبول!',text:'رقم الطالب: '+r.رقم_الطالب,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});renderAdminRequests();}
+  else Swal.fire({icon:'error',title:'خطأ',text:r.خطأ,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});
+}
+
+async function waitReg(id){
+  spin(true);
+  const r=await api('تحويل_للانتظار',{رقم_الطلب:id});
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'info',title:'تم التحويل للانتظار',timer:2000,timerProgressBar:true,showConfirmButton:false});renderAdminRequests();}
+}
+
+async function rejectReg(id){
+  const {isConfirmed,value}=await Swal.fire({
+    title:'سبب الرفض',
+    input:'textarea',
+    inputPlaceholder:'اكتب سبب الرفض…',
+    inputAttributes:{style:'font-family:Tajawal;direction:rtl'},
+    confirmButtonText:'تأكيد الرفض',
+    cancelButtonText:'إلغاء',
+    showCancelButton:true,
+    confirmButtonColor:'#c0392b',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:v=>{if(!v||!v.trim())return Swal.showValidationMessage('يجب إدخال سبب الرفض');return v.trim();}
+  });
+  if(!isConfirmed||!value)return;
+  spin(true);
+  const r=await api('رفض_طلب_تسجيل',{رقم_الطلب:id,سبب_الرفض:value});
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'success',title:'تم الرفض',timer:2000,timerProgressBar:true,showConfirmButton:false});renderAdminRequests();}
+}
+
+async function approveEdit(id){
+  spin(true);
+  const r=await api('قبول_طلب_تعديل',{رقم_الطلب:id});
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'success',title:'تم القبول وتطبيق التعديل',timer:2000,timerProgressBar:true,showConfirmButton:false});renderAdminRequests();}
+}
+async function rejectEdit(id){
+  spin(true);
+  const r=await api('رفض_طلب_تعديل',{رقم_الطلب:id});
+  spin(false);
+  if(r.نجاح){Swal.fire({icon:'info',title:'تم رفض التعديل',timer:2000,timerProgressBar:true,showConfirmButton:false});renderAdminRequests();}
+}
+
+// ══ ADMIN: الإنذارات التعليمية ══
+async function renderAdminEduWarnings(){
+  const [rOpen,rAll,rProc,rCircles]=await Promise.all([
+    api('جلب_الانذارات_التعليمية',{غير_مكتملة_فقط:true}),
+    api('جلب_الانذارات_التعليمية',{}),
+    api('جلب_الاجراءات',{نوع_الاجراء:'تعليمي'}),
+    api('جلب_الحلق',{}),
+  ]);
+  const مفتوحة=rOpen.انذارات||[];
+  const كل=rAll.انذارات||[];
+  const مكتملة=كل.filter(ا=>String(ا['تاريخ_الإغلاق']||'')!=='');
+  const إجراءات=rProc.إجراءات||[];
+  const حلق=(rCircles.حلق||[]).map(h=>h['اسم_الحلقة']);
+
+  const rTpl=await api('جلب_قوالب_الرسائل',{});
+  window._tplStudent=(rTpl.قوالب||[]).find(q=>q['نوع_القالب']==='انذار_تعليمي_للطالب');
+  window._tplParent =(rTpl.قوالب||[]).find(q=>q['نوع_القالب']==='انذار_تعليمي_لولي_الامر');
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-book-open"></i> الإنذارات التعليمية</div>
+    <div class="content-card">
+      <div class="sub-tabs">
+        <button class="sub-tab active" onclick="switchSubTab(this,'eduAdmOpen')">متابعة الإجراءات (${مفتوحة.length})</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'eduAdmAll')">جميع الإنذارات (${كل.length})</button>
+      </div>
+
+      <div class="sub-panel active" id="eduAdmOpen">
+        <div style="padding:16px 24px 0;">
+          <div class="filters-bar">
+            <select class="filter-input" onchange="filterAdminEduOpen(this.value,'')">
+              <option value="">كل الحلق</option>
+              ${حلق.map(h=>`<option>${h}</option>`).join('')}
+            </select>
+            <input class="filter-input" placeholder="بحث باسم…" oninput="filterAdminEduOpen('',this.value)">
+          </div>
+        </div>
+        <div class="card-body" id="adminEduOpenList">
+          ${renderAdminEduOpenCards(مفتوحة,إجراءات)}
+        </div>
+      </div>
+
+      <div class="sub-panel" id="eduAdmAll">
+        <div style="overflow-x:auto;padding:8px 16px">
+          <table class="data-table">
+            <thead><tr><th>الطالب</th><th>الحلقة</th><th>جوال الطالب</th><th>جوال و.الأمر</th><th>السبب</th><th>الإجراء</th><th>الحالة</th></tr></thead>
+            <tbody>${كل.map(ا=>`
+              <tr>
+                <td><strong>${ا['اسم_الطالب']||'—'}</strong></td>
+                <td>${ا['الحلقة']||'—'}</td>
+                <td>${ا['رقم_جوال_الطالب']?`<a href="#" onclick="whatsapp('${ا['رقم_جوال_الطالب']}');return false" style="color:var(--success)"><i class="fab fa-whatsapp me-1"></i>${ا['رقم_جوال_الطالب']}</a>`:'—'}</td>
+                <td>${ا['رقم_جوال_ولي_الامر']?`<a href="#" onclick="whatsapp('${ا['رقم_جوال_ولي_الامر']}');return false" style="color:var(--success)"><i class="fab fa-whatsapp me-1"></i>${ا['رقم_جوال_ولي_الامر']}</a>`:'—'}</td>
+                <td>${ا['سبب_الانذار']||'—'}</td>
+                <td>${ا['حالة_الإجراء']||'—'}</td>
+                <td>${String(ا['تاريخ_الإغلاق']||'')?`<span class="badge-pill bp-success"><i class="fas fa-check fa-xs"></i> مكتمل</span>`:`<span class="badge-pill bp-danger">مفتوح</span>`}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  window._adminEduOpen=مفتوحة; window._adminEduProc=إجراءات;
+}
+
+function renderAdminEduOpenCards(list,إجراءات){
+  if(!list.length) return `<div class="empty-state"><i class="fas fa-check-circle" style="color:var(--success)"></i><h3>لا توجد إنذارات مفتوحة</h3></div>`;
+  return list.map(ا=>`
+    <div class="warn-card" id="awc_${ا['رقم_الانذار']}">
+      <div class="warn-icon wi-edu"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="warn-body">
+        <h4>${ا['اسم_الطالب']||'—'} · <span style="font-weight:400;font-size:12px">${ا['الحلقة']||'—'}</span></h4>
+        <p>${ا['سبب_الانذار']||'—'} · ${fmtDate(ا['تاريخ_الإصدار'])}</p>
+        <p>الإجراء الحالي: <strong>${ا['حالة_الإجراء']||'بانتظار'}</strong></p>
+      </div>
+      <div class="warn-actions">
+        <select class="filter-input btn-sm" id="admp_${ا['رقم_الانذار']}" style="font-size:12px">
+          <option value="">تحديث الإجراء</option>
+          ${إجراءات.map(إ=>`<option>${إ['اسم_الاجراء']}</option>`).join('')}
+          <option value="__done__">✓ اكتمل</option>
+        </select>
+        <button class="btn-p btn-sm" onclick="adminUpdateEduProc('${ا['رقم_الانذار']}')"><i class="fas fa-save"></i> حفظ</button>
+        ${ا['رقم_جوال_الطالب']?`<button class="btn-wa btn-sm" onclick='sendWa("${ا['رقم_جوال_الطالب']}","${ا['اسم_الطالب']}","","${ا['سبب_الانذار']||''}",true)'><i class="fab fa-whatsapp"></i> طالب</button>`:''}
+        ${ا['رقم_جوال_ولي_الامر']?`<button class="btn-wa btn-sm" onclick='sendWa("${ا['رقم_جوال_ولي_الامر']}","${ا['اسم_الطالب']}","","${ا['سبب_الانذار']||''}",false)'><i class="fab fa-whatsapp"></i> ولي الأمر</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function filterAdminEduOpen(circle,search){
+  let list=window._adminEduOpen||[];
+  if(circle) list=list.filter(ا=>ا['الحلقة']===circle);
+  if(search)  list=list.filter(ا=>String(ا['اسم_الطالب']).includes(search));
+  document.getElementById('adminEduOpenList').innerHTML=renderAdminEduOpenCards(list,window._adminEduProc||[]);
+}
+
+async function adminUpdateEduProc(id){
+  const sel=document.getElementById('admp_'+id);
+  const val=sel?.value; if(!val)return;
+  const done=val==='__done__';
+  spin(true);
+  const r=await api('تحديث_إجراء_انذار_تعليمي',{رقم_الانذار:id,الإجراء:done?'مكتمل':val,مكتمل:done});
+  spin(false);
+  if(r.نجاح){if(done)document.getElementById('awc_'+id)?.remove(); else sel.value='';}
+}
+
+// ══ ADMIN: الإنذارات الإدارية ══
+async function renderAdminAdmWarnings(){
+  const [rProcsAll,rCircles,rTpls]=await Promise.all([
+    api('جلب_الاجراءات',{}),
+    api('جلب_الحلق',{}),
+    api('جلب_قوالب_الرسائل',{}),
+  ]);
+  const حلق=(rCircles.حلق||[]).map(h=>h['اسم_الحلقة']);
+  const قوالب=rTpls.قوالب||[];
+  window._admWarnCircles=حلق; window._admWarnProcs=rProcsAll.إجراءات||[]; window._admWarnTpls=قوالب;
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-user-clock"></i> الإنذارات الإدارية</div>
+    <div class="content-card">
+      <div class="sub-tabs">
+        <button class="sub-tab active" onclick="loadAdmWarnType('تأخر',this)"><i class="fas fa-clock"></i> التأخر</button>
+        <button class="sub-tab" onclick="loadAdmWarnType('غياب',this)"><i class="fas fa-calendar-xmark"></i> الغياب</button>
+        <button class="sub-tab" onclick="loadAdmWarnType('غياب_بعذر',this)"><i class="fas fa-calendar-minus"></i> الغياب بعذر</button>
+      </div>
+      <div id="admWarnContent" class="card-body">
+        <div class="empty-state"><div class="spinner-ring" style="margin:0 auto 12px"></div></div>
+      </div>
+    </div>`;
+  loadAdmWarnType('تأخر', document.querySelector('.sub-tab'));
+}
+
+async function loadAdmWarnType(نوع, tabEl){
+  document.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  if(tabEl) tabEl.classList.add('active');
+
+  spin(true,'جارٍ الحساب…');
+  const [rNew,rArch]=await Promise.all([
+    api('جلب_مستحقي_الانذار_الاداري',{نوع}),
+    api('جلب_ارشيف_انذارات_ادارية',{نوع_الانذار:نوع}),
+  ]);
+  spin(false);
+
+  const مستحقون=rNew.طلاب||[];
+  const أرشيف=rArch.انذارات||[];
+  const الحلق=window._admWarnCircles||[];
+  const إجراءات=(window._admWarnProcs||[]).filter(إ=>إ['نوع_الاجراء']===نوع||إ['نوع_الاجراء']===نوع.replace('_بعذر',''));
+  const tpl=(window._admWarnTpls||[]).find(q=>q['نوع_القالب'].includes(نوع==='تأخر'?'تاخر':نوع==='غياب_بعذر'?'غياب_بعذر':'غياب'));
+
+  window._curAdmWarnNew=مستحقون; window._curAdmWarnArch=أرشيف;
+  window._curAdmWarnType=نوع; window._curAdmWarnProcs=إجراءات; window._curAdmWarnTpl=tpl;
+
+  document.getElementById('admWarnContent').innerHTML=`
+    <div class="sub-tabs" style="border-bottom:1px solid var(--border);margin-bottom:16px">
+      <button class="sub-tab active" onclick="switchSubTab(this,'admNew_${نوع}')">الجديدة (${مستحقون.length})</button>
+      <button class="sub-tab" onclick="switchSubTab(this,'admArch_${نوع}')">السابقة (${أرشيف.length})</button>
+    </div>
+    <div class="sub-panel active" id="admNew_${نوع}">
+      <div class="filters-bar" style="padding:0 0 12px">
+        <select class="filter-input" onchange="filterAdmWarn(this.value,'')">
+          <option value="">كل الحلق</option>
+          ${الحلق.map(h=>`<option>${h}</option>`).join('')}
+        </select>
+        <input class="filter-input" placeholder="بحث باسم…" oninput="filterAdmWarn('',this.value)">
+      </div>
+      <div id="admNewCards">${buildAdmWarnCards(مستحقون,إجراءات,tpl)}</div>
+    </div>
+    <div class="sub-panel" id="admArch_${نوع}">
+      ${buildAdmArchTable(أرشيف)}
+    </div>`;
+}
+
+function buildAdmWarnCards(list,إجراءات,tpl){
+  if(!list.length) return `<div class="empty-state"><i class="fas fa-check-circle" style="color:var(--success)"></i><h3>لا يوجد طلاب مستحقون حالياً</h3></div>`;
+  return list.map(ط=>`
+    <div class="warn-card">
+      <div class="warn-icon wi-late"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="warn-body">
+        <h4>${ط['اسم_الطالب']||'—'} · <span style="font-weight:400;font-size:12px">${ط['الحلقة']||'—'}</span></h4>
+        <p>استحق إنذار <strong>العتبة ${ط['رقم_العتبة']}</strong> · عدد المخالفات: <strong>${ط['عدد_المخالفات']}</strong></p>
+        <p>الإجراء المقترح: <strong style="color:var(--primary)">${ط['الإجراء_المقترح']||'—'}</strong></p>
+      </div>
+      <div class="warn-actions">
+        <select class="filter-input btn-sm" id="admProc_${ط['رقم_الطالب']}" style="font-size:12px">
+          <option value="">الإجراء</option>
+          ${إجراءات.map(إ=>`<option value="${إ['اسم_الاجراء']}">${إ['اسم_الاجراء']}</option>`).join('')}
+          <option value="__done__">✓ اكتمل</option>
+        </select>
+        <button class="btn-p btn-sm" onclick="saveAdmWarn('${ط['رقم_الطالب']}','${ط['اسم_الطالب']||''}','${ط['الحلقة']||''}',${ط['رقم_العتبة']},${ط['عدد_المخالفات']})"><i class="fas fa-save"></i> حفظ</button>
+        ${ط['رقم_جوال_ولي_الامر']?`<button class="btn-wa btn-sm" onclick='sendAdmWa("${ط['رقم_جوال_ولي_الامر']}","${ط['اسم_الطالب']}","${ط['اسم_ولي_الامر']||''}",${ط['رقم_العتبة']},${ط['عدد_المخالفات']})'><i class="fab fa-whatsapp"></i> تواصل</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function buildAdmArchTable(list){
+  if(!list.length) return `<div class="empty-state"><i class="fas fa-box-archive"></i><h3>لا يوجد أرشيف</h3></div>`;
+  return `<div style="overflow-x:auto"><table class="data-table">
+    <thead><tr><th>الطالب</th><th>الحلقة</th><th>النوع</th><th>العتبة</th><th>عدد المخالفات</th><th>الإجراء</th><th>التاريخ</th></tr></thead>
+    <tbody>${list.map(ا=>`
+      <tr>
+        <td><strong>${ا['اسم_الطالب']||'—'}</strong></td>
+        <td>${ا['الحلقة']||'—'}</td>
+        <td>${ا['نوع_الانذار']||'—'}</td>
+        <td>${ا['رقم_العتبة']||'—'}</td>
+        <td>${ا['عدد_المخالفات']||'—'}</td>
+        <td>${ا['حالة_الإجراء']||'—'}</td>
+        <td style="font-size:12px">${fmtDate(ا['تاريخ_الإغلاق'])}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function filterAdmWarn(circle,search){
+  let list=window._curAdmWarnNew||[];
+  if(circle) list=list.filter(ط=>ط['الحلقة']===circle);
+  if(search)  list=list.filter(ط=>String(ط['اسم_الطالب']).includes(search));
+  document.getElementById('admNewCards').innerHTML=buildAdmWarnCards(list,window._curAdmWarnProcs||[],window._curAdmWarnTpl);
+}
+
+async function saveAdmWarn(id,name,circle,threshold,count){
+  const sel=document.getElementById('admProc_'+id);
+  const val=sel?.value; if(!val)return;
+  const done=val==='__done__';
+  spin(true);
+  await api('تحديث_إجراء_انذار_اداري',{رقم_الطالب:id,اسم_الطالب:name,الحلقة:circle,نوع_الانذار:window._curAdmWarnType,رقم_العتبة:threshold,عدد_المخالفات:count,الإجراء:done?'مكتمل':val,مكتمل:done});
+  spin(false);
+  Swal.fire({icon:'success',title:'تم التسجيل',timer:1500,timerProgressBar:true,showConfirmButton:false});
+  if(done) loadAdmWarnType(window._curAdmWarnType,null);
+}
+
+function sendAdmWa(phone,studentName,parentName,threshold,count){
+  const tpl=window._curAdmWarnTpl;
+  const msg=buildMsg(tpl?.['نص_القالب']||'',{اسم_الطالب:studentName,اسم_ولي_الطالب:parentName,رقم_العتبة:threshold,عدد_الغيابات:count,تاريخ:hijriDate()});
+  whatsapp(phone,msg);
+}
+
+// ══ ADMIN: جميع الإنذارات ══
+async function renderAdminAllWarnings(){
+  const [rEdu,rAdm]=await Promise.all([
+    api('جلب_الانذارات_التعليمية',{}),
+    api('جلب_ارشيف_انذارات_ادارية',{}),
+  ]);
+  const edu=rEdu.انذارات||[];
+  const adm=rAdm.انذارات||[];
+
+  // تجميع حسب الطالب
+  const byStudent={};
+  edu.forEach(ا=>{
+    const k=ا['اسم_الطالب']||'؟';
+    if(!byStudent[k]) byStudent[k]={name:k,circle:ا['الحلقة']||'—',edu:[],adm_late:[],adm_abs:[],adm_ex:[]};
+    byStudent[k].edu.push(ا);
+  });
+  adm.forEach(ا=>{
+    const k=ا['اسم_الطالب']||'؟';
+    if(!byStudent[k]) byStudent[k]={name:k,circle:ا['الحلقة']||'—',edu:[],adm_late:[],adm_abs:[],adm_ex:[]};
+    if(ا['نوع_الانذار']==='تأخر')         byStudent[k].adm_late.push(ا);
+    else if(ا['نوع_الانذار']==='غياب')     byStudent[k].adm_abs.push(ا);
+    else if(ا['نوع_الانذار']==='غياب_بعذر') byStudent[k].adm_ex.push(ا);
+  });
+
+  window._allWarnData=byStudent;
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-list-check"></i> جميع الإنذارات</div>
+    <div class="content-card">
+      <div class="card-header-bar">
+        <h3><i class="fas fa-table fa-sm me-2"></i>سجل شامل</h3>
+        <div class="card-actions">
+          <input class="filter-input" placeholder="بحث باسم الطالب…" oninput="filterAllWarn(this.value)">
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="allWarnTable">
+          <thead><tr><th>الطالب</th><th>الحلقة</th><th>إنذارات تأخر</th><th>إنذارات غياب</th><th>غياب بعذر</th><th>إنذارات تعليمية</th></tr></thead>
+          <tbody id="allWarnBody">${buildAllWarnRows(Object.values(byStudent))}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function buildAllWarnRows(list){
+  if(!list.length) return `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted)">لا توجد إنذارات</td></tr>`;
+  return list.map(s=>`
+    <tr>
+      <td><strong>${s.name}</strong></td>
+      <td>${s.circle}</td>
+      <td>${s.adm_late.length?`<span class="badge-pill bp-warning">${s.adm_late.length} إنذار</span>`:'—'}</td>
+      <td>${s.adm_abs.length?`<span class="badge-pill bp-danger">${s.adm_abs.length} إنذار</span>`:'—'}</td>
+      <td>${s.adm_ex.length?`<span class="badge-pill bp-info">${s.adm_ex.length} إنذار</span>`:'—'}</td>
+      <td>${s.edu.length?`<span class="badge-pill bp-danger">${s.edu.length} إنذار · ${s.edu.map(e=>e['سبب_الانذار']||'').join('، ')}</span>`:'—'}</td>
+    </tr>`).join('');
+}
+
+function filterAllWarn(q){
+  const list=Object.values(window._allWarnData||{}).filter(s=>s.name.includes(q));
+  document.getElementById('allWarnBody').innerHTML=buildAllWarnRows(list);
+}
+
+// ══ SETTINGS ══
+async function renderSettings(){
+  const [rTpls,rThresh,rProcs,rUsers,rCircles,rStates]=await Promise.all([
+    api('جلب_قوالب_الرسائل',{}),
+    api('جلب_عتبات_الانذارات',{}),
+    api('جلب_الاجراءات',{}),
+    api('جلب_العاملين',{}),
+    api('جلب_الحلق',{}),
+    api('جلب_حالات_الطالب',{}),
+  ]);
+
+  const mc=document.getElementById('mainContent');
+  mc.innerHTML=`
+    <div class="section-title"><i class="fas fa-gear"></i> الإعدادات</div>
+    <div class="content-card">
+      <div class="sub-tabs" style="overflow-x:auto">
+        <button class="sub-tab active" onclick="switchSubTab(this,'stTpls')"><i class="fas fa-comment-dots"></i> قوالب الإرسال</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'stThresh')"><i class="fas fa-layer-group"></i> عتبات الإنذارات</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'stProcs')"><i class="fas fa-list-check"></i> الإجراءات</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'stUsers')"><i class="fas fa-users-gear"></i> المستخدمون</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'stCircles')"><i class="fas fa-mosque"></i> الحلق</button>
+        <button class="sub-tab" onclick="switchSubTab(this,'stStates')"><i class="fas fa-circle-dot"></i> حالات الطالب</button>
+      </div>
+
+      <!-- قوالب الإرسال -->
+      <div class="sub-panel active card-body" id="stTpls">
+        <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:16px">
+          المتغيرات المتاحة: <code>#اسم_الطالب</code> <code>#اسم_ولي_الطالب</code> <code>#السبب</code> <code>#تاريخ</code> <code>#رقم_العتبة</code> <code>#عدد_الغيابات</code>
+        </p>
+        ${(rTpls.قوالب||[]).map(q=>`
+          <div class="content-card mb-3" style="border:1px solid var(--border)">
+            <div class="card-header-bar" style="padding:12px 18px;background:#fafaf8">
+              <h3 style="font-size:13.5px"><i class="fas fa-comment fa-sm me-2" style="color:var(--primary-light)"></i>${q['عنوان_القالب']||q['نوع_القالب']}</h3>
+              <div class="card-actions">
+                <button class="btn-o btn-sm" onclick='editTemplate(${JSON.stringify(q).replace(/"/g,"&quot;")})'><i class="fas fa-pen"></i> تعديل</button>
+              </div>
+            </div>
+            <div style="padding:12px 18px;font-size:13px;color:var(--text-muted);white-space:pre-line;line-height:1.7;background:#f8f6f0">${q['نص_القالب']||''}</div>
+          </div>`).join('')}
+      </div>
+
+      <!-- عتبات الإنذارات -->
+      <div class="sub-panel card-body" id="stThresh">
+        ${['تأخر','غياب','غياب_بعذر'].map(نوع=>{
+          const list=(rThresh.عتبات||[]).filter(e=>e['نوع_المخالفة']===نوع);
+          return `<h3 style="font-size:14px;font-weight:700;color:var(--primary);margin:16px 0 10px"><i class="fas fa-layer-group me-2"></i>عتبات ${نوع}</h3>
+          <div style="overflow-x:auto;margin-bottom:16px">
+            <table class="data-table">
+              <thead><tr><th>رقم العتبة</th><th>عدد المخالفات للاستحقاق</th><th>الإجراء الافتراضي</th><th>إجراء</th></tr></thead>
+              <tbody>${list.map(e=>`
+                <tr>
+                  <td>${e['رقم_العتبة']}</td>
+                  <td><strong>${e['عدد_المخالفات_للاستحقاق']}</strong></td>
+                  <td>${e['الإجراء_الافتراضي']||'—'}</td>
+                  <td><button class="btn-o btn-sm" onclick='editThreshold(${JSON.stringify(e).replace(/"/g,"&quot;")})'><i class="fas fa-pen"></i></button></td>
+                </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+          <button class="btn-o btn-sm" onclick="addThreshold('${نوع}')"><i class="fas fa-plus"></i> إضافة عتبة</button>`;
+        }).join('<hr style="margin:16px 0;border-color:var(--border)">')}
+      </div>
+
+      <!-- الإجراءات -->
+      <div class="sub-panel card-body" id="stProcs">
+        ${['تعليمي','تأخر','غياب','غياب_بعذر'].map(نوع=>{
+          const list=(rProcs.إجراءات||[]).filter(e=>e['نوع_الاجراء']===نوع);
+          return `<h3 style="font-size:14px;font-weight:700;color:var(--primary);margin:16px 0 10px">${نوع}</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+            ${list.map(إ=>`<span class="badge-pill bp-info" style="padding:5px 12px;font-size:13px">${إ['اسم_الاجراء']} <button onclick="deleteProc('${إ['اسم_الاجراء']}')" style="background:none;border:none;color:var(--danger);cursor:pointer;margin-right:4px;font-size:11px">×</button></span>`).join('')}
+          </div>
+          <button class="btn-o btn-sm" onclick="addProc('${نوع}')"><i class="fas fa-plus"></i> إضافة إجراء</button>`;
+        }).join('<hr style="margin:16px 0;border-color:var(--border)">')}
+      </div>
+
+      <!-- المستخدمون -->
+      <div class="sub-panel card-body" id="stUsers">
+        <div class="card-actions mb-3"><button class="btn-p" onclick="addUser()"><i class="fas fa-user-plus"></i> إضافة مستخدم</button></div>
+        <div style="overflow-x:auto">
+          <table class="data-table">
+            <thead><tr><th>الاسم</th><th>الوظيفة</th><th>الحلقة</th><th>رقم الجوال</th><th>الحالة</th><th>إجراء</th></tr></thead>
+            <tbody>${(rUsers.عاملون||[]).map(u=>`
+              <tr>
+                <td><strong>${u['الاسم']||'—'}</strong></td>
+                <td>${roleLabel(u['الوظيفة'])}</td>
+                <td>${u['الحلقة']||'—'}</td>
+                <td>${u['رقم_الجوال']||'—'}</td>
+                <td>${u['نشط']==='نعم'?`<span class="badge-pill bp-success">نشط</span>`:`<span class="badge-pill bp-gray">معطّل</span>`}</td>
+                <td>
+                  <button class="btn-o btn-sm" onclick='editUser(${JSON.stringify(u).replace(/"/g,"&quot;")})'><i class="fas fa-pen"></i></button>
+                  <button class="btn-danger btn-sm ms-1" onclick="deactivateUser('${u['الاسم']}')"><i class="fas fa-ban"></i></button>
+                </td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- الحلق -->
+      <div class="sub-panel card-body" id="stCircles">
+        <div class="card-actions mb-3"><button class="btn-p" onclick="addCircle()"><i class="fas fa-plus"></i> إضافة حلقة</button></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px" id="circlesList">
+          ${(rCircles.حلق||[]).map(h=>`
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px">
+              <i class="fas fa-mosque" style="color:var(--primary-light)"></i>
+              <span style="font-weight:700">${h['اسم_الحلقة']||'—'}</span>
+              <span style="font-size:12px;color:var(--text-muted)">${h['المعلم']||''}</span>
+              <button onclick="deleteCircle('${h['اسم_الحلقة']}')" style="background:none;border:none;color:var(--danger);cursor:pointer;margin-right:4px"><i class="fas fa-times"></i></button>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- حالات الطالب -->
+      <div class="sub-panel card-body" id="stStates">
+        <div class="card-actions mb-3"><button class="btn-p" onclick="addStudentState()"><i class="fas fa-plus"></i> إضافة حالة</button></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          ${(rStates.حالات||[]).map(s=>`
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:8px">
+              <span style="width:12px;height:12px;border-radius:50%;background:${s['اللون']||'#888'};display:inline-block"></span>
+              <span style="font-weight:700">${s['اسم_الحالة']}</span>
+              <button onclick="deleteStudentState('${s['اسم_الحالة']}')" style="background:none;border:none;color:var(--danger);cursor:pointer"><i class="fas fa-times"></i></button>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+async function editTemplate(q){
+  const {isConfirmed,value}=await Swal.fire({
+    title:'تعديل: '+q['عنوان_القالب'],
+    html:`<textarea id="tplText" class="swal2-textarea" style="font-family:Tajawal;direction:rtl;height:160px;width:100%">${q['نص_القالب']||''}</textarea>`,
+    confirmButtonText:'حفظ',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>document.getElementById('tplText').value.trim(),
+  });
+  if(!isConfirmed||!value)return;
+  spin(true);
+  await api('حفظ_قالب_رسالة',{_صف:q['_صف'],عنوان_القالب:q['عنوان_القالب'],نص_القالب:value});
+  spin(false);
+  Swal.fire({icon:'success',title:'تم الحفظ',timer:1800,timerProgressBar:true,showConfirmButton:false});
+  renderSettings();
+}
+
+async function editThreshold(e){
+  const {isConfirmed,value}=await Swal.fire({
+    title:`تعديل عتبة ${e['نوع_المخالفة']} #${e['رقم_العتبة']}`,
+    html:`<div style="direction:rtl;display:grid;gap:10px">
+      <div><label style="font-size:12px;font-weight:600">عدد المخالفات للاستحقاق</label>
+        <input id="th_count" type="number" class="swal2-input" value="${e['عدد_المخالفات_للاستحقاق']}" min="1" style="font-family:Tajawal;width:100%;margin:0"></div>
+      <div><label style="font-size:12px;font-weight:600">الإجراء الافتراضي</label>
+        <input id="th_proc" type="text" class="swal2-input" value="${e['الإجراء_الافتراضي']||''}" style="font-family:Tajawal;width:100%;margin:0;direction:rtl"></div>
+    </div>`,
+    confirmButtonText:'حفظ',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>({count:document.getElementById('th_count').value,proc:document.getElementById('th_proc').value}),
+  });
+  if(!isConfirmed||!value)return;
+  spin(true);
+  await api('حفظ_عتبات_الانذارات',{نوع_المخالفة:e['نوع_المخالفة'],عتبات:[{نوع_المخالفة:e['نوع_المخالفة'],رقم_العتبة:e['رقم_العتبة'],عدد_المخالفات_للاستحقاق:value.count,الإجراء_الافتراضي:value.proc}]});
+  spin(false);
+  renderSettings();
+}
+
+async function addThreshold(نوع){
+  const {isConfirmed,value}=await Swal.fire({
+    title:`إضافة عتبة - ${نوع}`,
+    html:`<div style="direction:rtl;display:grid;gap:10px">
+      <div><label style="font-size:12px;font-weight:600">رقم العتبة</label><input id="nt_num" type="number" class="swal2-input" min="1" style="font-family:Tajawal;width:100%;margin:0"></div>
+      <div><label style="font-size:12px;font-weight:600">عدد المخالفات</label><input id="nt_count" type="number" class="swal2-input" min="1" style="font-family:Tajawal;width:100%;margin:0"></div>
+      <div><label style="font-size:12px;font-weight:600">الإجراء</label><input id="nt_proc" type="text" class="swal2-input" style="font-family:Tajawal;width:100%;margin:0;direction:rtl"></div>
+    </div>`,
+    confirmButtonText:'إضافة',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>({رقم_العتبة:document.getElementById('nt_num').value,عدد_المخالفات_للاستحقاق:document.getElementById('nt_count').value,الإجراء_الافتراضي:document.getElementById('nt_proc').value}),
+  });
+  if(!isConfirmed||!value)return;
+  spin(true);
+  await api('حفظ_عتبات_الانذارات',{نوع_المخالفة:نوع,عتبات:[{نوع_المخالفة:نوع,...value}]});
+  spin(false); renderSettings();
+}
+
+async function addProc(نوع){
+  const {isConfirmed,value}=await Swal.fire({
+    title:`إضافة إجراء - ${نوع}`,
+    input:'text',inputPlaceholder:'اسم الإجراء',inputAttributes:{style:'font-family:Tajawal;direction:rtl'},
+    confirmButtonText:'إضافة',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:v=>{if(!v||!v.trim())return Swal.showValidationMessage('لا يمكن أن يكون فارغاً');return v.trim();}
+  });
+  if(!isConfirmed||!value)return;
+  spin(true); await api('إضافة_إجراء',{نوع_الاجراء:نوع,اسم_الاجراء:value}); spin(false); renderSettings();
+}
+
+async function deleteProc(name){
+  const r=await Swal.fire({title:'حذف الإجراء؟',text:name,showCancelButton:true,confirmButtonColor:'#c0392b',confirmButtonText:'حذف',cancelButtonText:'إلغاء',customClass:{popup:'swal-rtl'}});
+  if(!r.isConfirmed)return;
+  spin(true); await api('حذف_إجراء',{اسم_الاجراء:name}); spin(false); renderSettings();
+}
+
+async function addUser(){
+  const حلق_r=await api('جلب_الحلق',{});
+  const حلق=(حلق_r.حلق||[]).map(h=>h['اسم_الحلقة']);
+  const {isConfirmed,value}=await Swal.fire({
+    title:'إضافة مستخدم',width:'520px',
+    html:`<div style="direction:rtl;display:grid;gap:10px;text-align:right">
+      ${swalField('الاسم','nu_name','','text')}
+      <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الوظيفة</label>
+        <select id="nu_role" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0">
+          <option value="معلم">معلم</option>
+          <option value="مشرف_تعليمي">مشرف تعليمي</option>
+          <option value="مشرف_اداري">مشرف إداري</option>
+        </select></div>
+      <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الحلقة (للمعلم)</label>
+        <select id="nu_circle" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0">
+          <option value="">—</option>${حلق.map(h=>`<option>${h}</option>`).join('')}
+        </select></div>
+      ${swalField('رمز الدخول','nu_code','','text')}
+      ${swalField('رقم الجوال','nu_phone','','text')}
+    </div>`,
+    confirmButtonText:'إضافة',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>{
+      const n=document.getElementById('nu_name').value.trim();
+      const c=document.getElementById('nu_code').value.trim();
+      if(!n||!c)return Swal.showValidationMessage('الاسم ورمز الدخول مطلوبان');
+      return{الاسم:n,الوظيفة:document.getElementById('nu_role').value,الحلقة:document.getElementById('nu_circle').value,رمز_الدخول:c,رقم_الجوال:document.getElementById('nu_phone').value};
+    }
+  });
+  if(!isConfirmed||!value)return;
+  spin(true); await api('إضافة_عامل',value); spin(false); renderSettings();
+}
+
+async function editUser(u){
+  const {isConfirmed,value}=await Swal.fire({
+    title:'تعديل: '+u['الاسم'],
+    html:`<div style="direction:rtl;display:grid;gap:10px;text-align:right">
+      ${swalField('رمز الدخول','eu_code','','text')}
+      ${swalField('رقم الجوال','eu_phone',u['رقم_الجوال']||'','text')}
+    </div>`,
+    confirmButtonText:'حفظ',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>({رمز_الدخول:document.getElementById('eu_code').value||undefined,رقم_الجوال:document.getElementById('eu_phone').value}),
+  });
+  if(!isConfirmed||!value)return;
+  spin(true); await api('تعديل_عامل',{الاسم_القديم:u['الاسم'],...value}); spin(false); renderSettings();
+}
+
+async function deactivateUser(name){
+  const r=await Swal.fire({title:'تعطيل حساب؟',text:name,showCancelButton:true,confirmButtonColor:'#c0392b',confirmButtonText:'تعطيل',cancelButtonText:'إلغاء',customClass:{popup:'swal-rtl'}});
+  if(!r.isConfirmed)return;
+  spin(true); await api('حذف_عامل',{الاسم:name}); spin(false); renderSettings();
+}
+
+async function addCircle(){
+  const {isConfirmed,value}=await Swal.fire({
+    title:'إضافة حلقة',
+    html:`<div style="direction:rtl;display:grid;gap:10px;text-align:right">
+      ${swalField('اسم الحلقة','nc_name','','text')}
+      ${swalField('المعلم','nc_teacher','','text')}
+    </div>`,
+    confirmButtonText:'إضافة',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>{const n=document.getElementById('nc_name').value.trim();if(!n)return Swal.showValidationMessage('اسم الحلقة مطلوب');return{اسم_الحلقة:n,المعلم:document.getElementById('nc_teacher').value};}
+  });
+  if(!isConfirmed||!value)return;
+  spin(true); await api('إضافة_حلقة',value); spin(false); renderSettings();
+}
+
+async function deleteCircle(name){
+  const r=await Swal.fire({title:'حذف الحلقة؟',text:name,showCancelButton:true,confirmButtonColor:'#c0392b',confirmButtonText:'حذف',cancelButtonText:'إلغاء',customClass:{popup:'swal-rtl'}});
+  if(!r.isConfirmed)return;
+  spin(true); await api('حذف_حلقة',{اسم_الحلقة:name}); spin(false); renderSettings();
+}
+
+async function addStudentState(){
+  const {isConfirmed,value}=await Swal.fire({
+    title:'إضافة حالة طالب',
+    html:`<div style="direction:rtl;display:grid;gap:10px;text-align:right">
+      ${swalField('اسم الحالة','ss_name','','text')}
+      <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">اللون</label>
+        <input id="ss_color" type="color" value="#1e7e4a" style="width:100%;height:40px;border:1px solid var(--border);border-radius:8px;cursor:pointer"></div>
+    </div>`,
+    confirmButtonText:'إضافة',cancelButtonText:'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:()=>{const n=document.getElementById('ss_name').value.trim();if(!n)return Swal.showValidationMessage('اسم الحالة مطلوب');return{اسم_الحالة:n,اللون:document.getElementById('ss_color').value};}
+  });
+  if(!isConfirmed||!value)return;
+  spin(true); await api('إضافة_حالة_طالب',value); spin(false); renderSettings();
+}
+
+async function deleteStudentState(name){
+  const r=await Swal.fire({title:'حذف الحالة؟',text:name,showCancelButton:true,confirmButtonColor:'#c0392b',confirmButtonText:'حذف',cancelButtonText:'إلغاء',customClass:{popup:'swal-rtl'}});
+  if(!r.isConfirmed)return;
+  spin(true); await api('حذف_حالة_طالب',{اسم_الحالة:name}); spin(false); renderSettings();
+}
+
+// ══ مساعدات مشتركة ══
+function kpiCard(label,val,icon,cls=''){
+  return `<div class="kpi-card ${cls}">
+    <div class="kpi-label"><i class="fas ${icon} fa-sm"></i> ${label}</div>
+    <div class="kpi-val">${val}</div>
+    <i class="fas ${icon} bg-icon-float"></i>
+  </div>`;
+}
+
+function statusBadge(status){
+  const map={'منتظم':'bp-success','غير منتظم':'bp-warning','موقوف':'bp-danger','في الانتظار':'bp-info','منسحب':'bp-gray'};
+  return `<span class="badge-pill ${map[status]||'bp-gray'}">${status||'—'}</span>`;
+}
+</script>
+</body>
+</html>
