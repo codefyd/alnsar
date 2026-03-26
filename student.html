@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة بيانات الطالب — مجمع تحفيظ القرآن</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary:       #1a3c5e;
+  --primary-light: #2563a8;
+  --accent:        #c8a84b;
+  --accent-light:  #f0d080;
+  --surface:       #f8f6f0;
+  --surface-2:     #ffffff;
+  --text-main:     #1a1a2e;
+  --text-muted:    #5a6a7a;
+  --border:        #ddd5c0;
+  --success:       #1e7e4a;
+  --danger:        #c0392b;
+  --warning:       #d4890a;
+  --radius:        14px;
+  --shadow:        0 4px 24px rgba(26,60,94,.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: var(--surface);
+  color: var(--text-main);
+  min-height: 100vh;
+  direction: rtl;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(26,60,94,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(200,168,75,.06) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── هيدر ── */
+.site-header {
+  background: var(--primary);
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 16px rgba(0,0,0,.18);
+}
+.header-inner {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 24px; max-width: 960px; margin: 0 auto;
+}
+.header-logo {
+  width: 48px; height: 48px; background: var(--accent);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.header-logo i { font-size: 22px; color: var(--primary); }
+.header-title h1 { font-size: 18px; font-weight: 800; color: #fff; line-height: 1.2; }
+.header-title p  { font-size: 12px; color: rgba(255,255,255,.65); margin: 0; }
+.header-badge {
+  margin-right: auto;
+  background: rgba(200,168,75,.2); border: 1px solid rgba(200,168,75,.4);
+  color: var(--accent-light); padding: 4px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 500;
+}
+
+.main-wrap {
+  position: relative; z-index: 1;
+  max-width: 820px; margin: 0 auto;
+  padding: 32px 16px 60px;
+}
+
+/* ── بطاقة بحث ── */
+.search-card {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  animation: slideUp .35s ease both;
+}
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.search-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  padding: 22px 28px;
+  display: flex; align-items: center; gap: 14px;
+}
+.search-header i { font-size: 26px; color: rgba(255,255,255,.85); }
+.search-header-text h2 { font-size: 17px; font-weight: 700; color: #fff; margin: 0; }
+.search-header-text p  { font-size: 12px; color: rgba(255,255,255,.65); margin: 2px 0 0; }
+
+.search-body { padding: 28px; }
+
+.search-input-wrap {
+  display: flex; gap: 10px; align-items: stretch;
+}
+.search-input-wrap input {
+  flex: 1;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 15px;
+  color: var(--text-main);
+  background: #fafaf8;
+  transition: border-color .2s, box-shadow .2s;
+  direction: ltr;
+  text-align: center;
+}
+.search-input-wrap input:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(37,99,168,.12);
+  background: #fff;
+}
+.search-input-wrap input::placeholder { direction: rtl; text-align: center; }
+
+.btn-search {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 0 28px; font-family: 'Tajawal', sans-serif;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  display: flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+}
+.btn-search:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,60,94,.25); }
+
+.search-hint { font-size: 12.5px; color: var(--text-muted); margin-top: 10px; text-align: center; }
+
+/* ── حالة الطلب ── */
+.status-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
+}
+.badge-pending  { background:#eef3ff; border:1px solid #b8cff5; color:#2563a8; }
+.badge-approved { background:#eafaf1; border:1px solid #a9dfbf; color:#1e7e4a; }
+.badge-waiting  { background:#fff8e6; border:1px solid #f5d78e; color:#b7860b; }
+.badge-rejected { background:#fdf0ef; border:1px solid #f0b8b0; color:#c0392b; }
+
+/* ── بطاقة الطالب ── */
+.student-card {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-top: 24px;
+  overflow: hidden;
+  animation: slideUp .3s ease both;
+}
+
+.student-card-header {
+  background: linear-gradient(135deg, #1a3c5e 0%, #2563a8 100%);
+  padding: 22px 28px;
+  display: flex; align-items: center; gap: 16px;
+}
+.student-avatar {
+  width: 56px; height: 56px;
+  background: rgba(255,255,255,.18);
+  border: 2px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff; flex-shrink: 0;
+}
+.student-card-header h2 { font-size: 18px; font-weight: 800; color: #fff; margin: 0; }
+.student-card-header p  { font-size: 12.5px; color: rgba(255,255,255,.7); margin: 3px 0 0; }
+.student-status-chip {
+  margin-right: auto;
+  padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: #fff;
+}
+
+/* تبويبات */
+.tabs-bar {
+  display: flex; border-bottom: 2px solid var(--border);
+  padding: 0 28px; background: #fafaf8; gap: 4px;
+}
+.tab-btn {
+  padding: 14px 20px; font-family: 'Tajawal', sans-serif;
+  font-size: 13.5px; font-weight: 600; color: var(--text-muted);
+  background: none; border: none; border-bottom: 3px solid transparent;
+  margin-bottom: -2px; cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 7px; white-space: nowrap;
+}
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.tab-content { display: none; padding: 28px; }
+.tab-content.active { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* حقول عرض البيانات */
+.data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:600px){ .data-grid { grid-template-columns: 1fr; } }
+
+.data-field {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  position: relative;
+}
+.data-field .df-label {
+  font-size: 11.5px; font-weight: 600; color: var(--text-muted);
+  margin-bottom: 5px; display: flex; align-items: center; gap: 5px;
+}
+.data-field .df-value {
+  font-size: 15px; font-weight: 700; color: var(--text-main);
+  min-height: 22px;
+}
+.data-field .df-value.empty { color: var(--text-muted); font-weight: 400; font-style: italic; font-size: 13px; }
+
+/* حقل قابل للتعديل */
+.data-field.editable { cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.data-field.editable:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(37,99,168,.08);
+}
+.edit-icon {
+  position: absolute; top: 10px; left: 10px;
+  color: var(--primary-light); font-size: 11px; opacity: 0;
+  transition: opacity .2s;
+}
+.data-field.editable:hover .edit-icon { opacity: 1; }
+
+/* حقل التعديل */
+.edit-field-wrap { margin-bottom: 16px; }
+.edit-field-wrap label {
+  font-size: 13px; font-weight: 600; color: var(--text-main);
+  margin-bottom: 6px; display: block;
+}
+.edit-field-wrap input, .edit-field-wrap select {
+  width: 100%; padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-family: 'Tajawal', sans-serif; font-size: 14px;
+  color: var(--text-main); background: #fafaf8;
+  transition: border-color .2s;
+}
+.edit-field-wrap input:focus, .edit-field-wrap select:focus {
+  outline: none; border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(37,99,168,.12); background: #fff;
+}
+
+/* شارة حفظ */
+.save-notice {
+  background: #fff8e6; border: 1px solid #f5d78e;
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 13px; color: #7a5c00; margin-bottom: 16px;
+  display: flex; align-items: flex-start; gap: 9px; line-height: 1.6;
+}
+
+/* إنذارات */
+.warning-row {
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 14px;
+}
+.warning-icon-wrap {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 15px;
+}
+.warn-edu  { background:#fdf0ef; color:#c0392b; }
+.warn-late { background:#fff3e0; color:#e65100; }
+.warn-abs  { background:#fff8e6; color:#b7860b; }
+.warning-info { flex: 1; }
+.warning-info h4 { font-size: 13.5px; font-weight: 700; margin: 0; }
+.warning-info p  { font-size: 12px; color: var(--text-muted); margin: 2px 0 0; }
+.warning-status {
+  font-size: 11.5px; font-weight: 600;
+  padding: 3px 10px; border-radius: 12px;
+}
+.ws-open   { background:#fdf0ef; color:#c0392b; }
+.ws-closed { background:#eafaf1; color:#1e7e4a; }
+
+/* أزرار */
+.btn-primary-custom {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff; border: none; border-radius: 10px;
+  padding: 11px 28px; font-family: 'Tajawal', sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary-custom:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,60,94,.25); }
+
+.btn-outline-custom {
+  background: transparent; color: var(--primary);
+  border: 1.5px solid var(--primary); border-radius: 10px;
+  padding: 10px 20px; font-family: 'Tajawal', sans-serif;
+  font-size: 13.5px; font-weight: 600; cursor: pointer;
+  transition: all .15s; display: inline-flex; align-items: center; gap: 7px;
+}
+.btn-outline-custom:hover { background: var(--primary); color: #fff; }
+
+/* Spinner */
+.spinner-overlay {
+  position: fixed; inset: 0;
+  background: rgba(255,255,255,.8);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 9999; backdrop-filter: blur(4px);
+}
+.spinner-ring {
+  width: 56px; height: 56px;
+  border: 4px solid #e0d8c8; border-top-color: var(--primary);
+  border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner-overlay p { color: var(--primary); font-size: 15px; font-weight: 600; }
+
+/* حالة فارغة */
+.empty-state {
+  text-align: center; padding: 48px 20px; color: var(--text-muted);
+}
+.empty-state i { font-size: 48px; margin-bottom: 16px; opacity: .35; color: var(--primary); }
+.empty-state h3 { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+.empty-state p  { font-size: 13.5px; line-height: 1.6; }
+
+/* نتائج طلب التسجيل */
+.request-result {
+  border-radius: 12px; padding: 20px 24px; margin-top: 18px;
+  animation: slideUp .3s ease;
+}
+.rr-pending  { background:#eef3ff; border:1.5px solid #b8cff5; }
+.rr-waiting  { background:#fff8e6; border:1.5px solid #f5d78e; }
+.rr-rejected { background:#fdf0ef; border:1.5px solid #f0b8b0; }
+.rr-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.rr-pending .rr-title  { color:#1a4f9c; }
+.rr-waiting .rr-title  { color:#7a5c00; }
+.rr-rejected .rr-title { color:#922b21; }
+.rr-body { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+@media(max-width:600px) {
+  .search-input-wrap { flex-direction: column; }
+  .btn-search { justify-content: center; padding: 13px; }
+  .tabs-bar { padding: 0 12px; gap: 0; overflow-x: auto; }
+  .tab-btn  { padding: 12px 14px; font-size: 12.5px; }
+  .student-card-header { flex-wrap: wrap; }
+  .student-status-chip { margin-right: 0; margin-top: 6px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logo"><i class="fas fa-book-open-reader"></i></div>
+    <div class="header-title">
+      <h1>مجمع تحفيظ القرآن الكريم</h1>
+      <p>منظومة الإدارة الرقمية المتكاملة</p>
+    </div>
+    <div class="header-badge"><i class="fas fa-user fa-sm me-1"></i> بوابة بيانات الطالب</div>
+  </div>
+</header>
+
+<div class="spinner-overlay" id="spinnerOverlay" style="display:none;">
+  <div class="spinner-ring"></div>
+  <p id="spinnerText">جارٍ البحث…</p>
+</div>
+
+<div class="main-wrap">
+
+  <!-- بطاقة البحث -->
+  <div class="search-card">
+    <div class="search-header">
+      <i class="fas fa-magnifying-glass"></i>
+      <div class="search-header-text">
+        <h2>البحث عن بيانات الطالب</h2>
+        <p>أدخل رقم هوية الطالب أو رقم جوال ولي الأمر</p>
+      </div>
+    </div>
+    <div class="search-body">
+      <div class="search-input-wrap">
+        <input type="text" id="searchInput"
+          placeholder="رقم هوية الطالب أو جوال ولي الأمر"
+          maxlength="12" inputmode="numeric"
+          onkeydown="if(event.key==='Enter') doSearch()">
+        <button class="btn-search" onclick="doSearch()">
+          <i class="fas fa-search"></i> بحث
+        </button>
+      </div>
+      <div class="search-hint">
+        <i class="fas fa-circle-info fa-xs me-1"></i>
+        يمكنك البحث برقم الهوية الوطنية للطالب أو برقم جوال ولي الأمر المسجل
+      </div>
+    </div>
+  </div>
+
+  <!-- حاوية النتائج -->
+  <div id="resultsContainer"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyfNLsP39SOzW1egWRWBG3OPEXUUJHxqZqa3yylzSY2hY_Dw_YOK9_W_-_iRFF-feUJFw/exec';
+
+const GRADES = {
+  'ابتدائي': ['الأول الابتدائي','الثاني الابتدائي','الثالث الابتدائي','الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي'],
+  'متوسط':   ['الأول المتوسط','الثاني المتوسط','الثالث المتوسط'],
+  'ثانوي':   ['الأول الثانوي','الثاني الثانوي','الثالث الثانوي'],
+  'جامعي':   ['السنة الأولى','السنة الثانية','السنة الثالثة','السنة الرابعة','أكثر من أربع سنوات'],
+};
+
+let currentStudent = null;
+let currentRequest = null;
+
+// ── بحث ────────────────────────────────────────────
+async function doSearch() {
+  const val = document.getElementById('searchInput').value.trim().replace(/\D/g,'');
+  if (!val || val.length < 8) {
+    Swal.fire({ icon:'warning', title:'تنبيه', text:'يرجى إدخال رقم صحيح (8 أرقام على الأقل)', confirmButtonColor:'#1a3c5e', confirmButtonText:'حسناً' });
+    return;
+  }
+
+  showSpinner(true, 'جارٍ البحث…');
+
+  try {
+    const res  = await callAPI('بحث_عن_طالب', { بحث: val });
+    showSpinner(false);
+
+    if (res.طالب) {
+      currentStudent = res.طالب;
+      currentRequest = null;
+      renderStudentCard(res.طالب);
+    } else {
+      // بحث في الطلبات
+      const res2 = await callAPI('جلب_طلبات_التسجيل', {});
+      showSpinner(false);
+      const طلب = (res2.طلبات || []).find(ط =>
+        String(ط['رقم_هوية_الطالب']) === val || String(ط['رقم_جوال_الطالب']) === val
+      );
+      if (طلب) {
+        currentStudent = null;
+        currentRequest = طلب;
+        renderRequestStatus(طلب);
+      } else {
+        document.getElementById('resultsContainer').innerHTML = `
+          <div class="student-card mt-4">
+            <div class="tab-content active">
+              <div class="empty-state">
+                <i class="fas fa-user-slash"></i>
+                <h3>لا توجد نتائج</h3>
+                <p>لم يُعثر على طالب أو طلب تسجيل مرتبط بهذا الرقم.<br>
+                تحقق من الرقم وحاول مجدداً، أو <a href="register.html" style="color:var(--primary-light);font-weight:700">سجّل طلباً جديداً</a>.</p>
+              </div>
+            </div>
+          </div>`;
+      }
+    }
+  } catch(e) {
+    showSpinner(false);
+    Swal.fire({ icon:'error', title:'خطأ في الاتصال', text:'تعذّر الاتصال بالخادم. حاول مجدداً.', confirmButtonColor:'#1a3c5e' });
+  }
+}
+
+// ── عرض حالة الطلب (قبل القبول) ───────────────────
+function renderRequestStatus(طلب) {
+  const حالة = طلب['حالة_الطلب'];
+  let cls = 'rr-pending', icon = 'fa-clock', msg = '';
+
+  if (حالة === 'انتظار') {
+    cls = 'rr-waiting'; icon = 'fa-hourglass-half';
+    msg = 'طلبك في قائمة الانتظار. سيتم التواصل معك عند توفر مقعد.';
+  } else if (حالة === 'مرفوض') {
+    cls = 'rr-rejected'; icon = 'fa-circle-xmark';
+    msg = `تم رفض الطلب. السبب: <strong>${طلب['سبب_الرفض'] || 'غير محدد'}</strong>`;
+  } else {
+    msg = 'طلبك قيد المراجعة. سيتم التواصل معك قريباً.';
+  }
+
+  document.getElementById('resultsContainer').innerHTML = `
+    <div class="student-card">
+      <div class="student-card-header">
+        <div class="student-avatar"><i class="fas fa-user-clock"></i></div>
+        <div>
+          <h2>${طلب['اسم_الطالب'] || '—'}</h2>
+          <p><i class="fas fa-graduation-cap fa-xs me-1"></i>${طلب['المرحلة_الدراسية']} — ${طلب['الصف_الدراسي']}</p>
+        </div>
+        <div class="student-status-chip"><i class="fas fa-file-circle-question me-1"></i>طلب تسجيل</div>
+      </div>
+      <div class="tab-content active">
+        <div class="request-result ${cls}">
+          <div class="rr-title"><i class="fas ${icon}"></i> حالة الطلب: ${حالة}</div>
+          <div class="rr-body">${msg}</div>
+        </div>
+        <div class="data-grid mt-4">
+          ${df('رقم الطلب', طلب['رقم_الطلب'], 'fa-hashtag')}
+          ${df('تاريخ التقديم', formatDate(طلب['تاريخ_الطلب']), 'fa-calendar')}
+          ${df('المرحلة الدراسية', طلب['المرحلة_الدراسية'], 'fa-graduation-cap')}
+          ${df('الصف الدراسي', طلب['الصف_الدراسي'], 'fa-chalkboard')}
+        </div>
+        <div class="mt-4 text-center">
+          <a href="register.html" class="btn-outline-custom"><i class="fas fa-plus"></i> تقديم طلب جديد</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── عرض بيانات الطالب الكاملة ──────────────────────
+function renderStudentCard(ط) {
+  const اسم_الحالة = ط['حالة_الطالب'] || 'غير محدد';
+  const حلقة       = ط['الحلقة'] || 'لم يُسكَّن بعد';
+  const حفظ        = ط['مجموع_الحفظ'] || '0';
+
+  document.getElementById('resultsContainer').innerHTML = `
+    <div class="student-card" id="studentCard">
+      <div class="student-card-header">
+        <div class="student-avatar"><i class="fas fa-user-graduate"></i></div>
+        <div>
+          <h2 id="scName">${ط['اسم_الطالب'] || '—'}</h2>
+          <p><i class="fas fa-mosque fa-xs me-1"></i>${حلقة}
+             &nbsp;·&nbsp;<i class="fas fa-book fa-xs me-1"></i>${حفظ} جزءاً</p>
+        </div>
+        <div class="student-status-chip"><i class="fas fa-circle fa-xs me-1"></i>${اسم_الحالة}</div>
+      </div>
+
+      <!-- تبويبات -->
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'tabMain')">
+          <i class="fas fa-id-card"></i> البيانات الأساسية
+        </button>
+        <button class="tab-btn" onclick="switchTab(this,'tabParent')">
+          <i class="fas fa-user-tie"></i> ولي الأمر
+        </button>
+        <button class="tab-btn" onclick="switchTab(this,'tabWarnings')">
+          <i class="fas fa-triangle-exclamation"></i> الإنذارات
+        </button>
+      </div>
+
+      <!-- تبويب 1: البيانات الأساسية -->
+      <div class="tab-content active" id="tabMain">
+        <div class="save-notice">
+          <i class="fas fa-info-circle" style="color:var(--warning);margin-top:2px"></i>
+          <div>
+            الحقول التي يمكن تعديلها مُشارة بأيقونة <i class="fas fa-pen fa-xs" style="color:var(--primary-light)"></i>.
+            سيُرسل طلب التعديل للمشرف الإداري لمراجعته.
+            <br>الاسم وبيانات ولي الأمر <strong>لا يمكن تعديلها</strong> إن كانت مُعبّأة.
+          </div>
+        </div>
+        <div class="data-grid" id="mainDataGrid">
+          ${buildField('اسم_الطالب',       ط, 'الاسم الكامل',      'fa-user',           false)}
+          ${buildField('رقم_الهوية',       ط, 'رقم الهوية',       'fa-id-card',         false)}
+          ${buildField('رقم_الجوال',       ط, 'رقم الجوال',       'fa-mobile-screen',   true,  'phone')}
+          ${buildField('تاريخ_الميلاد',    ط, 'تاريخ الميلاد',    'fa-calendar',        false)}
+          ${buildField('الحي_العنوان',      ط, 'الحي / العنوان',   'fa-location-dot',    true,  'text')}
+          ${buildField('المرحلة_الدراسية', ط, 'المرحلة الدراسية', 'fa-graduation-cap',  true,  'stage')}
+          ${buildField('الصف_الدراسي',     ط, 'الصف الدراسي',     'fa-chalkboard',      true,  'grade')}
+          ${buildField('الحلقة',           ط, 'الحلقة',           'fa-mosque',          false)}
+          ${buildField('مجموع_الحفظ',      ط, 'مجموع الأجزاء المحفوظة', 'fa-book-open', isEmptyVal(ط['مجموع_الحفظ']), 'number')}
+          ${buildField('حالة_الطالب',      ط, 'حالة الطالب',      'fa-circle-dot',      false)}
+        </div>
+      </div>
+
+      <!-- تبويب 2: ولي الأمر -->
+      <div class="tab-content" id="tabParent">
+        <div id="parentDataGrid" class="data-grid">
+          ${buildParentFields(ط)}
+        </div>
+      </div>
+
+      <!-- تبويب 3: الإنذارات -->
+      <div class="tab-content" id="tabWarnings">
+        <div id="warningsContent">
+          <div class="empty-state" style="padding:32px 20px">
+            <i class="fas fa-shield-halved" style="font-size:36px;opacity:.3"></i>
+            <p style="margin-top:12px">جارٍ تحميل الإنذارات…</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  // تحميل الإنذارات لاحقاً
+  loadWarnings(ط['رقم_الطالب'], ط['اسم_الطالب']);
+}
+
+function buildField(key, ط, label, icon, editable, type='text') {
+  const val = ط[key];
+  const isEmpty = isEmptyVal(val);
+  const dispVal = isEmpty ? 'غير مُعبّأ' : val;
+  const editAttr = editable ? `class="data-field editable" onclick="requestEdit('${key}','${label}','${type}',this)"` : `class="data-field"`;
+  return `
+    <div ${editAttr} data-key="${key}" data-val="${val || ''}">
+      ${editable ? `<i class="edit-icon fas fa-pen"></i>` : ''}
+      <div class="df-label"><i class="fas ${icon} fa-xs"></i> ${label}</div>
+      <div class="df-value ${isEmpty?'empty':''}" id="dfv_${key}">${dispVal}</div>
+    </div>`;
+}
+
+function buildParentFields(ط) {
+  const pName  = ط['اسم_ولي_الامر']        || '';
+  const pPhone = ط['رقم_جوال_ولي_الامر']   || '';
+  const pId    = ط['رقم_هوية_ولي_الامر']   || '';
+  const pRel   = ط['صلة_ولي_الامر']        || '';
+
+  // بيانات ولي الأمر: تعديل فقط إن كانت فارغة
+  const nameEditable  = isEmptyVal(pName);
+  const phoneEditable = isEmptyVal(pPhone);
+  const idEditable    = isEmptyVal(pId);
+  const relEditable   = isEmptyVal(pRel);
+
+  return `
+    ${buildParentField('اسم_ولي_الامر',      pName,  'اسم ولي الأمر',     'fa-user-tie',    nameEditable,  'text')}
+    ${buildParentField('رقم_جوال_ولي_الامر', pPhone, 'رقم جوال ولي الأمر','fa-mobile-screen',phoneEditable,'phone')}
+    ${buildParentField('رقم_هوية_ولي_الامر', pId,    'رقم هوية ولي الأمر','fa-id-card',      idEditable,   'idnum')}
+    ${buildParentField('صلة_ولي_الامر',      pRel,   'صلة ولي الأمر',     'fa-people-arrows',relEditable,  'relation')}
+  `;
+}
+
+function buildParentField(key, val, label, icon, editable, type) {
+  const isEmpty = isEmptyVal(val);
+  const dispVal = isEmpty ? 'غير مُعبّأ' : val;
+  const editAttr = editable
+    ? `class="data-field editable" onclick="requestEdit('${key}','${label}','${type}',this)"`
+    : `class="data-field"`;
+  return `
+    <div ${editAttr} data-key="${key}" data-val="${val||''}">
+      ${editable ? `<i class="edit-icon fas fa-pen"></i>` : ''}
+      <div class="df-label"><i class="fas ${icon} fa-xs"></i> ${label}</div>
+      <div class="df-value ${isEmpty?'empty':''}" id="dfv_${key}">${dispVal}</div>
+    </div>`;
+}
+
+// ── طلب التعديل ─────────────────────────────────────
+async function requestEdit(key, label, type, el) {
+  if (!currentStudent) return;
+  const القيمة_القديمة = currentStudent[key] || '';
+  const isEmpty = isEmptyVal(القيمة_القديمة);
+
+  // إذا كانت البيانات مُعبأة → إرسال طلب للمشرف
+  // إذا كانت فارغة → تعديل مباشر بعد التأكيد
+
+  let inputHtml = '';
+  if (type === 'phone' || type === 'idnum') {
+    inputHtml = `<input type="text" id="swal_input" class="swal2-input" inputmode="numeric"
+      value="${القيمة_القديمة}" maxlength="${type==='phone'?10:12}"
+      style="font-family:Tajawal;direction:ltr;text-align:center"
+      oninput="this.value=this.value.replace(/\\D/g,'')">`;
+  } else if (type === 'stage') {
+    inputHtml = `<select id="swal_input" class="swal2-select" style="font-family:Tajawal" onchange="updateSwalGrades()">
+      <option value="">-- اختر المرحلة --</option>
+      ${['ابتدائي','متوسط','ثانوي','جامعي'].map(s=>`<option value="${s}" ${s===القيمة_القديمة?'selected':''}>${s}</option>`).join('')}
+    </select>`;
+  } else if (type === 'grade') {
+    const stage = currentStudent['المرحلة_الدراسية'] || 'ابتدائي';
+    const grades = GRADES[stage] || [];
+    inputHtml = `<select id="swal_input" class="swal2-select" style="font-family:Tajawal">
+      <option value="">-- اختر الصف --</option>
+      ${grades.map(g=>`<option value="${g}" ${g===القيمة_القديمة?'selected':''}>${g}</option>`).join('')}
+    </select>`;
+  } else if (type === 'relation') {
+    inputHtml = `<select id="swal_input" class="swal2-select" style="font-family:Tajawal">
+      ${['أب','أخ','عم','خال','غير ذلك'].map(r=>`<option value="${r}" ${r===القيمة_القديمة?'selected':''}>${r}</option>`).join('')}
+    </select>`;
+  } else if (type === 'number') {
+    inputHtml = `<input type="number" id="swal_input" class="swal2-input" value="${القيمة_القديمة}"
+      min="0" max="30" style="font-family:Tajawal;text-align:center">`;
+  } else {
+    inputHtml = `<input type="text" id="swal_input" class="swal2-input"
+      value="${القيمة_القديمة}" style="font-family:Tajawal;direction:rtl">`;
+  }
+
+  const actionTitle = isEmpty ? `تعبئة: ${label}` : `طلب تعديل: ${label}`;
+  const actionNote  = isEmpty
+    ? 'سيتم حفظ القيمة مباشرة.'
+    : 'سيُرسل الطلب للمشرف الإداري للمراجعة والموافقة.';
+
+  const { isConfirmed } = await Swal.fire({
+    title: actionTitle,
+    html: `
+      <p style="font-size:13px;color:#5a6a7a;margin-bottom:12px">${actionNote}</p>
+      ${!isEmpty ? `<p style="font-size:12px;background:#f0f0f0;padding:6px 12px;border-radius:8px;margin-bottom:10px">
+        القيمة الحالية: <strong>${القيمة_القديمة}</strong></p>` : ''}
+      ${inputHtml}`,
+    confirmButtonText: isEmpty ? 'حفظ' : 'إرسال الطلب',
+    cancelButtonText: 'إلغاء',
+    showCancelButton: true,
+    confirmButtonColor: '#1a3c5e',
+    cancelButtonColor: '#aaa',
+    customClass: { popup: 'swal-rtl' },
+    didOpen: () => { document.getElementById('swal_input')?.focus(); },
+    preConfirm: () => {
+      const v = document.getElementById('swal_input')?.value?.trim();
+      if (!v) { Swal.showValidationMessage('القيمة لا يمكن أن تكون فارغة'); return false; }
+      if (type === 'phone' && v.length !== 10)   { Swal.showValidationMessage('يجب أن يكون 10 أرقام'); return false; }
+      if (type === 'idnum' && (v.length < 8 || v.length > 12)) { Swal.showValidationMessage('يجب أن يكون 8-12 رقماً'); return false; }
+      return v;
+    }
+  });
+
+  if (!isConfirmed) return;
+  const القيمة_الجديدة = await Swal.getConfirmResult?.() || document.getElementById('swal_input')?.value?.trim();
+
+  // نعيد قراءة القيمة بعد إغلاق النافذة
+  const newVal = Swal._result || '';
+
+  // استخدم preConfirm result
+  const finalVal = Swal._preConfirmValue || '';
+
+  // الطريقة الصحيحة لجلب القيمة
+  await sendEditRequest(key, label, القيمة_القديمة, _swalInputVal, isEmpty);
+}
+
+let _swalInputVal = '';
+
+// override preConfirm لحفظ القيمة
+const _origFire = Swal.fire.bind(Swal);
+
+async function requestEdit(key, label, type, el) {
+  if (!currentStudent) return;
+  const القيمة_القديمة = currentStudent[key] || '';
+  const isEmpty = isEmptyVal(القيمة_القديمة);
+
+  let inputHtml = '';
+  if (type === 'phone' || type === 'idnum') {
+    inputHtml = `<input type="text" id="swalInp" class="swal2-input" inputmode="numeric"
+      value="${القيمة_القديمة}" maxlength="${type==='phone'?10:12}"
+      style="font-family:Tajawal;direction:ltr;text-align:center"
+      oninput="this.value=this.value.replace(/\\D/g,'')">`;
+  } else if (type === 'stage') {
+    inputHtml = `<select id="swalInp" class="swal2-select" style="font-family:Tajawal">
+      <option value="">-- اختر المرحلة --</option>
+      ${['ابتدائي','متوسط','ثانوي','جامعي'].map(s=>`<option value="${s}" ${s===القيمة_القديمة?'selected':''}>${s}</option>`).join('')}
+    </select>`;
+  } else if (type === 'grade') {
+    const stage = currentStudent['المرحلة_الدراسية'] || 'ابتدائي';
+    inputHtml = `<select id="swalInp" class="swal2-select" style="font-family:Tajawal">
+      <option value="">-- اختر الصف --</option>
+      ${(GRADES[stage]||[]).map(g=>`<option value="${g}" ${g===القيمة_القديمة?'selected':''}>${g}</option>`).join('')}
+    </select>`;
+  } else if (type === 'relation') {
+    inputHtml = `<select id="swalInp" class="swal2-select" style="font-family:Tajawal">
+      ${['أب','أخ','عم','خال','غير ذلك'].map(r=>`<option value="${r}" ${r===القيمة_القديمة?'selected':''}>${r}</option>`).join('')}
+    </select>`;
+  } else if (type === 'number') {
+    inputHtml = `<input type="number" id="swalInp" class="swal2-input" value="${القيمة_القديمة}" min="0" max="30" style="font-family:Tajawal;text-align:center">`;
+  } else {
+    inputHtml = `<input type="text" id="swalInp" class="swal2-input" value="${القيمة_القديمة}" style="font-family:Tajawal;direction:rtl">`;
+  }
+
+  const { isConfirmed, value } = await Swal.fire({
+    title: isEmpty ? `تعبئة: ${label}` : `طلب تعديل: ${label}`,
+    html: `
+      <p style="font-size:13px;color:#5a6a7a;margin-bottom:12px">
+        ${isEmpty ? 'سيتم الحفظ مباشرة.' : 'سيُرسل الطلب للمشرف الإداري للمراجعة.'}</p>
+      ${!isEmpty?`<p style="font-size:12px;background:#f5f5f5;padding:6px 12px;border-radius:8px;margin-bottom:10px">القيمة الحالية: <strong>${القيمة_القديمة}</strong></p>`:''}
+      ${inputHtml}`,
+    confirmButtonText: isEmpty ? 'حفظ' : 'إرسال الطلب',
+    cancelButtonText: 'إلغاء',
+    showCancelButton: true,
+    confirmButtonColor: '#1a3c5e',
+    cancelButtonColor: '#aaa',
+    didOpen: () => document.getElementById('swalInp')?.focus(),
+    preConfirm: () => {
+      const v = document.getElementById('swalInp')?.value?.trim();
+      if (!v) return Swal.showValidationMessage('لا يمكن أن تكون فارغة');
+      if (type==='phone'  && v.length!==10)          return Swal.showValidationMessage('يجب أن يكون 10 أرقام');
+      if (type==='idnum'  && (v.length<8||v.length>12)) return Swal.showValidationMessage('يجب أن يكون 8-12 رقماً');
+      return v;
+    }
+  });
+
+  if (!isConfirmed || !value) return;
+  await sendEditRequest(key, label, القيمة_القديمة, value, isEmpty);
+}
+
+async function sendEditRequest(key, label, oldVal, newVal, isEmpty) {
+  showSpinner(true, 'جارٍ إرسال الطلب…');
+  try {
+    let res;
+    if (isEmpty) {
+      // تعديل مباشر
+      res = await callAPI('تعديل_بيانات_طالب', {
+        رقم_الطالب: currentStudent['رقم_الطالب'],
+        تعديلات: { [key]: newVal },
+      });
+    } else {
+      // طلب تعديل يذهب للمشرف
+      res = await callAPI('طلب_تعديل_بيانات', {
+        رقم_الطالب:       currentStudent['رقم_الطالب'],
+        اسم_الطالب:       currentStudent['اسم_الطالب'],
+        الحقل:            key,
+        القيمة_القديمة:   oldVal,
+        القيمة_الجديدة:   newVal,
+      });
+    }
+    showSpinner(false);
+
+    if (res.نجاح) {
+      // تحديث العرض
+      currentStudent[key] = newVal;
+      const dfv = document.getElementById('dfv_' + key);
+      if (dfv) { dfv.textContent = newVal; dfv.classList.remove('empty'); }
+
+      Swal.fire({
+        icon: 'success',
+        title: isEmpty ? 'تم الحفظ!' : 'تم إرسال الطلب!',
+        text: isEmpty ? 'تم تحديث البيانات مباشرة.' : 'سيتم مراجعة طلب التعديل من قِبل المشرف الإداري.',
+        confirmButtonColor: '#1a3c5e',
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    } else {
+      throw new Error(res.خطأ || 'حدث خطأ');
+    }
+  } catch(e) {
+    showSpinner(false);
+    Swal.fire({ icon:'error', title:'خطأ', text: e.message, confirmButtonColor:'#1a3c5e' });
+  }
+}
+
+// ── تحميل الإنذارات ──────────────────────────────────
+async function loadWarnings(studentId, studentName) {
+  try {
+    const [edu, adm] = await Promise.all([
+      callAPI('جلب_الانذارات_التعليمية', { بحث: studentName }),
+      callAPI('جلب_ارشيف_انذارات_ادارية', {}),
+    ]);
+
+    const تعليمية = (edu.انذارات || []).filter(ا => String(ا['رقم_الطالب']) === String(studentId));
+    const ادارية  = (adm.انذارات || []).filter(ا => String(ا['رقم_الطالب']) === String(studentId));
+
+    const el = document.getElementById('warningsContent');
+    if (!el) return;
+
+    if (!تعليمية.length && !ادارية.length) {
+      el.innerHTML = `<div class="empty-state" style="padding:32px 20px">
+        <i class="fas fa-shield-halved" style="font-size:36px;color:var(--success);opacity:.6"></i>
+        <h3 style="color:var(--success);margin-top:12px">لا توجد إنذارات</h3>
+        <p>سجل الطالب خالٍ من أي إنذارات تعليمية أو إدارية.</p>
+      </div>`;
+      return;
+    }
+
+    let html = '';
+    if (تعليمية.length) {
+      html += `<h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:12px">
+        <i class="fas fa-book-open me-2"></i>الإنذارات التعليمية (${تعليمية.length})</h3>`;
+      تعليمية.forEach(ا => {
+        const مفتوح = !ا['تاريخ_الإغلاق'];
+        html += `<div class="warning-row">
+          <div class="warning-icon-wrap warn-edu"><i class="fas fa-triangle-exclamation"></i></div>
+          <div class="warning-info">
+            <h4>${ا['سبب_الانذار'] || 'إنذار تعليمي'}</h4>
+            <p>${formatDate(ا['تاريخ_الإصدار'])} · ${ا['اسم_المشرف'] || ''}</p>
+          </div>
+          <span class="warning-status ${مفتوح?'ws-open':'ws-closed'}">${ا['حالة_الإجراء'] || (مفتوح?'مفتوح':'مُغلق')}</span>
+        </div>`;
+      });
+    }
+
+    if (ادارية.length) {
+      html += `<h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-top:20px;margin-bottom:12px">
+        <i class="fas fa-user-clock me-2"></i>الإنذارات الإدارية (${ادارية.length})</h3>`;
+      const types = { 'تأخر':'warn-late fa-user-clock', 'غياب':'warn-abs fa-calendar-xmark', 'غياب_بعذر':'warn-abs fa-calendar-minus' };
+      ادارية.forEach(ا => {
+        const cls = (types[ا['نوع_الانذار']] || 'warn-abs fa-bell').split(' ');
+        html += `<div class="warning-row">
+          <div class="warning-icon-wrap ${cls[0]}"><i class="fas ${cls[1]}"></i></div>
+          <div class="warning-info">
+            <h4>${ا['نوع_الانذار']} — العتبة ${ا['رقم_العتبة']}</h4>
+            <p>عدد المخالفات: ${ا['عدد_المخالفات']} · ${formatDate(ا['تاريخ_الاستحقاق'])}</p>
+          </div>
+          <span class="warning-status ws-closed">${ا['حالة_الإجراء'] || 'مُغلق'}</span>
+        </div>`;
+      });
+    }
+
+    el.innerHTML = html;
+  } catch(e) {
+    const el = document.getElementById('warningsContent');
+    if (el) el.innerHTML = `<div class="empty-state" style="padding:24px"><p>تعذّر تحميل الإنذارات.</p></div>`;
+  }
+}
+
+// ── تبديل التبويبات ──────────────────────────────────
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId)?.classList.add('active');
+}
+
+// ── مساعدات ──────────────────────────────────────────
+function df(label, val, icon) {
+  return `<div class="data-field">
+    <div class="df-label"><i class="fas ${icon} fa-xs"></i> ${label}</div>
+    <div class="df-value">${val || '—'}</div>
+  </div>`;
+}
+
+function isEmptyVal(v) {
+  return !v || String(v).trim() === '' || String(v).trim() === '0';
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  try { return new Date(d).toLocaleDateString('ar-SA-u-ca-islamic', { year:'numeric', month:'short', day:'numeric' }); }
+  catch { return String(d).split('T')[0]; }
+}
+
+async function callAPI(action, data) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action, data }),
+  });
+  return res.json();
+}
+
+function showSpinner(show, text='جارٍ التحميل…') {
+  document.getElementById('spinnerOverlay').style.display = show ? 'flex' : 'none';
+  document.getElementById('spinnerText').textContent = text;
+}
+</script>
+
+<style>
+.swal-rtl { direction: rtl; font-family: 'Tajawal', sans-serif !important; }
+.swal2-input, .swal2-select { font-family: 'Tajawal', sans-serif !important; }
+</style>
+</body>
+</html>
