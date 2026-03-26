@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة التسجيل والقبول — مجمع تحفيظ القرآن</title>
+
+<!-- Bootstrap 5 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- SweetAlert2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Google Fonts: Tajawal -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary:       #1a3c5e;
+  --primary-light: #2563a8;
+  --accent:        #c8a84b;
+  --accent-light:  #f0d080;
+  --surface:       #f8f6f0;
+  --surface-2:     #ffffff;
+  --text-main:     #1a1a2e;
+  --text-muted:    #5a6a7a;
+  --border:        #ddd5c0;
+  --success:       #1e7e4a;
+  --danger:        #c0392b;
+  --radius:        14px;
+  --shadow:        0 4px 24px rgba(26,60,94,.10);
+  --shadow-lg:     0 12px 48px rgba(26,60,94,.16);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: var(--surface);
+  color: var(--text-main);
+  min-height: 100vh;
+  direction: rtl;
+}
+
+/* ── خلفية زخرفية ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(26,60,94,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(200,168,75,.06) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── هيدر ── */
+.site-header {
+  background: var(--primary);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 16px rgba(0,0,0,.18);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.header-logo {
+  width: 48px;
+  height: 48px;
+  background: var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-logo i { font-size: 22px; color: var(--primary); }
+
+.header-title h1 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.header-title p {
+  font-size: 12px;
+  color: rgba(255,255,255,.65);
+  margin: 0;
+}
+
+.header-badge {
+  margin-right: auto;
+  background: rgba(200,168,75,.2);
+  border: 1px solid rgba(200,168,75,.4);
+  color: var(--accent-light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ── محتوى رئيسي ── */
+.main-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 16px 60px;
+}
+
+/* ── بطاقة المرحلة ── */
+.step-card {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 24px;
+  animation: slideUp .35s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.step-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  border: 2px solid rgba(255,255,255,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.step-header-text h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.step-header-text p {
+  font-size: 12px;
+  color: rgba(255,255,255,.65);
+  margin: 2px 0 0;
+}
+
+.step-body { padding: 28px; }
+
+/* ── حقول النموذج ── */
+.form-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-label .req {
+  color: var(--danger);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.form-control, .form-select {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  color: var(--text-main);
+  background: #fafaf8;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+}
+
+.form-control:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(37,99,168,.12);
+  background: #fff;
+}
+
+.form-control.is-invalid { border-color: var(--danger); }
+.form-control.is-valid   { border-color: var(--success); }
+
+.invalid-feedback {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── شريط التقدم ── */
+.progress-strip {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 28px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.progress-step .ps-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e8e4d8;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all .3s;
+}
+
+.progress-step.active .ps-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(26,60,94,.15);
+}
+
+.progress-step.done .ps-dot {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+
+.progress-step .ps-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.progress-step.active .ps-label { color: var(--primary); font-weight: 700; }
+
+.ps-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin-top: -19px;
+  z-index: 0;
+  transition: background .3s;
+}
+
+.ps-line.done { background: var(--success); }
+
+/* ── أزرار ── */
+.btn-primary-custom {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 32px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary-custom:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(26,60,94,.25);
+}
+
+.btn-primary-custom:active { transform: translateY(0); }
+
+.btn-secondary-custom {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  border-radius: 10px;
+  padding: 11px 24px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-secondary-custom:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* ── بطاقة النجاح ── */
+.success-card {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.success-icon {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #d4efdf, #a9dfbf);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  animation: popIn .4s cubic-bezier(.175,.885,.32,1.275) both;
+}
+
+@keyframes popIn {
+  from { transform:scale(0); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+
+.success-icon i { font-size: 40px; color: var(--success); }
+
+.success-card h2 { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
+.success-card p  { color: var(--text-muted); font-size: 15px; line-height: 1.7; }
+
+.request-num {
+  display: inline-block;
+  background: linear-gradient(135deg, #eaf2ff, #d0e4ff);
+  border: 1px solid #aac8f0;
+  color: var(--primary);
+  padding: 8px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 16px 0;
+}
+
+/* ── حقول شبكة ── */
+.form-grid { display: grid; gap: 18px; }
+.form-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+@media(max-width:600px) {
+  .form-grid.cols-2, .form-grid.cols-3 { grid-template-columns: 1fr; }
+  .step-body { padding: 20px 16px; }
+  .step-header { padding: 16px 20px; }
+  .header-badge { display: none; }
+}
+
+/* ── فاصل قسم ── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.section-divider::before, .section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Spinner ── */
+.spinner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.spinner-ring {
+  width: 56px;
+  height: 56px;
+  border: 4px solid #e0d8c8;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner-overlay p {
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ── شريط تنبيه علوي ── */
+.info-banner {
+  background: linear-gradient(135deg, #eef6ff, #ddeeff);
+  border: 1px solid #b8d4f0;
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13.5px;
+  color: #1a3c5e;
+  line-height: 1.6;
+}
+
+.info-banner i { color: var(--primary-light); margin-top: 2px; flex-shrink: 0; }
+
+/* ── character counter ── */
+.char-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: left;
+  margin-top: 3px;
+}
+</style>
+</head>
+<body>
+
+<!-- الهيدر -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logo">
+      <i class="fas fa-book-open-reader"></i>
+    </div>
+    <div class="header-title">
+      <h1>مجمع تحفيظ القرآن الكريم</h1>
+      <p>منظومة الإدارة الرقمية المتكاملة</p>
+    </div>
+    <div class="header-badge">
+      <i class="fas fa-user-plus me-1"></i> بوابة التسجيل والقبول
+    </div>
+  </div>
+</header>
+
+<!-- Spinner -->
+<div class="spinner-overlay" id="spinnerOverlay" style="display:none;">
+  <div class="spinner-ring"></div>
+  <p>جارٍ إرسال الطلب…</p>
+</div>
+
+<div class="main-wrap">
+
+  <!-- شريط التقدم -->
+  <div class="progress-strip">
+    <div class="progress-steps">
+      <div class="progress-step active" id="ps1">
+        <div class="ps-dot">1</div>
+        <div class="ps-label">بيانات الطالب</div>
+      </div>
+      <div class="ps-line" id="pl1"></div>
+      <div class="progress-step" id="ps2">
+        <div class="ps-dot">2</div>
+        <div class="ps-label">ولي الأمر</div>
+      </div>
+      <div class="ps-line" id="pl2"></div>
+      <div class="progress-step" id="ps3">
+        <div class="ps-dot">3</div>
+        <div class="ps-label">المراجعة والإرسال</div>
+      </div>
+      <div class="ps-line" id="pl3"></div>
+      <div class="progress-step" id="ps4">
+        <div class="ps-dot"><i class="fas fa-check" style="font-size:13px"></i></div>
+        <div class="ps-label">تم الإرسال</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- إشعار توجيهي -->
+  <div class="info-banner">
+    <i class="fas fa-circle-info fa-lg"></i>
+    <div>
+      يُرجى تعبئة جميع الحقول المطلوبة بدقة. سيتم مراجعة طلبك من قِبل المشرف الإداري والتواصل معك قريباً.
+      الحقول المُشار إليها بـ <span style="color:var(--danger);font-weight:700">*</span> إلزامية.
+    </div>
+  </div>
+
+  <!-- ── الخطوة 1: بيانات الطالب ── -->
+  <div class="step-card" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-header-text">
+        <h2>بيانات الطالب الأساسية</h2>
+        <p>المعلومات الشخصية للطالب الراغب في الالتحاق بالمجمع</p>
+      </div>
+    </div>
+    <div class="step-body">
+
+      <!-- الاسم -->
+      <div class="mb-4">
+        <label class="form-label">
+          <i class="fas fa-user fa-sm" style="color:var(--primary-light)"></i>
+          اسم الطالب الثلاثي <span class="req">*</span>
+        </label>
+        <input type="text" class="form-control" id="studentName" placeholder="مثال: عبدالله محمد أحمد" maxlength="80" oninput="updateChar(this,'cn1')">
+        <div class="d-flex justify-content-between">
+          <div class="invalid-feedback" id="err_name"></div>
+          <div class="char-count" id="cn1">0/80</div>
+        </div>
+      </div>
+
+      <div class="form-grid cols-2 mb-4">
+        <!-- رقم الهوية -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-id-card fa-sm" style="color:var(--primary-light)"></i>
+            رقم هوية الطالب <span class="req">*</span>
+          </label>
+          <input type="text" class="form-control" id="studentId" placeholder="8 - 12 رقم" maxlength="12" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+          <div class="invalid-feedback" id="err_sid"></div>
+          <div class="field-hint"><i class="fas fa-info-circle fa-xs"></i> يجب أن يكون بين 8 و 12 رقماً</div>
+        </div>
+        <!-- رقم جوال الطالب -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-mobile-screen fa-sm" style="color:var(--primary-light)"></i>
+            رقم جوال الطالب
+          </label>
+          <input type="text" class="form-control" id="studentPhone" placeholder="05XXXXXXXX" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+          <div class="invalid-feedback" id="err_sphone"></div>
+          <div class="field-hint"><i class="fas fa-info-circle fa-xs"></i> 10 أرقام (اختياري)</div>
+        </div>
+      </div>
+
+      <div class="form-grid cols-2 mb-4">
+        <!-- تاريخ الميلاد -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-calendar fa-sm" style="color:var(--primary-light)"></i>
+            تاريخ الميلاد <span class="req">*</span>
+          </label>
+          <input type="date" class="form-control" id="studentBirth">
+          <div class="invalid-feedback" id="err_birth"></div>
+        </div>
+        <!-- الحي / العنوان -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-location-dot fa-sm" style="color:var(--primary-light)"></i>
+            الحي / العنوان <span class="req">*</span>
+          </label>
+          <input type="text" class="form-control" id="studentAddress" placeholder="مثال: حي النزهة">
+          <div class="invalid-feedback" id="err_addr"></div>
+        </div>
+      </div>
+
+      <div class="form-grid cols-2 mb-2">
+        <!-- المرحلة الدراسية -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-graduation-cap fa-sm" style="color:var(--primary-light)"></i>
+            المرحلة الدراسية <span class="req">*</span>
+          </label>
+          <select class="form-select" id="studentStage" onchange="updateGrades()">
+            <option value="">-- اختر المرحلة --</option>
+            <option value="ابتدائي">ابتدائي</option>
+            <option value="متوسط">متوسط</option>
+            <option value="ثانوي">ثانوي</option>
+            <option value="جامعي">جامعي</option>
+          </select>
+          <div class="invalid-feedback" id="err_stage"></div>
+        </div>
+        <!-- الصف الدراسي -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-chalkboard fa-sm" style="color:var(--primary-light)"></i>
+            الصف الدراسي <span class="req">*</span>
+          </label>
+          <select class="form-select" id="studentGrade" disabled>
+            <option value="">-- اختر الصف --</option>
+          </select>
+          <div class="invalid-feedback" id="err_grade"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── الخطوة 2: بيانات ولي الأمر ── -->
+  <div class="step-card" id="step2" style="display:none;">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-header-text">
+        <h2>بيانات ولي الأمر</h2>
+        <p>معلومات ولي أمر الطالب للتواصل والمتابعة</p>
+      </div>
+    </div>
+    <div class="step-body">
+
+      <div class="mb-4">
+        <label class="form-label">
+          <i class="fas fa-user-tie fa-sm" style="color:var(--primary-light)"></i>
+          اسم ولي الأمر الثلاثي <span class="req">*</span>
+        </label>
+        <input type="text" class="form-control" id="parentName" placeholder="مثال: محمد أحمد عبدالله" maxlength="80" oninput="updateChar(this,'cn2')">
+        <div class="d-flex justify-content-between">
+          <div class="invalid-feedback" id="err_pname"></div>
+          <div class="char-count" id="cn2">0/80</div>
+        </div>
+      </div>
+
+      <div class="form-grid cols-2 mb-4">
+        <!-- جوال ولي الأمر -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-mobile-screen fa-sm" style="color:var(--primary-light)"></i>
+            رقم جوال ولي الأمر <span class="req">*</span>
+          </label>
+          <input type="text" class="form-control" id="parentPhone" placeholder="05XXXXXXXX" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+          <div class="invalid-feedback" id="err_pphone"></div>
+          <div class="field-hint"><i class="fas fa-info-circle fa-xs"></i> 10 أرقام بالضبط</div>
+        </div>
+        <!-- هوية ولي الأمر -->
+        <div>
+          <label class="form-label">
+            <i class="fas fa-id-card fa-sm" style="color:var(--primary-light)"></i>
+            رقم هوية ولي الأمر <span class="req">*</span>
+          </label>
+          <input type="text" class="form-control" id="parentId" placeholder="8 - 12 رقم" maxlength="12" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+          <div class="invalid-feedback" id="err_pid"></div>
+        </div>
+      </div>
+
+      <!-- صلة ولي الأمر -->
+      <div class="mb-2">
+        <label class="form-label">
+          <i class="fas fa-people-arrows fa-sm" style="color:var(--primary-light)"></i>
+          صلة ولي الأمر بالطالب <span class="req">*</span>
+        </label>
+        <div class="d-flex flex-wrap gap-2 mt-2" id="relationGroup">
+          <label class="relation-btn" onclick="selectRelation(this,'أب')">
+            <input type="radio" name="relation" value="أب" hidden>
+            <i class="fas fa-user-shield me-1"></i> أب
+          </label>
+          <label class="relation-btn" onclick="selectRelation(this,'أخ')">
+            <input type="radio" name="relation" value="أخ" hidden>
+            <i class="fas fa-user-friends me-1"></i> أخ
+          </label>
+          <label class="relation-btn" onclick="selectRelation(this,'عم')">
+            <input type="radio" name="relation" value="عم" hidden>
+            <i class="fas fa-users me-1"></i> عم
+          </label>
+          <label class="relation-btn" onclick="selectRelation(this,'خال')">
+            <input type="radio" name="relation" value="خال" hidden>
+            <i class="fas fa-users me-1"></i> خال
+          </label>
+          <label class="relation-btn" onclick="selectRelation(this,'غير ذلك')">
+            <input type="radio" name="relation" value="غير ذلك" hidden>
+            <i class="fas fa-user-plus me-1"></i> غير ذلك
+          </label>
+        </div>
+        <div class="invalid-feedback" id="err_rel" style="display:block;visibility:hidden">.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── الخطوة 3: مراجعة ── -->
+  <div class="step-card" id="step3" style="display:none;">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-header-text">
+        <h2>مراجعة البيانات وإرسال الطلب</h2>
+        <p>تحقق من صحة المعلومات قبل الإرسال النهائي</p>
+      </div>
+    </div>
+    <div class="step-body">
+      <div id="reviewContent"></div>
+    </div>
+  </div>
+
+  <!-- ── الخطوة 4: نجاح ── -->
+  <div class="step-card" id="step4" style="display:none;">
+    <div class="step-body success-card">
+      <div class="success-icon">
+        <i class="fas fa-circle-check"></i>
+      </div>
+      <h2>تم إرسال طلب التسجيل بنجاح!</h2>
+      <p>
+        شكراً لتسجيل طلبك في مجمع تحفيظ القرآن الكريم.<br>
+        سيتم مراجعة طلبك من قِبل المشرف الإداري والتواصل معك عبر الجوال قريباً.
+      </p>
+      <div class="request-num" id="reqNumDisplay">
+        <i class="fas fa-hashtag me-1"></i> <span id="reqNum">—</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:8px">
+        احتفظ برقم الطلب للمتابعة لاحقاً
+      </p>
+      <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+        <button class="btn-primary-custom" onclick="resetForm()">
+          <i class="fas fa-plus"></i> تسجيل طالب آخر
+        </button>
+        <a href="student.html" class="btn-secondary-custom">
+          <i class="fas fa-search"></i> متابعة حالة الطلب
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- أزرار التنقل -->
+  <div class="d-flex justify-content-between align-items-center mt-2" id="navButtons">
+    <button class="btn-secondary-custom" id="btnBack" onclick="prevStep()" style="visibility:hidden">
+      <i class="fas fa-arrow-right"></i> السابق
+    </button>
+    <button class="btn-primary-custom" id="btnNext" onclick="nextStep()">
+      التالي <i class="fas fa-arrow-left"></i>
+    </button>
+  </div>
+
+</div><!-- /main-wrap -->
+
+<style>
+/* أزرار الصلة */
+.relation-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 30px;
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: #fafaf8;
+  transition: all .2s;
+  user-select: none;
+}
+
+.relation-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+
+.relation-btn.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* بطاقة المراجعة */
+.review-section {
+  background: #f8f6f0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+}
+
+.review-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e0d8c0;
+  font-size: 13.5px;
+}
+
+.review-row:last-child { border-bottom: none; }
+.review-label { color: var(--text-muted); font-weight: 500; }
+.review-value { font-weight: 700; color: var(--text-main); text-align: left; }
+</style>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// ── الإعدادات ──────────────────────────────────────
+const API_URL = 'https://script.google.com/macros/s/AKfycbyfNLsP39SOzW1egWRWBG3OPEXUUJHxqZqa3yylzSY2hY_Dw_YOK9_W_-_iRFF-feUJFw/exec';
+
+const GRADES = {
+  'ابتدائي': ['الأول الابتدائي','الثاني الابتدائي','الثالث الابتدائي','الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي'],
+  'متوسط':   ['الأول المتوسط','الثاني المتوسط','الثالث المتوسط'],
+  'ثانوي':   ['الأول الثانوي','الثاني الثانوي','الثالث الثانوي'],
+  'جامعي':   ['السنة الأولى','السنة الثانية','السنة الثالثة','السنة الرابعة','أكثر من أربع سنوات'],
+};
+
+let currentStep = 1;
+let selectedRelation = '';
+
+// ── الصفوف حسب المرحلة ──────────────────────────────
+function updateGrades() {
+  const stage = document.getElementById('studentStage').value;
+  const gradeEl = document.getElementById('studentGrade');
+  gradeEl.innerHTML = '<option value="">-- اختر الصف --</option>';
+  gradeEl.disabled = !stage;
+  if (stage && GRADES[stage]) {
+    GRADES[stage].forEach(g => {
+      gradeEl.innerHTML += `<option value="${g}">${g}</option>`;
+    });
+  }
+}
+
+// ── اختيار الصلة ────────────────────────────────────
+function selectRelation(el, val) {
+  document.querySelectorAll('.relation-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedRelation = val;
+  document.getElementById('err_rel').style.visibility = 'hidden';
+}
+
+// ── عداد الأحرف ─────────────────────────────────────
+function updateChar(el, counterId) {
+  document.getElementById(counterId).textContent = el.value.length + '/' + el.maxLength;
+}
+
+// ── التحقق من صحة الخطوة ────────────────────────────
+function validateStep(step) {
+  let valid = true;
+
+  function setErr(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = msg ? 'flex' : 'none';
+    valid = false;
+  }
+
+  function clearErr(id) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.style.display = 'none'; }
+  }
+
+  function markField(fieldId, isValid) {
+    const f = document.getElementById(fieldId);
+    if (!f) return;
+    f.classList.toggle('is-invalid', !isValid);
+    f.classList.toggle('is-valid', isValid);
+  }
+
+  if (step === 1) {
+    clearErr('err_name'); clearErr('err_sid'); clearErr('err_sphone');
+    clearErr('err_birth'); clearErr('err_addr'); clearErr('err_stage'); clearErr('err_grade');
+
+    const name  = document.getElementById('studentName').value.trim();
+    const sid   = document.getElementById('studentId').value.trim();
+    const sph   = document.getElementById('studentPhone').value.trim();
+    const birth = document.getElementById('studentBirth').value;
+    const addr  = document.getElementById('studentAddress').value.trim();
+    const stage = document.getElementById('studentStage').value;
+    const grade = document.getElementById('studentGrade').value;
+
+    if (!name || name.split(/\s+/).filter(Boolean).length < 3) {
+      setErr('err_name', '⚠ يجب إدخال الاسم الثلاثي كاملاً');
+      markField('studentName', false);
+    } else { markField('studentName', true); }
+
+    if (!sid || sid.length < 8 || sid.length > 12) {
+      setErr('err_sid', '⚠ رقم الهوية يجب أن يكون بين 8 و 12 رقماً');
+      markField('studentId', false);
+    } else { markField('studentId', true); }
+
+    if (sph && sph.length !== 10) {
+      setErr('err_sphone', '⚠ رقم الجوال يجب أن يكون 10 أرقام');
+      markField('studentPhone', false);
+    } else if (sph) { markField('studentPhone', true); }
+
+    if (!birth) {
+      setErr('err_birth', '⚠ يجب اختيار تاريخ الميلاد');
+      markField('studentBirth', false);
+    } else { markField('studentBirth', true); }
+
+    if (!addr) {
+      setErr('err_addr', '⚠ يجب إدخال الحي أو العنوان');
+      markField('studentAddress', false);
+    } else { markField('studentAddress', true); }
+
+    if (!stage) {
+      setErr('err_stage', '⚠ يجب اختيار المرحلة الدراسية');
+      markField('studentStage', false);
+    } else { markField('studentStage', true); }
+
+    if (!grade) {
+      setErr('err_grade', '⚠ يجب اختيار الصف الدراسي');
+      markField('studentGrade', false);
+    } else { markField('studentGrade', true); }
+
+  } else if (step === 2) {
+    clearErr('err_pname'); clearErr('err_pphone'); clearErr('err_pid');
+
+    const pname = document.getElementById('parentName').value.trim();
+    const pph   = document.getElementById('parentPhone').value.trim();
+    const pid   = document.getElementById('parentId').value.trim();
+
+    if (!pname || pname.split(/\s+/).filter(Boolean).length < 3) {
+      setErr('err_pname', '⚠ يجب إدخال اسم ولي الأمر الثلاثي كاملاً');
+      markField('parentName', false);
+    } else { markField('parentName', true); }
+
+    if (!pph || pph.length !== 10) {
+      setErr('err_pphone', '⚠ رقم الجوال يجب أن يكون 10 أرقام بالضبط');
+      markField('parentPhone', false);
+    } else { markField('parentPhone', true); }
+
+    if (!pid || pid.length < 8 || pid.length > 12) {
+      setErr('err_pid', '⚠ رقم الهوية يجب أن يكون بين 8 و 12 رقماً');
+      markField('parentId', false);
+    } else { markField('parentId', true); }
+
+    if (!selectedRelation) {
+      document.getElementById('err_rel').style.visibility = 'visible';
+      document.getElementById('err_rel').textContent = '⚠ يجب اختيار صلة ولي الأمر';
+      valid = false;
+    }
+  }
+
+  return valid;
+}
+
+// ── بناء صفحة المراجعة ──────────────────────────────
+function buildReview() {
+  const data = collectData();
+  const html = `
+    <div class="review-section">
+      <h3><i class="fas fa-user text-primary"></i> بيانات الطالب</h3>
+      ${reviewRow('الاسم', data.اسم_الطالب)}
+      ${reviewRow('رقم الهوية', data.رقم_الهوية)}
+      ${reviewRow('رقم الجوال', data.رقم_جوال_الطالب || 'غير محدد')}
+      ${reviewRow('تاريخ الميلاد', data.تاريخ_الميلاد)}
+      ${reviewRow('الحي / العنوان', data.الحي_العنوان)}
+      ${reviewRow('المرحلة الدراسية', data.المرحلة_الدراسية)}
+      ${reviewRow('الصف الدراسي', data.الصف_الدراسي)}
+    </div>
+    <div class="review-section">
+      <h3><i class="fas fa-user-tie text-primary"></i> بيانات ولي الأمر</h3>
+      ${reviewRow('الاسم', data.اسم_ولي_الامر)}
+      ${reviewRow('رقم الجوال', data.رقم_جوال_ولي_الامر)}
+      ${reviewRow('رقم الهوية', data.رقم_هوية_ولي_الامر)}
+      ${reviewRow('الصلة بالطالب', data.صلة_ولي_الامر)}
+    </div>
+    <div class="info-banner mt-3">
+      <i class="fas fa-triangle-exclamation"></i>
+      <div>بعد الإرسال لا يمكن تعديل البيانات إلا عبر <strong>بوابة بيانات الطالب</strong> بعد الموافقة من المشرف الإداري.</div>
+    </div>
+  `;
+  document.getElementById('reviewContent').innerHTML = html;
+}
+
+function reviewRow(label, val) {
+  return `<div class="review-row"><span class="review-label">${label}</span><span class="review-value">${val || '—'}</span></div>`;
+}
+
+// ── جمع البيانات ─────────────────────────────────────
+function collectData() {
+  return {
+    اسم_الطالب:          document.getElementById('studentName').value.trim(),
+    رقم_الهوية:          document.getElementById('studentId').value.trim(),
+    رقم_جوال_الطالب:     document.getElementById('studentPhone').value.trim(),
+    تاريخ_الميلاد:       document.getElementById('studentBirth').value,
+    الحي_العنوان:         document.getElementById('studentAddress').value.trim(),
+    المرحلة_الدراسية:    document.getElementById('studentStage').value,
+    الصف_الدراسي:        document.getElementById('studentGrade').value,
+    اسم_ولي_الامر:       document.getElementById('parentName').value.trim(),
+    رقم_جوال_ولي_الامر:  document.getElementById('parentPhone').value.trim(),
+    رقم_هوية_ولي_الامر:  document.getElementById('parentId').value.trim(),
+    صلة_ولي_الامر:       selectedRelation,
+  };
+}
+
+// ── التنقل بين الخطوات ───────────────────────────────
+function setStep(n) {
+  currentStep = n;
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step' + i);
+    if (el) el.style.display = i === n ? 'block' : 'none';
+  }
+
+  // شريط التقدم
+  for (let i = 1; i <= 4; i++) {
+    const ps = document.getElementById('ps' + i);
+    ps.classList.remove('active','done');
+    if (i < n) ps.classList.add('done');
+    if (i === n) ps.classList.add('active');
+  }
+  for (let i = 1; i <= 3; i++) {
+    const pl = document.getElementById('pl' + i);
+    pl.classList.toggle('done', i < n);
+  }
+
+  // أزرار التنقل
+  const navDiv  = document.getElementById('navButtons');
+  const btnBack = document.getElementById('btnBack');
+  const btnNext = document.getElementById('btnNext');
+
+  if (n === 4) { navDiv.style.display = 'none'; return; }
+  navDiv.style.display = 'flex';
+
+  btnBack.style.visibility = n > 1 ? 'visible' : 'hidden';
+
+  if (n === 3) {
+    btnNext.innerHTML = '<i class="fas fa-paper-plane me-1"></i> إرسال الطلب';
+  } else {
+    btnNext.innerHTML = 'التالي <i class="fas fa-arrow-left"></i>';
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep() {
+  if (currentStep === 1 && !validateStep(1)) return;
+  if (currentStep === 2 && !validateStep(2)) return;
+  if (currentStep === 3) { submitForm(); return; }
+  if (currentStep === 2) buildReview();
+  setStep(currentStep + 1);
+  if (currentStep === 3) buildReview();
+}
+
+function prevStep() {
+  if (currentStep > 1) setStep(currentStep - 1);
+}
+
+// ── الإرسال للـ API ──────────────────────────────────
+async function submitForm() {
+  const data = collectData();
+  showSpinner(true);
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'تسجيل_طالب_جديد', data }),
+    });
+    const json = await res.json();
+    showSpinner(false);
+
+    if (json.نجاح) {
+      document.getElementById('reqNum').textContent = json.رقم_الطلب || '—';
+      setStep(4);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'تعذّر إرسال الطلب',
+        text: json.خطأ || 'حدث خطأ غير متوقع، يرجى المحاولة مجدداً.',
+        confirmButtonText: 'حسناً',
+        confirmButtonColor: '#1a3c5e',
+        fontFamily: 'Tajawal',
+      });
+    }
+  } catch (e) {
+    showSpinner(false);
+    Swal.fire({
+      icon: 'warning',
+      title: 'خطأ في الاتصال',
+      text: 'تعذّر الاتصال بالخادم. تحقق من الإنترنت وحاول مجدداً.',
+      confirmButtonText: 'إعادة المحاولة',
+      confirmButtonColor: '#1a3c5e',
+    });
+  }
+}
+
+function showSpinner(show) {
+  document.getElementById('spinnerOverlay').style.display = show ? 'flex' : 'none';
+}
+
+// ── إعادة تعيين النموذج ──────────────────────────────
+function resetForm() {
+  document.querySelectorAll('input, select').forEach(el => {
+    if (el.type === 'radio') el.checked = false;
+    else el.value = '';
+  });
+  document.querySelectorAll('.relation-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+    el.classList.remove('is-valid','is-invalid');
+  });
+  selectedRelation = '';
+  updateGrades();
+  setStep(1);
+}
+
+// ── تشغيل أولي ───────────────────────────────────────
+setStep(1);
+</script>
+</body>
+</html>
