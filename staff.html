@@ -633,8 +633,8 @@ function renderEduWarnCards(list,إجراءات,tplS,tplP){
           <option value="__done__">✓ اكتمل الإجراء</option>
         </select>
         <button class="btn-p btn-sm" onclick="updateEduProc('${ا['رقم_الانذار']}')"><i class="fas fa-save"></i> حفظ</button>
-        \${ا['رقم_جوال_الطالب']?`<button class="btn-wa btn-sm" onclick='sendWa("\${ا['رقم_جوال_الطالب']}","\${ا['اسم_الطالب']}","\${ا['اسم_ولي_الامر']||''}","\${ا['سبب_الانذار']||''}",true)'><i class="fab fa-whatsapp"></i> طالب</button>`:''}
-        \${ا['رقم_جوال_ولي_الامر']?`<button class="btn-wa btn-sm" onclick='sendWa("\${ا['رقم_جوال_ولي_الامر']}","\${ا['اسم_الطالب']}","\${ا['اسم_ولي_الامر']||''}","\${ا['سبب_الانذار']||''}",false)'><i class="fab fa-whatsapp"></i> ولي الأمر</button>`:''}
+        ${ا['رقم_جوال_الطالب']?`<button class="btn-wa btn-sm" onclick='sendWa("${ا['رقم_جوال_الطالب']}","${ا['اسم_الطالب']}","${ا['اسم_ولي_الامر']||''}","${ا['سبب_الانذار']||''}",true)'><i class="fab fa-whatsapp"></i> طالب</button>`:''}
+        ${ا['رقم_جوال_ولي_الامر']?`<button class="btn-wa btn-sm" onclick='sendWa("${ا['رقم_جوال_ولي_الامر']}","${ا['اسم_الطالب']}","${ا['اسم_ولي_الامر']||''}","${ا['سبب_الانذار']||''}",false)'><i class="fab fa-whatsapp"></i> ولي الأمر</button>`:''}
         ${ا['رقم_جوال_ولي_الامر']?`<button class="btn-wa btn-sm" onclick='sendWa("${ا['رقم_جوال_ولي_الامر']}","${ا['اسم_الطالب']}","${ا['اسم_ولي_الامر']||''}","${ا['سبب_الانذار']||''}",false)'><i class="fab fa-whatsapp"></i> ولي الأمر</button>`:''}
       </div>
     </div>`).join('');
@@ -1154,7 +1154,6 @@ async function acceptReg(id,name){
 }
 
 async function waitReg(id){ api('تحويل_للانتظار',{رقم_الطلب:id}); Swal.fire({icon:'info',title:'تم التحويل للانتظار',timer:1500,timerProgressBar:true,showConfirmButton:false}); renderAdminRequests(); }
-}
 
 async function rejectReg(id){
   const {isConfirmed,value}=await Swal.fire({
@@ -1465,7 +1464,7 @@ async function renderAdminAllWarnings(){
         <div class="card-actions">
           <select class="filter-input" id="awFilterCircle" onchange="applyAllWarnFilters()">
             <option value="">كل الحلق</option>
-            \${(window._allWarnCircles||[]).map(h=>`<option>\${h}</option>`).join('')}
+            ${(window._allWarnCircles||[]).map(h=>`<option>${h}</option>`).join('')}
           </select>
           <input class="filter-input" id="awFilterSearch" placeholder="بحث باسم الطالب…" oninput="applyAllWarnFilters()" style="min-width:140px">
         </div>
