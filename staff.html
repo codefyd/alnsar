@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -21,7 +22,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ══ هيدر ══ */
 .site-header{background:var(--primary);position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.18);}
-.header-inner{display:flex;align-items:center;gap:16px;padding:14px 24px;max-width:1400px;margin:0 auto;}
+.header-inner{display:flex;align-items:center;gap:16px;padding:14px 24px;width:min(100%, 1680px);max-width:none;margin:0 auto;}
 .header-logo{width:48px;height:48px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .header-logo i{font-size:22px;color:var(--primary);}
 .header-title h1{font-size:18px;font-weight:800;color:#fff;line-height:1.2;}
@@ -53,7 +54,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* شريط جانبي */
 .sidebar{width:230px;background:var(--surface-2);border-left:1px solid var(--border);flex-shrink:0;overflow-y:auto;transition:transform .3s;}
 @media(max-width:900px){
-#hambBtn{display:block !important;}
   .sidebar{position:fixed;top:76px;right:0;height:calc(100vh - 76px);z-index:160;transform:translateX(100%);box-shadow:-4px 0 20px rgba(0,0,0,.15);}
   .sidebar.open{transform:translateX(0);}
   #hambBtn{display:flex !important;}
@@ -70,7 +70,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .nav-badge{margin-right:auto;background:var(--danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:700;}
 
 /* محتوى رئيسي */
-.main-content{flex:1;padding:20px 24px;overflow-x:hidden;overflow-y:auto;max-width:100%;}
+.main-content{flex:1;width:100%;padding:24px 28px;overflow-x:hidden;overflow-y:auto;max-width:100%;}
 
 /* ══ KPI Cards ══ */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px;}
@@ -176,7 +176,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ══ responsive ══ */
 @media(max-width:900px){
-#hambBtn{display:block !important;}
   .sidebar{position:fixed;top:76px;right:0;height:calc(100vh - 76px);z-index:160;transform:translateX(100%);box-shadow:-4px 0 20px rgba(0,0,0,.15);}
   .sidebar.open{transform:translateX(0);}
   .main-content{padding:16px;}
@@ -193,7 +192,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </style>
 </head>
 <body>
-<div id="globalSpin" style="position:fixed;inset:0;background:rgba(255,255,255,.8);z-index:2000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;"><div class="spinner-ring" style="width:40px;height:40px;border:4px solid #ddd5c0;border-top-color:#1a3c5e;border-radius:50%;animation:spin .8s linear infinite;"></div><p id="spinText" style="font-weight:700;color:#1a3c5e">جارٍ التحميل…</p></div>
 
 <!-- ══ شاشة الدخول ══ -->
 <div id="loginScreen">
@@ -201,7 +199,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="login-logo"><i class="fas fa-book-open-reader"></i></div>
     <h2>بوابة العاملين</h2>
     <p>مجمع تحفيظ القرآن الكريم<br>أدخل رمز الدخول الخاص بك</p>
-    <input class="login-input" type="password" id="loginCode" oninput="if(this.value.length===6)doLogin()" placeholder="● ● ● ●" maxlength="10"
+    <input class="login-input" type="password" id="loginCode" placeholder="● ● ● ●" maxlength="10"
       onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn-login" id="btnLogin" onclick="doLogin()"><i class="fas fa-right-to-bracket me-2"></i>دخول</button>
     <div class="login-error" id="loginError"><i class="fas fa-circle-xmark me-1"></i>رمز الدخول غير صحيح</div>
@@ -214,7 +212,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- ══ هيدر ══ -->
 <header class="site-header" id="appHeader" style="display:none;">
-<button id="hambBtn" onclick="toggleSidebar()" style="display:none;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;margin-right:15px;"><i class="fas fa-bars"></i></button>
   <div class="header-inner">
     <button style="display:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;width:36px;height:36px;border-radius:8px;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0;margin-left:4px" id="hambBtn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
     <div class="header-logo"><i class="fas fa-book-open-reader"></i></div>
@@ -235,6 +232,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- ══ تطبيق رئيسي ══ -->
 <div id="appScreen">
+<div id="sidebarOverlay" onclick="closeSidebar()" style="display:none;position:fixed;inset:76px 0 0 0;background:rgba(0,0,0,.35);z-index:150;"></div>
 <div class="app-layout">
 
   <!-- شريط جانبي -->
@@ -266,6 +264,10 @@ let currentUser = null;
 let allStudents = [];
 let studentsPage = 1;
 const PAGE_SIZE = 50;
+let currentPage = '';
+let currentAdminReqTab = 'reqNew';
+let currentAdminEduTab = 'eduAdmOpen';
+let currentAllWarningsFilters = {circle:'',stage:'',search:''};
 
 const GRADES = {
   'ابتدائي':['الأول الابتدائي','الثاني الابتدائي','الثالث الابتدائي','الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي'],
@@ -300,6 +302,35 @@ function buildMsg(template, vars){
 }
 function hijriDate(){
   return new Date().toLocaleDateString('ar-SA-u-ca-islamic',{year:'numeric',month:'long',day:'numeric'});
+}
+
+function safeArray(v){ return Array.isArray(v) ? v : []; }
+function updateReqBadge(){
+  const req = window._cachedRequests || {};
+  const count = safeArray(req['جديد']).length + safeArray(req['تعديلات']).length;
+  const el = document.getElementById('nbReq');
+  if(el) el.textContent = count || '';
+}
+function removeRequestFromCache(id){
+  if(!window._cachedRequests) return;
+  ['جديد','انتظار','تعديلات'].forEach(k=>{
+    window._cachedRequests[k] = safeArray(window._cachedRequests[k]).filter(x=>String(x['رقم_الطلب'])!==String(id));
+  });
+  updateReqBadge();
+}
+function moveRegistrationRequest(id, toState){
+  if(!window._cachedRequests) return;
+  let picked = null;
+  ['جديد','انتظار'].forEach(k=>{
+    const arr = safeArray(window._cachedRequests[k]);
+    const found = arr.find(x=>String(x['رقم_الطلب'])===String(id));
+    if(found) picked = {...found, 'حالة_الطلب': toState};
+    window._cachedRequests[k] = arr.filter(x=>String(x['رقم_الطلب'])!==String(id));
+  });
+  if(picked && toState==='انتظار'){
+    window._cachedRequests['انتظار'] = [picked, ...safeArray(window._cachedRequests['انتظار'])];
+  }
+  updateReqBadge();
 }
 
 // ══ جوال: شريط جانبي ══
@@ -337,7 +368,13 @@ async function doLogin(){
     }
   } catch(e){spin(false);alert('خطأ في الاتصال');}
 }
-function doLogout(){ window.location.reload(); }
+function doLogout(){
+  currentPage='';
+  currentAdminReqTab='reqNew';
+  currentAdminEduTab='eduAdmOpen';
+  currentAllWarningsFilters={circle:'',stage:'',search:''};
+  window.location.href='index.html';
+}
 function roleLabel(r){
   return r==='مشرف_اداري'?'مشرف إداري':r==='مشرف_تعليمي'?'مشرف تعليمي':r==='معلم'?'معلم':'—';
 }
@@ -413,6 +450,7 @@ async function prefetchAdminData(){
     window._cachedEduWarnings=rEduW.انذارات||[];
     window._cachedTemplates=rTpls.قوالب||[];
     window._cachedKpi=rKpi.تقارير||{};
+    updateReqBadge();
   } catch(e){ console.error('prefetch error:', e); }
 }
 
@@ -435,7 +473,8 @@ function setActiveNav(id){
 //  TEACHER PAGES
 // ══════════════════════════════════════════════════
 async function loadPage(page){
-  // mark active
+  currentPage = page;
+  closeSidebar();
   document.querySelectorAll('.nav-item').forEach(n=>{
     n.classList.toggle('active', n.getAttribute('onclick')===`loadPage('${page}')`);
   });
@@ -450,11 +489,12 @@ async function loadPage(page){
   else if(page==='eduAllStudents') await renderEduAllStudents();
   else if(page==='adminKpi')    await renderAdminKpi();
   else if(page==='adminStudents') await renderAdminStudents();
-  else if(page==='adminRequests') await renderAdminRequests(getCurrentTabId());
+  else if(page==='adminRequests') await renderAdminRequests();
   else if(page==='adminEduWarnings') await renderAdminEduWarnings();
   else if(page==='adminAdmWarnings') await renderAdminAdmWarnings();
   else if(page==='adminAllWarnings') await renderAdminAllWarnings();
   else if(page==='settings')    await renderSettings();
+  else if(page==='directorDashboard') await renderDirectorDashboard();
 }
 
 // ── معلم: طلاب الحلقة ──
@@ -672,8 +712,13 @@ async function updateEduProc(id){
   spin(true,'جارٍ الحفظ…');
   const r=await api('تحديث_إجراء_انذار_تعليمي',{رقم_الانذار:id,الإجراء:done?'مكتمل':val,مكتمل:done});
   spin(false);
-  if(r.نجاح){if(sel&&!done)sel.value='';Swal.fire({icon:'success',title:'تم التحديث',timer:1500,timerProgressBar:true,showConfirmButton:false});}
+  if(r.نجاح){
+    if(sel&&!done) sel.value='';
+    if(currentPage==='adminAllWarnings') renderAdminAllWarnings();
+    Swal.fire({icon:'success',title:'تم التحديث',timer:1500,timerProgressBar:true,showConfirmButton:false});
+  }
 }
+
 
 function sendWa(phone,studentName,parentName,reason,isStudent){
   const tpl=isStudent?window._tplStudent:window._tplParent;
@@ -1010,39 +1055,48 @@ function swalField(label,id,val,type='text',disabled=false){
 
 // ══ ADMIN: الطلبات الواردة ══
 async function renderAdminRequests(){
-  const r=await api('جلب_طلبات_التسجيل',{});
-  const جديد  =(r.طلبات||[]).filter(ط=>ط['حالة_الطلب']==='جديد');
-  const انتظار=(r.طلبات||[]).filter(ط=>ط['حالة_الطلب']==='انتظار');
-  const مرفوض =(r.طلبات||[]).filter(ط=>ط['حالة_الطلب']==='مرفوض');
-  const r2=await api('جلب_طلبات_التعديل',{});
-  const تعديلات=r2.طلبات||[];
+  let جديد = safeArray(window._cachedRequests?.['جديد']);
+  let انتظار = safeArray(window._cachedRequests?.['انتظار']);
+  let تعديلات = safeArray(window._cachedRequests?.['تعديلات']);
 
-  const badgeCount=جديد.length+تعديلات.length; // fix #11: registration + edit only
-      if(document.getElementById('nbReq')) document.getElementById('nbReq').textContent=badgeCount||'';
+  if(!جديد.length && !انتظار.length && !تعديلات.length){
+    const [r, r2] = await Promise.all([
+      api('جلب_طلبات_التسجيل',{}),
+      api('جلب_طلبات_التعديل',{}),
+    ]);
+    const all = safeArray(r.طلبات);
+    جديد = all.filter(ط=>ط['حالة_الطلب']==='جديد');
+    انتظار = all.filter(ط=>ط['حالة_الطلب']==='انتظار');
+    تعديلات = safeArray(r2.طلبات);
+    window._cachedRequests = { جديد:[...جديد], انتظار:[...انتظار], تعديلات:[...تعديلات] };
+  }
 
+  updateReqBadge();
   const mc=document.getElementById('mainContent');
   mc.innerHTML=`
     <div class="section-title"><i class="fas fa-inbox"></i> الطلبات الواردة</div>
     <div class="content-card">
       <div class="sub-tabs">
-        <button class="sub-tab active" onclick="switchSubTab(this,'reqNew')"><i class="fas fa-clock"></i> جديد (${جديد.length})</button>
-        <button class="sub-tab" onclick="switchSubTab(this,'reqWait')"><i class="fas fa-hourglass-half"></i> الانتظار (${انتظار.length})</button>
-        <button class="sub-tab" onclick="switchSubTab(this,'reqRej')"><i class="fas fa-circle-xmark"></i> المرفوضون (${مرفوض.length})</button>
-        <button class="sub-tab" onclick="switchSubTab(this,'reqEdit')"><i class="fas fa-pen"></i> التعديلات (${تعديلات.length})</button>
+        <button class="sub-tab ${currentAdminReqTab==='reqNew'?'active':''}" onclick="switchSubTab(this,'reqNew')"><i class="fas fa-clock"></i> جديد (${جديد.length})</button>
+        <button class="sub-tab ${currentAdminReqTab==='reqWait'?'active':''}" onclick="switchSubTab(this,'reqWait')"><i class="fas fa-hourglass-half"></i> الانتظار (${انتظار.length})</button>
+        <button class="sub-tab ${currentAdminReqTab==='reqRej'?'active':''}" onclick="switchSubTab(this,'reqRej')"><i class="fas fa-circle-xmark"></i> المرفوضون</button>
+        <button class="sub-tab ${currentAdminReqTab==='reqEdit'?'active':''}" onclick="switchSubTab(this,'reqEdit')"><i class="fas fa-pen"></i> التعديلات (${تعديلات.length})</button>
       </div>
-      <div class="sub-panel active" id="reqNew">${buildRegTable(جديد,'new')}</div>
-      <div class="sub-panel" id="reqWait">${buildRegTable(انتظار,'wait')}</div>
-      <div class="sub-panel" id="reqRej">
+      <div class="sub-panel ${currentAdminReqTab==='reqNew'?'active':''}" id="reqNew">${buildRegTable(جديد,'new')}</div>
+      <div class="sub-panel ${currentAdminReqTab==='reqWait'?'active':''}" id="reqWait">${buildRegTable(انتظار,'wait')}</div>
+      <div class="sub-panel ${currentAdminReqTab==='reqRej'?'active':''}" id="reqRej">
         <div class="card-body" id="rejContent">
           <div class="empty-state">
             <i class="fas fa-hourglass"></i>
-            <h3>اضغط لتحميل قائمة المرفوضين</h3>
+            <h3>يتم تحميل المرفوضين عند فتح التبويب فقط</h3>
             <button class="btn-o btn-sm mt-2" onclick="loadRejectedNow()"><i class="fas fa-download me-1"></i> تحميل</button>
           </div>
         </div>
       </div>
-      <div class="sub-panel" id="reqEdit">${buildEditTable(تعديلات)}</div>
+      <div class="sub-panel ${currentAdminReqTab==='reqEdit'?'active':''}" id="reqEdit">${buildEditTable(تعديلات)}</div>
     </div>`;
+
+  if(currentAdminReqTab==='reqRej') loadRejectedNow();
 }
 
 function buildRegTable(list,mode){
@@ -1062,7 +1116,7 @@ function buildRegTable(list,mode){
     <table class="data-table">
       <thead><tr><th>الاسم</th><th>الجوال</th><th>جوال و.الأمر</th><th>المرحلة</th><th>الصف</th><th>تاريخ الطلب</th><th>إجراء</th></tr></thead>
       <tbody>${list.map(ط=>`
-        <tr>
+        <tr id="editRow_${ط['رقم_الطلب']}">
           <td><strong>${ط['اسم_الطالب']||'—'}</strong></td>
           <td><a href="#" onclick="whatsapp('${ط['رقم_جوال_الطالب']}');return false" style="color:var(--success)"><i class="fab fa-whatsapp me-1"></i>${ط['رقم_جوال_الطالب']||'—'}</a></td>
           <td><a href="#" onclick="whatsapp('${ط['رقم_جوال_ولي_الامر']}');return false" style="color:var(--success)"><i class="fab fa-whatsapp me-1"></i>${ط['رقم_جوال_ولي_الامر']||'—'}</a></td>
@@ -1082,6 +1136,7 @@ async function loadRejectedNow(){
   if(el) el.innerHTML='<div class="empty-state"><div class="spinner-ring" style="margin:0 auto 8px"></div><p>جارٍ التحميل…</p></div>';
   const r=await api('جلب_طلبات_التسجيل',{حالة:'مرفوض'});
   const مرفوض=r.طلبات||[];
+  window._rejectedLoaded = true;
   if(el) el.innerHTML='<div style="overflow-x:auto">'+buildRejTable(مرفوض)+'</div>';
 }
 
@@ -1109,7 +1164,7 @@ function buildEditTable(list){
     <table class="data-table">
       <thead><tr><th>اسم الطالب</th><th>الحقل</th><th>القيمة السابقة</th><th>القيمة الجديدة</th><th>إجراء</th></tr></thead>
       <tbody>${list.map(ط=>`
-        <tr>
+        <tr id="editRow_${ط['رقم_الطلب']}">
           <td><strong>${ط['اسم_الطالب']||'—'}</strong></td>
           <td>${ط['الحقل_المراد_تعديله']||'—'}</td>
           <td style="color:var(--danger)">${ط['القيمة_القديمة']||'—'}</td>
@@ -1124,14 +1179,15 @@ function buildEditTable(list){
   </div>`;
 }
 
-function getCurrentTabId(){
-  return document.querySelector('.sub-tab.active')?.getAttribute('onclick').match(/'([^']+)'/)[1] || 'reqNew';
-}
 function switchSubTab(btn,panelId){
-  btn.closest('.content-card').querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
-  btn.closest('.content-card').querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+  const card = btn.closest('.content-card');
+  card.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+  card.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById(panelId).classList.add('active');
+  if(['reqNew','reqWait','reqRej','reqEdit'].includes(panelId)) currentAdminReqTab = panelId;
+  if(['eduAdmOpen','eduAdmAll'].includes(panelId)) currentAdminEduTab = panelId;
+  if(panelId==='reqRej' && !window._rejectedLoaded) loadRejectedNow();
 }
 
 async function acceptReg(id,name){
@@ -1155,11 +1211,25 @@ async function acceptReg(id,name){
   spin(true,'جارٍ قبول الطالب…');
   const r=await api('قبول_طلب_تسجيل',{رقم_الطلب:id,الحلقة:value});
   spin(false);
-  if(r.نجاح){Swal.fire({icon:'success',title:'تم القبول!',text:'رقم الطالب: '+r.رقم_الطالب,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});renderAdminRequests(getCurrentTabId());}
+  if(r.نجاح){
+    removeRequestFromCache(id);
+    Swal.fire({icon:'success',title:'تم القبول!',text:'رقم الطالب: '+r.رقم_الطالب,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});
+    renderAdminRequests();
+  }
   else Swal.fire({icon:'error',title:'خطأ',text:r.خطأ,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});
 }
 
-async function waitReg(id){ api('تحويل_للانتظار',{رقم_الطلب:id}); Swal.fire({icon:'info',title:'تم التحويل للانتظار',timer:1500,timerProgressBar:true,showConfirmButton:false}); renderAdminRequests(getCurrentTabId()); }
+async function waitReg(id){
+  spin(true,'جارٍ التحويل…');
+  const r=await api('تحويل_للانتظار',{رقم_الطلب:id});
+  spin(false);
+  if(r?.نجاح!==false){
+    moveRegistrationRequest(id,'انتظار');
+    currentAdminReqTab='reqWait';
+    Swal.fire({icon:'info',title:'تم التحويل للانتظار',timer:1500,timerProgressBar:true,showConfirmButton:false});
+    renderAdminRequests();
+  }
+}
   
 async function rejectReg(id){
   const {isConfirmed,value}=await Swal.fire({
@@ -1178,16 +1248,24 @@ async function rejectReg(id){
   spin(true);
   const r=await api('رفض_طلب_تسجيل',{رقم_الطلب:id,سبب_الرفض:value});
   spin(false);
-  if(r.نجاح){Swal.fire({icon:'success',title:'تم الرفض',timer:2000,timerProgressBar:true,showConfirmButton:false});renderAdminRequests(getCurrentTabId());}
+  if(r.نجاح){
+    removeRequestFromCache(id);
+    Swal.fire({icon:'success',title:'تم الرفض',timer:2000,timerProgressBar:true,showConfirmButton:false});
+    renderAdminRequests();
+  }
 }
+
 
 async function approveEdit(id){
   const row=document.getElementById('editRow_'+id);
   if(row){row.style.opacity='.4';}
-  const row=document.getElementById('editRow_'+id); if(row)row.style.opacity='0.5'; const r=await api('قبول_طلب_تعديل',{رقم_الطلب:id});
+  spin(true);const r=await api('قبول_طلب_تعديل',{رقم_الطلب:id});spin(false);
   if(r.نجاح){
+    removeRequestFromCache(id);
     row?.remove();
+    currentAdminReqTab='reqEdit';
     Swal.fire({icon:'success',title:'تم القبول',timer:1500,timerProgressBar:true,showConfirmButton:false});
+    renderAdminRequests();
   }
 }
 async function rejectEdit(id){
@@ -1195,8 +1273,11 @@ async function rejectEdit(id){
   if(row){row.style.opacity='.4';}
   spin(true);const r=await api('رفض_طلب_تعديل',{رقم_الطلب:id});spin(false);
   if(r.نجاح){
+    removeRequestFromCache(id);
     row?.remove();
+    currentAdminReqTab='reqEdit';
     Swal.fire({icon:'info',title:'تم الرفض',timer:1500,timerProgressBar:true,showConfirmButton:false});
+    renderAdminRequests();
   }
 }
 
@@ -1262,6 +1343,10 @@ async function renderAdminEduWarnings(){
       </div>
     </div>`;
   window._adminEduOpen=مفتوحة; window._adminEduProc=إجراءات;
+  if(currentAdminEduTab==='eduAdmAll'){
+    const btn=document.querySelector("[onclick=\"switchSubTab(this,'eduAdmAll')\"]");
+    if(btn) switchSubTab(btn,'eduAdmAll');
+  }
 }
 
 function renderAdminEduOpenCards(list,إجراءات){
@@ -1301,8 +1386,12 @@ async function adminUpdateEduProc(id){
   spin(true);
   const r=await api('تحديث_إجراء_انذار_تعليمي',{رقم_الانذار:id,الإجراء:done?'مكتمل':val,مكتمل:done});
   spin(false);
-  if(r.نجاح){if(done)document.getElementById('awc_'+id)?.remove(); else sel.value='';}
+  if(r.نجاح){
+    if(done) document.getElementById('awc_'+id)?.remove(); else sel.value='';
+    if(currentPage==='adminAllWarnings') renderAdminAllWarnings();
+  }
 }
+
 
 // ══ ADMIN: الإنذارات الإدارية ══
 async function renderAdminAdmWarnings(){
@@ -1426,6 +1515,7 @@ async function saveAdmWarn(id,name,circle,threshold,count){
   await api('تحديث_إجراء_انذار_اداري',{رقم_الطالب:id,اسم_الطالب:name,الحلقة:circle,نوع_الانذار:window._curAdmWarnType,رقم_العتبة:threshold,عدد_المخالفات:count,الإجراء:done?'مكتمل':val,مكتمل:done});
   spin(false);
   Swal.fire({icon:'success',title:'تم التسجيل',timer:1500,timerProgressBar:true,showConfirmButton:false});
+  if(currentPage==='adminAllWarnings') renderAdminAllWarnings();
   if(done) loadAdmWarnType(window._curAdmWarnType,null);
 }
 
@@ -1437,30 +1527,42 @@ function sendAdmWa(phone,studentName,parentName,threshold,count){
 
 // ══ ADMIN: جميع الإنذارات ══
 async function renderAdminAllWarnings(){
-  const [rEdu,rAdm]=await Promise.all([
+  const [rEdu,rAdm,rStudents]=await Promise.all([
     api('جلب_الانذارات_التعليمية',{}),
     api('جلب_ارشيف_انذارات_ادارية',{}),
+    api('جلب_الطلاب',{حجم_الصفحة:999}),
   ]);
   const edu=rEdu.انذارات||[];
   const adm=rAdm.انذارات||[];
+  const students=rStudents.طلاب||[];
+  const studentMap={};
+  students.forEach(s=>{ studentMap[s['اسم_الطالب']] = s; });
 
-  // تجميع حسب الطالب
   const byStudent={};
+  const ensure=(name,circle='—')=>{
+    if(!byStudent[name]){
+      const st=studentMap[name]||{};
+      byStudent[name]={name:name,circle:circle||st['الحلقة']||'—',stage:st['المرحلة_الدراسية']||'—',edu:[],adm_late:[],adm_abs:[],adm_ex:[]};
+    }
+    return byStudent[name];
+  };
+
   edu.forEach(ا=>{
-    const k=ا['اسم_الطالب']||'؟';
-    if(!byStudent[k]) byStudent[k]={name:k,circle:ا['الحلقة']||'—',edu:[],adm_late:[],adm_abs:[],adm_ex:[]};
-    byStudent[k].edu.push(ا);
+    const row=ensure(ا['اسم_الطالب']||'؟', ا['الحلقة']||'—');
+    row.edu.push(ا);
   });
   adm.forEach(ا=>{
-    const k=ا['اسم_الطالب']||'؟';
-    if(!byStudent[k]) byStudent[k]={name:k,circle:ا['الحلقة']||'—',edu:[],adm_late:[],adm_abs:[],adm_ex:[]};
-    if(ا['نوع_الانذار']==='تأخر')         byStudent[k].adm_late.push(ا);
-    else if(ا['نوع_الانذار']==='غياب')     byStudent[k].adm_abs.push(ا);
-    else if(ا['نوع_الانذار']==='غياب_بعذر') byStudent[k].adm_ex.push(ا);
+    const row=ensure(ا['اسم_الطالب']||'؟', ا['الحلقة']||'—');
+    if(ا['نوع_الانذار']==='تأخر') row.adm_late.push(ا);
+    else if(ا['نوع_الانذار']==='غياب') row.adm_abs.push(ا);
+    else if(ا['نوع_الانذار']==='غياب_بعذر') row.adm_ex.push(ا);
   });
 
+  const list=Object.values(byStudent);
+  const circles=[...new Set(list.map(s=>s.circle).filter(Boolean))];
+  const stages=[...new Set(list.map(s=>s.stage).filter(Boolean))];
   window._allWarnData=byStudent;
-  window._allWarnCircles=window._studentsCircles||[];
+
   const mc=document.getElementById('mainContent');
   mc.innerHTML=`
     <div class="section-title"><i class="fas fa-list-check"></i> جميع الإنذارات</div>
@@ -1470,36 +1572,31 @@ async function renderAdminAllWarnings(){
         <div class="card-actions">
           <select class="filter-input" id="awFilterCircle" onchange="applyAllWarnFilters()">
             <option value="">كل الحلق</option>
-            ${(window._allWarnCircles||[]).map(h=>`<option>${h}</option>`).join('')}
+            ${circles.map(h=>`<option ${currentAllWarningsFilters.circle===h?'selected':''}>${h}</option>`).join('')}
           </select>
-          <select class="filter-input" id="awFilterLevel" onchange="applyAllWarnFilters()">
+          <select class="filter-input" id="awFilterStage" onchange="applyAllWarnFilters()">
             <option value="">كل المراحل</option>
-            <option>ابتدائي</option><option>متوسط</option><option>ثانوي</option>
+            ${stages.map(s=>`<option ${currentAllWarningsFilters.stage===s?'selected':''}>${s}</option>`).join('')}
           </select>
-          <input class="filter-input" id="awFilterSearch" placeholder="بحث باسم الطالب…" oninput="applyAllWarnFilters()" style="min-width:140px">
-        </div>
-        <div class="card-actions">
-          <select class="filter-input" id="awFilterCircle" onchange="applyAllWarnFilters()">
-            <option value="">كل الحلق</option>
-            ${(window._allWarnCircles||[]).map(h=>`<option>${h}</option>`).join('')}
-          <input class="filter-input" id="awFilterSearch" placeholder="بحث باسم الطالب…" oninput="applyAllWarnFilters()" style="min-width:140px">
+          <input class="filter-input" id="awFilterSearch" placeholder="بحث باسم الطالب…" value="${currentAllWarningsFilters.search||''}" oninput="applyAllWarnFilters()" style="min-width:140px">
         </div>
       </div>
       <div style="overflow-x:auto;">
         <table class="data-table" id="allWarnTable">
-          <thead><tr><th>الطالب</th><th>الحلقة</th><th>إنذارات تأخر</th><th>إنذارات غياب</th><th>غياب بعذر</th><th>إنذارات تعليمية</th></tr></thead>
-          <tbody id="allWarnBody">${buildAllWarnRows(Object.values(byStudent))}</tbody>
+          <thead><tr><th>الطالب</th><th>الحلقة</th><th>المرحلة</th><th>إنذارات تأخر</th><th>إنذارات غياب</th><th>غياب بعذر</th><th>إنذارات تعليمية</th></tr></thead>
+          <tbody id="allWarnBody">${buildAllWarnRows(list)}</tbody>
         </table>
       </div>
     </div>`;
 }
 
 function buildAllWarnRows(list){
-  if(!list.length) return `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted)">لا توجد إنذارات</td></tr>`;
+  if(!list.length) return `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">لا توجد إنذارات</td></tr>`;
   return list.map(s=>`
     <tr>
       <td><strong>${s.name}</strong></td>
       <td>${s.circle}</td>
+      <td>${s.stage||'—'}</td>
       <td>${s.adm_late.length?`<span class="badge-pill bp-warning">${s.adm_late.length} إنذار</span>`:'—'}</td>
       <td>${s.adm_abs.length?`<span class="badge-pill bp-danger">${s.adm_abs.length} إنذار</span>`:'—'}</td>
       <td>${s.adm_ex.length?`<span class="badge-pill bp-info">${s.adm_ex.length} إنذار</span>`:'—'}</td>
@@ -1510,9 +1607,12 @@ function buildAllWarnRows(list){
 function filterAllWarn(q){ applyAllWarnFilters(); }
 function applyAllWarnFilters(){
   const c=document.getElementById('awFilterCircle')?.value||'';
+  const stage=document.getElementById('awFilterStage')?.value||'';
   const q=document.getElementById('awFilterSearch')?.value||'';
+  currentAllWarningsFilters={circle:c,stage:stage,search:q};
   let list=Object.values(window._allWarnData||{});
   if(c) list=list.filter(s=>s.circle===c);
+  if(stage) list=list.filter(s=>s.stage===stage);
   if(q) list=list.filter(s=>s.name.includes(q));
   document.getElementById('allWarnBody').innerHTML=buildAllWarnRows(list);
 }
