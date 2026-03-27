@@ -1,4 +1,7 @@
+ابيك تعيد بناء الكود من دون أي تغير او تعديل 
+
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -247,7 +250,6 @@ function q(s) {
         .replace(/'/g, "\\'")
         .replace(/"/g, '\\"')
         .replace(/\r?\n/g, ' ');
-}
 function qj(o) {
     return encodeURIComponent(JSON.stringify(o));
 }
@@ -255,7 +257,7 @@ function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString(
 function roleLabel(r){return{مشرف_اداري: 'مشرف إداري',مشرف_تعليمي: 'مشرف تعليمي',معلم: 'معلم',مدير: 'مدير'}[r]||r||'—';}
 function sBadge(s){var m={منتظم: 'bp-ok', 'غير منتظم': 'bp-wa',موقوف: 'bp-er', 'في الانتظار': 'bp-in',منسحب: 'bp-gr'};return  '<span class="bp '+(m[s]||'bp-gr')+'">'+(s||'—')+'</span>';}
 function kpiCard(label,val,icon,cls){return  '<div class="kpi-card '+(cls||'')+'"><div class="klabel"><i class="fas '+icon+' fa-xs"></i>  '+label+'</div><div class="kval">'+val+'</div><i class="fas '+icon+' bgico"></i></div>';}
-function sField(label,id,val2,type,disabled){return  '<div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">'+label+(disabled?' <span style="font-size:10px;color:#aaa">(ثابت)</span>':'')+'</label><input id="'+id+'" type="'+(type|| 'text')+'" class="swal2-input" value="'+(val2||'')+'"  '+(disabled? 'disabled':'')+' style="font-family:Tajawal;width:100%;margin:0;'+(disabled? 'background:#f5f5f5;color:#aaa':'')+'"></div>';}
+function sField(label,id,val2,type,disabled){return  '<div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">'+label+(disabled?' <span style="font-size:10px;color:#aaa">(ثابت)</span>':'')+'</label><input id="'+id+'" type="'+(type|| 'text')+'" class=“swal2-input" value="'+(val2||'')+'"  '+(disabled? 'disabled':'')+' style=“font-family:Tajawal;width:100%;margin:0;'+(disabled? 'background:#f5f5f5;color:#aaa':'')+'"></div>';}
 function whatsapp(phone,msg){var p=String(phone||'').replace(/\D/g,'');var i=p.startsWith( '0')? '966'+p.slice(1):p;window.open( 'https://wa.me/'+i+(msg?'?text='+encodeURIComponent(msg):''),'_blank');}
 function buildMsg(tpl,vars){var t=tpl||'';Object.keys(vars).forEach(function(k){t=t.split('#'+k).join(vars[k]||'');});return t;}
 function hijri(){return new Date().toLocaleDateString( 'ar-SA-u-ca-islamic',{year: 'numeric',month: 'long',day: 'numeric'});}
@@ -444,7 +446,7 @@ nav(m[D.role]|| 'aKpi');
 }
 function nav(page){
 closeSidebar();
-document.querySelectorAll('.nitem').forEach(function(n){n.classList.toggle( 'active',n.getAttribute( 'onclick')=== "nav('"+page+"')");});
+document.querySelectorAll('.nitem').forEach(function(n){n.classList.toggle( 'active',n.getAttribute( 'onclick')===“nav('"+page+"')");});
 mc('<div class="empty" style="padding:60px 20px"><div class="spri" style="margin:0 auto 10px"></div><p style="margin:0">جارٍ التحميل…</p></div>');
 ({tSt:pgTeacherSt,tKpi:pgTeacherKpi,eKpi:pgEduKpi,eW:pgEduW,eSt:pgEduSt,aKpi:pgAdminKpi,aSt:pgAdminSt,aReq:pgAdminReq,aEduW:pgAdminEduW,aAdmW:pgAdminAdmW,aAllW:pgAdminAllW,settings:pgSettings,dirKpi:pgDirectorKpi})[page]();
 }
@@ -657,7 +659,7 @@ function buildStRows(list){
 if(!list.length)return'<tr><td colspan="7" style="text-align:center;padding:18px;color:var(--ts)">لا توجد نتائج</td></tr>';
 return list.map(function(ط){
 return'<tr><td><input type="checkbox" class="sc" value="'+q(ط['رقم_الطالب']||'')+'" onchange="toggleSel(this)"></td>'
-+'<td><a href="#" onclick="openStDetail(\''+qj(ط)+'\'); return false;" style="color:var(--pl);font-weight:700;text-decoration:none">'+q(ط['اسم_الطالب']||'—')+'</a></td><td style="font-size:11.5px;color:var(--ts)">'+q(ط[ 'رقم_الهوية']||'—')+'</td>'
++'<td><a href="#" onclick="openStDetail(\''+qj(ط)+'\'); return false;" style="color:var(--pl);font-weight:700;text-decoration:none">'+q(ط['اسم_الطالب']||'—')+'</a></td>'+'<td style="font-size:11.5px;color:var(--ts)">'+q(ط[ 'رقم_الهوية']||'—')+'</td>'
 +'<td>'+(ط[ 'الحلقة']||'—')+'</td>'
 +'<td><strong>'+(ط[ 'مجموع_الحفظ']||0)+'</strong> جزء</td>'
 +'<td>'+sBadge(ط[ 'حالة_الطالب'])+'</td>'
@@ -701,10 +703,10 @@ var ط=JSON.parse(decodeURIComponent(sdStr));
 var co=D.circles.map(function(h){return'<option value="'+h+'"  '+(h===ط[ 'الحلقة']? 'selected':'')+'>'+h+'</option>';}).join('');
 var so=D.statuses.map(function(h){return'<option value="'+h+'"  '+(h===ط[ 'حالة_الطالب']? 'selected':'')+'>'+h+'</option>';}).join('');
 var go=(GRADES[ط[ 'المرحلة_الدراسية']]||[]).map(function(g){return'<option  '+(g===ط[ 'الصف_الدراسي']? 'selected':'')+'>'+g+'</option>';}).join('');
-var res=await Swal.fire({title: 'تعديل:  '+q(ط[ 'اسم_الطالب']),width: '640px',html:'<div style="direction:rtl;display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:right">'+sField( 'الاسم الكامل', 'sd_name',ط[ 'اسم_الطالب'], 'text',true)+sField( 'رقم الهوية', 'sd_id',ط[ 'رقم_الهوية'], 'text',true)+sField( 'رقم الجوال', 'sd_phone',ط[ 'رقم_الجوال'], 'text',false)+sField( 'الحي/العنوان', 'sd_addr',ط[ 'الحي_العنوان'], 'text',false)+'<div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الحلقة</label><select id="sd_circle" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>'+co+'</select></div><div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الحالة</label><select id="sd_status" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>'+so+'</select></div><div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">المرحلة</label><select id="sd_stage" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0">'+[ 'ابتدائي', 'متوسط', 'ثانوي', 'جامعي'].map(function(s){return'<option  '+(s===ط[ 'المرحلة_الدراسية']? 'selected':'')+'>'+s+'</option>';}).join('')+'</select></div><div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الصف</label><select id="sd_grade" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>'+go+'</select></div>'+sField( 'مجموع الحفظ', 'sd_hifz',ط[ 'مجموع_الحفظ']||0, 'number',false)+sField( 'جوال ولي الأمر', 'sd_pph',ط[ 'رقم_جوال_ولي_الامر']||'', 'text',false)+'</div>',confirmButtonText: 'حفظ',cancelButtonText: 'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',customClass:{popup: 'swal-rtl'},preConfirm:function(){return{رقم_الجوال:val( 'sd_phone'),الحي_العنوان:val( 'sd_addr'),الحلقة:val( 'sd_circle'),حالة_الطالب:val( 'sd_status'),المرحلة_الدراسية:val( 'sd_stage'),الصف_الدراسي:val( 'sd_grade'),مجموع_الحفظ:val( 'sd_hifz'),رقم_جوال_ولي_الامر:val( 'sd_pph')};}});
+var res=await Swal.fire({title: 'تعديل:  '+q(ط[ 'اسم_الطالب']),width: '640px',html:'<div style="direction:rtl;display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:right">'+sField( 'الاسم الكامل', 'sd_name',ط[ 'اسم_الطالب'], 'text',true)+sField( 'رقم الهوية', 'sd_id',ط[ 'رقم_الهوية'], 'text',true)+sField( 'رقم الجوال', 'sd_phone',ط[ 'رقم_الجوال'], 'text',false)+sField( 'الحي/العنوان', 'sd_addr',ط[ 'الحي_العنوان'], 'text',false)+'<div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الحلقة</label><select id="sd_circle" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>'+co+'</select></div><div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الحالة</label><select id="sd_status" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>'+so+'</select></div><div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">المرحلة</label><select id="sd_stage" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0">'+[ 'ابتدائي', 'متوسط', 'ثانوي', 'جامعي'].map(function(s){return'<option  '+(s===ط[ 'المرحلة_الدراسية']? 'selected':'')+'>'+s+'</option>';}).join('')+'</select></div><div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">الصف</label><select id="sd_grade" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">—</option>'+go+'</select></div>'+sField( 'مجموع الحفظ', 'sd_hifz',ط[ 'مجموع_الحفظ']||0, 'number',false)+sField( 'جوال ولي الأمر', 'sd_pph',ط[ 'رقم_جوال_ولي_الامر']||'', 'text',false)+'</div>',confirmButtonText: 'حفظ',cancelButtonText: 'إلغاء',showCancelButton:true,confirmButtonColor:'#1a3c5e',customClass:{popup: 'swal-rtl'},preConfirm:function(){return{رقم_الجوال:val( 'sd_phone'),الحي_العنوان:val( 'sd_addr'),الحلقة:val( 'sd_circle'),حالة_الطالب:val( 'sd_status'),المرحلة_الدراسية:val( 'sd_stage'),الصف_الدراسي:val( 'sd_grade'),مجموع_الحفظ:val( 'sd_hifz'),*p:val( 'sd_pph')};}});
 if(!res.isConfirmed||!res.value)return;
-var edits={},pph=res.value.رقم_جوال_ولي_الامر;
-Object.keys(res.value).forEach(function(k){if(k!=='رقم_جوال_ولي_الامر'&&res.value[k]!=='')edits[k]=res.value[k];});
+var edits={},pph=res.value.*p;
+Object.keys(res.value).forEach(function(k){if(k!=='*p'&&res.value[k]!=='')edits[k]=res.value[k];});
 spin(true, 'جارٍ الحفظ…');var r=await api( 'تعديل_بيانات_طالب',{رقم_الطالب:ط[ 'رقم_الطالب'],تعديلات:edits,تعديلات_ولي_الامر:pph?{رقم_جوال_ولي_الامر:pph}:{}});spin(false);
 if(r.نجاح){Swal.fire({icon: 'success',title: 'تم الحفظ',timer:2000,timerProgressBar:true,showConfirmButton:false});reloadSt();}
 }
@@ -725,10 +727,10 @@ mc('<div class="stitle"><i class="fas fa-inbox"></i> الطلبات الوارد
 +'</div>'
 +'<div class="spanel '+(_curTab==='rqEdit'?'active':'')+'" id="rqEdit">'+buildEditTbl(arr(D.reqEdits))+'</div>'
 +'</div>');
-if(_curTab=== 'rqRej'&&!D.reqRejLoaded)loadRej();
+if(*curTab=== 'rqRej'&&!D.reqRejLoaded)loadRej();
 }
 function swRqTab(btn,id){
-_curTab=id;
+*curTab=id;
 document.querySelectorAll('#rqTabs .stab').forEach(function(b){b.classList.remove( 'active');});
 document.querySelectorAll('#rqTabs ~ .spanel').forEach(function(p){p.classList.remove( 'active');});
 btn.classList.add( 'active');
@@ -788,14 +790,14 @@ api( 'رفض_طلب_تسجيل',{رقم_الطلب:id,سبب_الرفض:res.valu
 Swal.fire({icon: 'success',title: 'تم الرفض',timer:1800,timerProgressBar:true,showConfirmButton:false});
 }
 async function approveEdit(id){
-var ab=document.getElementById('ea_'+id),rb=document.getElementById('er2_'+id);
+var ab=document.getElementById('ea*'+id),rb=document.getElementById('er2*'+id);
 if(ab)ab.disabled=true;if(rb)rb.disabled=true;
 spin(true);var r=await api( 'قبول_طلب_تعديل',{رقم_الطلب:id});spin(false);
-if(r.نجاح){var row=document.getElementById('er_'+id);if(row)row.remove();D.reqEdits=arr(D.reqEdits).filter(function(t){return t[ 'رقم_الطلب']!==id;});updateReqBadge();Swal.fire({icon: 'success',title: 'تم القبول',timer:1500,timerProgressBar:true,showConfirmButton:false});}
+if(r.نجاح){var row=document.getElementById('er*'+id);if(row)row.remove();D.reqEdits=arr(D.reqEdits).filter(function(t){return t[ 'رقم_الطلب']!==id;});updateReqBadge();Swal.fire({icon: 'success',title: 'تم القبول',timer:1500,timerProgressBar:true,showConfirmButton:false});}
 else{if(ab)ab.disabled=false;if(rb)rb.disabled=false;}
 }
 async function rejectEdit(id){
-var ab=document.getElementById('ea_'+id),rb=document.getElementById('er2_'+id);
+var ab=document.getElementById('ea*'+id),rb=document.getElementById('er2*'+id);
 if(ab)ab.disabled=true;if(rb)rb.disabled=true;
 spin(true);var r=await api( 'رفض_طلب_تعديل',{رقم_الطلب:id});spin(false);
 if(r.نجاح){var row=document.getElementById( 'er_'+id);if(row)row.remove();D.reqEdits=arr(D.reqEdits).filter(function(t){return t[ 'رقم_الطلب']!==id;});updateReqBadge();Swal.fire({icon: 'info',title: 'تم الرفض',timer:1500,timerProgressBar:true,showConfirmButton:false});}
@@ -852,15 +854,15 @@ return'<tr><td><strong>'+q(a[ 'اسم_الطالب']||'—')+'</strong></td><td>
 return'<table class="dt"><thead><tr><th>الطالب</th><th>الحلقة</th><th>جوال الطالب</th><th>جوال و.الأمر</th><th>السبب</th><th>الإجراء</th><th>الحالة</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 function filterAEW(c,q2){
-var l=arr(D._aewOpen);
+var l=arr(D.*aewOpen);
 if(c)l=l.filter(function(a){return a[ 'الحلقة']===c;});
 if(q2)l=l.filter(function(a){return String(a[ 'اسم_الطالب']||'').includes(q2);});
-var e=document.getElementById( 'aewOBody');if(e)e.innerHTML=buildAEWCards(l,arr(D._aewProcs));
+var e=document.getElementById( 'aewOBody');if(e)e.innerHTML=buildAEWCards(l,arr(D.*aewProcs));
 }
 async function saveEduWProc(id){
-var sel=document.getElementById('ap_'+id);var v2=sel?sel.value:'';if(!v2)return;
-var done=v2==='__done__';
-if(done){var el=document.getElementById('awc_'+id);if(el)el.remove();}
+var sel=document.getElementById('ap*'+id);var v2=sel?sel.value:'';if(!v2)return;
+var done=v2==='**done**';
+if(done){var el=document.getElementById('awc*'+id);if(el)el.remove();}
 spin(true);var r=await api( 'تحديث_إجراء_انذار_تعليمي',{رقم_الانذار:id,الإجراء:done? 'مكتمل':v2,مكتمل:done});spin(false);
 if(r.نجاح){
 D.adminEduW=arr(D.adminEduW).map(function(x){return String(x[ 'رقم_الانذار'])===String(id)?Object.assign({},x,{ 'حالة_الإجراء':done? 'مكتمل':v2, 'تاريخ_الإغلاق':done?new Date().toISOString():(x[ 'تاريخ_الإغلاق']||'')}):x;});
@@ -940,8 +942,8 @@ return'<div class="wcard"><div class="wico wi-l"><i class="fas fa-triangle-excla
 +btnWa+'</div></div>';
 }).join('');
 }
-function filterAdmW(c,q2){var l=arr(D._admNew);if(c)l=l.filter(function(ط){return ط[ 'الحلقة']===c;});if(q2)l=l.filter(function(ط){return String(ط[ 'اسم_الطالب']||'').includes(q2);});var e=document.getElementById( 'admWCards');if(e)e.innerHTML=buildAdmWCards(l);}
-async function saveAdmW(id,name,circle,threshold,count){var sel=document.getElementById('adwP_'+id);var v2=sel?sel.value:'';if(!v2)return;var done=v2==='__done__';spin(true);await api( 'تحديث_إجراء_انذار_اداري',{رقم_الطالب:id,اسم_الطالب:name,الحلقة:circle,نوع_الانذار:D.admType,رقم_العتبة:threshold,عدد_المخالفات:count,الإجراء:done? 'مكتمل':v2,مكتمل:done});spin(false);Swal.fire({icon: 'success',title: 'تم التسجيل',timer:1400,timerProgressBar:true,showConfirmButton:false});if(done)loadAdmWT(D.admType,null);else if(sel)sel.value='';}
+function filterAdmW(c,q2){var l=arr(D.*admNew);if(c)l=l.filter(function(ط){return ط[ 'الحلقة']===c;});if(q2)l=l.filter(function(ط){return String(ط[ 'اسم_الطالب']||'').includes(q2);});var e=document.getElementById( 'admWCards');if(e)e.innerHTML=buildAdmWCards(l);}
+async function saveAdmW(id,name,circle,threshold,count){var sel=document.getElementById('adwP*'+id);var v2=sel?sel.value:'';if(!v2)return;var done=v2==='**done**';spin(true);await api( 'تحديث_إجراء_انذار_اداري',{رقم_الطالب:id,اسم_الطالب:name,الحلقة:circle,نوع_الانذار:D.admType,رقم_العتبة:threshold,عدد_المخالفات:count,الإجراء:done? 'مكتمل':v2,مكتمل:done});spin(false);Swal.fire({icon: 'success',title: 'تم التسجيل',timer:1400,timerProgressBar:true,showConfirmButton:false});if(done)loadAdmWT(D.admType,null);else if(sel)sel.value='';}
 function sendAdmWa(phone,sName,pName,threshold,count){var tpl=D.admTpl;var msg=buildMsg(tpl?tpl[ 'نص_القالب']:'',{اسم_الطالب:sName,اسم_ولي_الطالب:pName,رقم_العتبة:threshold,عدد_الغيابات:count,تاريخ:hijri()});whatsapp(phone,msg);}
 
 // ══ جميع الإنذارات (فلتر حلقة+مرحلة+اسم) ══
@@ -951,7 +953,7 @@ edu.forEach(function(a){var k=a[ 'اسم_الطالب']||'؟';if(!map[k])map[k]=
 adm.forEach(function(a){var k=a[ 'اسم_الطالب']||'؟';if(!map[k])map[k]={name:k,circle:a[ 'الحلقة']||'—',stage:a[ 'المرحلة_الدراسية']||'—',edu:[],late:[],abs:[],ex:[]};if(a[ 'نوع_الانذار']=== 'تأخر')map[k].late.push(a);else if(a[ 'نوع_الانذار']=== 'غياب')map[k].abs.push(a);else map[k].ex.push(a);});
 D.allWarnMap=map;
 var copts=D.circles.map(function(h){return'<option>'+h+'</option>';}).join('');
-var stages=[...new Set(Object.values(map).map(function(x){return x.stage;}).filter(function(x){return x&&x!=='—';}))];
+var stages=[…new Set(Object.values(map).map(function(x){return x.stage;}).filter(function(x){return x&&x!=='—';}))];
 var sopts=stages.map(function(s){return'<option>'+s+'</option>';}).join('');
 mc('<div class="stitle"><i class="fas fa-list-check"></i> جميع الإنذارات</div>'
 +'<div class="cc"><div class="chdr"><h3>سجل شامل</h3>'
