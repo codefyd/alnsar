@@ -16,11 +16,11 @@
   --tm:#1a1a2e;--ts:#5a6a7a;--bd:#ddd5c0;--ok:#1e7e4a;--er:#c0392b;--wa:#d4890a;
   --r:14px;--sh:0 4px 24px rgba(26,60,94,.10);--shl:0 12px 40px rgba(26,60,94,.16);
 }
-{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tm);direction:rtl;}
 
 /* ══ شاشة الدخول ══ */
-loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a3c5e,#2563a8);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a3c5e,#2563a8);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 .lcard{background:#fff;border-radius:20px;padding:44px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.25);text-align:center;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);}
 @keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
 .llogo{width:72px;height:72px;background:linear-gradient(135deg,#c8a84b,#f0d080);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
