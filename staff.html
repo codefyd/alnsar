@@ -342,11 +342,10 @@ D.setUsers=arr(rs[11].عاملون);
 // أسباب الإنذارات التعليمية = الإجراءات بنوع تعليمي
 D.eduReasons=arr(rs[10].إجراءات).filter(function(p){return p[‘نوع_الاجراء’]===‘تعليمي’;}).map(function(p){return p[‘اسم_الاجراء’];}).filter(Boolean);
 // الإنذارات الإدارية المستحقة — مجلوبة مسبقاً
-D.admWarnData={
-تأخر:  {new:arr(rs[12].طلاب), arch:arr(rs[15].انذارات)},
-غياب:  {new:arr(rs[13].طلاب), arch:arr(rs[16].انذارات)},
-‘غياب_بعذر’: {new:arr(rs[14].طلاب), arch:arr(rs[17].انذارات)},
-};
+D.admWarnData={};
+D.admWarnData[‘تأخر’]   = {list:arr(rs[12].طلاب), arch:arr(rs[15].انذارات)};
+D.admWarnData[‘غياب’]   = {list:arr(rs[13].طلاب), arch:arr(rs[16].انذارات)};
+D.admWarnData[‘غياب_بعذر’] = {list:arr(rs[14].طلاب), arch:arr(rs[17].انذارات)};
 updateReqBadge(); updateEduBadge();
 }
 else if(role===‘مدير’){
@@ -871,9 +870,9 @@ whatsapp(phone,msg);
 // ══ إنذارات إدارية ══
 async function pgAdminAdmW(){
 var wd=D.admWarnData||{};
-var cntT=arr((wd[‘تأخر’]||{}).new).length;
-var cntG=arr((wd[‘غياب’]||{}).new).length;
-var cntE=arr((wd[‘غياب_بعذر’]||{}).new).length;
+var cntT=arr((wd[‘تأخر’]||{}).list).length;
+var cntG=arr((wd[‘غياب’]||{}).list).length;
+var cntE=arr((wd[‘غياب_بعذر’]||{}).list).length;
 mc(’<div class="stitle"><i class="fas fa-user-clock"></i> الإنذارات الإدارية</div>’
 +’<div class="cc"><div class="stabs" id="admWTabs">’
 +’<button class="stab active" onclick="loadAdmWT(\'تأخر\',this)"><i class="fas fa-clock"></i> التأخر’+(cntT?’<span class="nbadge" style="margin-right:5px">’+cntT+’</span>’:’’)+’</button>’
@@ -891,14 +890,14 @@ D.admType=نوع;
 var cached=D.admWarnData&&D.admWarnData[نوع];
 var مستحقون, أرشيف;
 if(cached){
-مستحقون=arr(cached.new); أرشيف=arr(cached.arch);
+مستحقون=arr(cached.list); أرشيف=arr(cached.arch);
 } else {
 spin(true,‘جارٍ الحساب…’);
 var rs=await Promise.all([api(‘جلب_مستحقي_الانذار_الاداري’,{نوع:نوع}),api(‘جلب_ارشيف_انذارات_ادارية’,{نوع_الانذار:نوع})]);
 spin(false);
 مستحقون=arr(rs[0].طلاب); أرشيف=arr(rs[1].انذارات);
 if(!D.admWarnData)D.admWarnData={};
-D.admWarnData[نوع]={new:مستحقون,arch:أرشيف};
+D.admWarnData[نوع]={list:مستحقون,arch:أرشيف};
 }
 var procs=arr(D.procedures).filter(function(p){return p[‘نوع_الاجراء’]===نوع&&p[‘نشط’]!==‘لا’;});
 D.admTpl=(D.templates||[]).find(function(t){return t[‘نوع_القالب’]&&(t[‘نوع_القالب’].includes(نوع===‘تأخر’?‘تاخر’:نوع===‘غياب_بعذر’?‘بعذر’:‘غياب’));});
