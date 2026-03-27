@@ -300,8 +300,7 @@ async function prefetch(){
       D.eduReasons=D.eduProcs; // أسباب الإنذارات = الإجراءات التعليمية
     }
     else if(role==='مشرف_اداري'){
-      // 12 طلب موازية = طلب واحد موازي أسرع بكثير من متسلسل
-      // 15 طلب موازية — تشمل الإنذارات الإدارية المستحقة لكل الأنواع
+      // المرحلة الأولى: البيانات الأساسية — 12 طلب موازي
       var rs=await Promise.all([
         api('جلب_الطلاب',{حجم_الصفحة:PG,الصفحة:1}),
         api('جلب_الحلق',{}),
@@ -315,12 +314,6 @@ async function prefetch(){
         api('جلب_عتبات_الانذارات',{}),
         api('جلب_الاجراءات',{}),
         api('جلب_العاملين',{}),
-        api('جلب_مستحقي_الانذار_الاداري',{نوع:'تأخر'}),
-        api('جلب_مستحقي_الانذار_الاداري',{نوع:'غياب'}),
-        api('جلب_مستحقي_الانذار_الاداري',{نوع:'غياب_بعذر'}),
-        api('جلب_ارشيف_انذارات_ادارية',{نوع_الانذار:'تأخر'}),
-        api('جلب_ارشيف_انذارات_ادارية',{نوع_الانذار:'غياب'}),
-        api('جلب_ارشيف_انذارات_ادارية',{نوع_الانذار:'غياب_بعذر'}),
       ]);
       D.students=arr(rs[0].طلاب); D.studentsTotal=rs[0].المجموع||0; D.studentsPages=rs[0].عدد_الصفحات||1;
       D.circles=arr(rs[1].حلق).map(function(h){return h['اسم_الحلقة'];});
@@ -341,11 +334,25 @@ async function prefetch(){
       // أسباب الإنذارات التعليمية = الإجراءات بنوع تعليمي
       D.eduReasons=arr(rs[10].إجراءات).filter(function(p){return p['نوع_الاجراء']==='تعليمي';}).map(function(p){return p['اسم_الاجراء'];}).filter(Boolean);
       // الإنذارات الإدارية المستحقة — مجلوبة مسبقاً
-      D.admWarnData={};
-      D.admWarnData['تأخر']   = {list:arr(rs[12].طلاب), arch:arr(rs[15].انذارات)};
-      D.admWarnData['غياب']   = {list:arr(rs[13].طلاب), arch:arr(rs[16].انذارات)};
-      D.admWarnData['غياب_بعذر'] = {list:arr(rs[14].طلاب), arch:arr(rs[17].انذارات)};
+      D.admWarnData=null; // تُجلب عند الطلب أو في الخلفية
       updateReqBadge(); updateEduBadge();
+      // المرحلة الثانية: الإنذارات الإدارية — في الخلفية بعد عرض الصفحة
+      setTimeout(function(){
+        Promise.all([
+          api('جلب_مستحقي_الانذار_الاداري',{نوع:'تأخر'}),
+          api('جلب_مستحقي_الانذار_الاداري',{نوع:'غياب'}),
+          api('جلب_مستحقي_الانذار_الاداري',{نوع:'غياب_بعذر'}),
+          api('جلب_ارشيف_انذارات_ادارية',{نوع_الانذار:'تأخر'}),
+          api('جلب_ارشيف_انذارات_ادارية',{نوع_الانذار:'غياب'}),
+          api('جلب_ارشيف_انذارات_ادارية',{نوع_الانذار:'غياب_بعذر'}),
+        ]).then(function(r2){
+          D.admWarnData={};
+          D.admWarnData['تأخر']      ={list:arr(r2[0].طلاب),arch:arr(r2[3].انذارات)};
+          D.admWarnData['غياب']      ={list:arr(r2[1].طلاب),arch:arr(r2[4].انذارات)};
+          D.admWarnData['غياب_بعذر']={list:arr(r2[2].طلاب),arch:arr(r2[5].انذارات)};
+          saveCache();
+        }).catch(function(e){console.warn('adm warn bg:',e);});
+      }, 2000);
     }
     else if(role==='مدير'){
       var rs=await Promise.all([
@@ -385,15 +392,14 @@ async function doLogin(){
     var cached=loadCache();
     if(!cached){
       spin(true,'جارٍ تجهيز البيانات…');
-      await prefetch();
+      try{ await prefetch(); }catch(pe){ console.warn('prefetch failed:',pe); }
       spin(false);
     } else {
-      // عرض من الكاش فوراً، تحديث في الخلفية
-      prefetch();
+      prefetch().catch(function(e){ console.warn('bg prefetch:',e); });
     }
     navFirst();
     updateReqBadge(); updateEduBadge();
-  }catch(e){alert('خطأ في الاتصال: '+e.message);}
+  }catch(e){ spin(false); alert('خطأ في الاتصال: '+e.message); }
   finally{btn.disabled=false; btn.innerHTML='<i class="fas fa-right-to-bracket"></i> دخول';}
 }
 function doLogout(){window.location.href='index.html';}
