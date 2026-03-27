@@ -241,8 +241,16 @@ function spin(s,t){document.getElementById( 'spov').style.display=s? 'flex': 'no
 function mc(h){document.getElementById( 'mainContent').innerHTML=h;}
 function val(id){var e=document.getElementById(id);return e?e.value:'';}
 // q(): آمن لاستخدامه داخل onclick attributes — لا nested quotes
-function q(s){return String(s==null?'':s).replace(/\/g,'\\').replace(/'/g,"\'").replace(/"/g,'\"').replace(/\r?\n/g,'  ');}
-function qj(o){return encodeURIComponent(JSON.stringify(o));}
+function q(s) {
+    if (s === undefined || s === null) return '';
+    return String(s)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\r?\n/g, ' ');
+function qj(o) {
+    return encodeURIComponent(JSON.stringify(o));
+}
 function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString( 'ar-SA',{year: 'numeric',month: 'short',day: 'numeric'});}catch(e){return String(d).split( 'T')[0];}}
 function roleLabel(r){return{مشرف_اداري: 'مشرف إداري',مشرف_تعليمي: 'مشرف تعليمي',معلم: 'معلم',مدير: 'مدير'}[r]||r||'—';}
 function sBadge(s){var m={منتظم: 'bp-ok', 'غير منتظم': 'bp-wa',موقوف: 'bp-er', 'في الانتظار': 'bp-in',منسحب: 'bp-gr'};return  '<span class="bp '+(m[s]||'bp-gr')+'">'+(s||'—')+'</span>';}
