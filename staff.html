@@ -21,7 +21,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ══ هيدر ══ */
 .site-header{background:var(--primary);position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.18);}
-.header-inner{display:flex;align-items:center;gap:16px;padding:14px 24px;max-width:1200px;margin:0 auto;}
+.header-inner{display:flex;align-items:center;gap:16px;padding:14px 24px;max-width:1400px;margin:0 auto;}
 .header-logo{width:48px;height:48px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .header-logo i{font-size:22px;color:var(--primary);}
 .header-title h1{font-size:18px;font-weight:800;color:#fff;line-height:1.2;}
@@ -53,6 +53,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* شريط جانبي */
 .sidebar{width:230px;background:var(--surface-2);border-left:1px solid var(--border);flex-shrink:0;overflow-y:auto;transition:transform .3s;}
 @media(max-width:900px){
+#hambBtn{display:block !important;}
   .sidebar{position:fixed;top:76px;right:0;height:calc(100vh - 76px);z-index:160;transform:translateX(100%);box-shadow:-4px 0 20px rgba(0,0,0,.15);}
   .sidebar.open{transform:translateX(0);}
   #hambBtn{display:flex !important;}
@@ -175,6 +176,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* ══ responsive ══ */
 @media(max-width:900px){
+#hambBtn{display:block !important;}
   .sidebar{position:fixed;top:76px;right:0;height:calc(100vh - 76px);z-index:160;transform:translateX(100%);box-shadow:-4px 0 20px rgba(0,0,0,.15);}
   .sidebar.open{transform:translateX(0);}
   .main-content{padding:16px;}
@@ -191,6 +193,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </style>
 </head>
 <body>
+<div id="globalSpin" style="position:fixed;inset:0;background:rgba(255,255,255,.8);z-index:2000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;"><div class="spinner-ring" style="width:40px;height:40px;border:4px solid #ddd5c0;border-top-color:#1a3c5e;border-radius:50%;animation:spin .8s linear infinite;"></div><p id="spinText" style="font-weight:700;color:#1a3c5e">جارٍ التحميل…</p></div>
 
 <!-- ══ شاشة الدخول ══ -->
 <div id="loginScreen">
@@ -198,7 +201,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="login-logo"><i class="fas fa-book-open-reader"></i></div>
     <h2>بوابة العاملين</h2>
     <p>مجمع تحفيظ القرآن الكريم<br>أدخل رمز الدخول الخاص بك</p>
-    <input class="login-input" type="password" id="loginCode" placeholder="● ● ● ●" maxlength="10"
+    <input class="login-input" type="password" id="loginCode" oninput="if(this.value.length===6)doLogin()" placeholder="● ● ● ●" maxlength="10"
       onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn-login" id="btnLogin" onclick="doLogin()"><i class="fas fa-right-to-bracket me-2"></i>دخول</button>
     <div class="login-error" id="loginError"><i class="fas fa-circle-xmark me-1"></i>رمز الدخول غير صحيح</div>
@@ -211,6 +214,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- ══ هيدر ══ -->
 <header class="site-header" id="appHeader" style="display:none;">
+<button id="hambBtn" onclick="toggleSidebar()" style="display:none;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;margin-right:15px;"><i class="fas fa-bars"></i></button>
   <div class="header-inner">
     <button style="display:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;width:36px;height:36px;border-radius:8px;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0;margin-left:4px" id="hambBtn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
     <div class="header-logo"><i class="fas fa-book-open-reader"></i></div>
@@ -333,7 +337,7 @@ async function doLogin(){
     }
   } catch(e){spin(false);alert('خطأ في الاتصال');}
 }
-function doLogout(){ window.location.href='index.html'; }
+function doLogout(){ window.location.reload(); }
 function roleLabel(r){
   return r==='مشرف_اداري'?'مشرف إداري':r==='مشرف_تعليمي'?'مشرف تعليمي':r==='معلم'?'معلم':'—';
 }
@@ -446,7 +450,7 @@ async function loadPage(page){
   else if(page==='eduAllStudents') await renderEduAllStudents();
   else if(page==='adminKpi')    await renderAdminKpi();
   else if(page==='adminStudents') await renderAdminStudents();
-  else if(page==='adminRequests') await renderAdminRequests();
+  else if(page==='adminRequests') await renderAdminRequests(getCurrentTabId());
   else if(page==='adminEduWarnings') await renderAdminEduWarnings();
   else if(page==='adminAdmWarnings') await renderAdminAdmWarnings();
   else if(page==='adminAllWarnings') await renderAdminAllWarnings();
@@ -1013,7 +1017,7 @@ async function renderAdminRequests(){
   const r2=await api('جلب_طلبات_التعديل',{});
   const تعديلات=r2.طلبات||[];
 
-  const badgeCount=جديد.length+انتظار.length+تعديلات.length;
+  const badgeCount=جديد.length+تعديلات.length; // fix #11: registration + edit only
       if(document.getElementById('nbReq')) document.getElementById('nbReq').textContent=badgeCount||'';
 
   const mc=document.getElementById('mainContent');
@@ -1120,6 +1124,9 @@ function buildEditTable(list){
   </div>`;
 }
 
+function getCurrentTabId(){
+  return document.querySelector('.sub-tab.active')?.getAttribute('onclick').match(/'([^']+)'/)[1] || 'reqNew';
+}
 function switchSubTab(btn,panelId){
   btn.closest('.content-card').querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
   btn.closest('.content-card').querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
@@ -1148,11 +1155,11 @@ async function acceptReg(id,name){
   spin(true,'جارٍ قبول الطالب…');
   const r=await api('قبول_طلب_تسجيل',{رقم_الطلب:id,الحلقة:value});
   spin(false);
-  if(r.نجاح){Swal.fire({icon:'success',title:'تم القبول!',text:'رقم الطالب: '+r.رقم_الطالب,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});renderAdminRequests();}
+  if(r.نجاح){Swal.fire({icon:'success',title:'تم القبول!',text:'رقم الطالب: '+r.رقم_الطالب,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});renderAdminRequests(getCurrentTabId());}
   else Swal.fire({icon:'error',title:'خطأ',text:r.خطأ,confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'}});
 }
 
-async function waitReg(id){ api('تحويل_للانتظار',{رقم_الطلب:id}); Swal.fire({icon:'info',title:'تم التحويل للانتظار',timer:1500,timerProgressBar:true,showConfirmButton:false}); renderAdminRequests(); }
+async function waitReg(id){ api('تحويل_للانتظار',{رقم_الطلب:id}); Swal.fire({icon:'info',title:'تم التحويل للانتظار',timer:1500,timerProgressBar:true,showConfirmButton:false}); renderAdminRequests(getCurrentTabId()); }
   
 async function rejectReg(id){
   const {isConfirmed,value}=await Swal.fire({
@@ -1171,13 +1178,13 @@ async function rejectReg(id){
   spin(true);
   const r=await api('رفض_طلب_تسجيل',{رقم_الطلب:id,سبب_الرفض:value});
   spin(false);
-  if(r.نجاح){Swal.fire({icon:'success',title:'تم الرفض',timer:2000,timerProgressBar:true,showConfirmButton:false});renderAdminRequests();}
+  if(r.نجاح){Swal.fire({icon:'success',title:'تم الرفض',timer:2000,timerProgressBar:true,showConfirmButton:false});renderAdminRequests(getCurrentTabId());}
 }
 
 async function approveEdit(id){
   const row=document.getElementById('editRow_'+id);
   if(row){row.style.opacity='.4';}
-  spin(true);const r=await api('قبول_طلب_تعديل',{رقم_الطلب:id});spin(false);
+  const row=document.getElementById('editRow_'+id); if(row)row.style.opacity='0.5'; const r=await api('قبول_طلب_تعديل',{رقم_الطلب:id});
   if(r.نجاح){
     row?.remove();
     Swal.fire({icon:'success',title:'تم القبول',timer:1500,timerProgressBar:true,showConfirmButton:false});
@@ -1460,6 +1467,17 @@ async function renderAdminAllWarnings(){
     <div class="content-card">
       <div class="card-header-bar">
         <h3><i class="fas fa-table fa-sm me-2"></i>سجل شامل</h3>
+        <div class="card-actions">
+          <select class="filter-input" id="awFilterCircle" onchange="applyAllWarnFilters()">
+            <option value="">كل الحلق</option>
+            ${(window._allWarnCircles||[]).map(h=>`<option>${h}</option>`).join('')}
+          </select>
+          <select class="filter-input" id="awFilterLevel" onchange="applyAllWarnFilters()">
+            <option value="">كل المراحل</option>
+            <option>ابتدائي</option><option>متوسط</option><option>ثانوي</option>
+          </select>
+          <input class="filter-input" id="awFilterSearch" placeholder="بحث باسم الطالب…" oninput="applyAllWarnFilters()" style="min-width:140px">
+        </div>
         <div class="card-actions">
           <select class="filter-input" id="awFilterCircle" onchange="applyAllWarnFilters()">
             <option value="">كل الحلق</option>
