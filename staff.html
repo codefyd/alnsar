@@ -473,8 +473,8 @@ else if (D.role === 'مشرف_تعليمي') {
   D.eduStudentMap = {};
   D.eduStudents.forEach(function(s){ D.eduStudentMap[s['اسم_الطالب']] = s; });
   D.circles = init.حلق || [];
-  D.eduProcs = init.اجراءات_تعليمية || [];
-  D.eduReasons = init.اجراءات_تعليمية || [];
+  D.eduReasons = init.أسباب_تعليمية || [];
+D.eduProcs = init.اجراءات_تعليمية || [];
 }
 else if (D.role === 'مشرف_اداري') {
   D.students = init.طلاب || [];
@@ -490,6 +490,7 @@ else if (D.role === 'مشرف_اداري') {
   D.templates = init.قوالب || [];
   D.thresholds = init.عتبات || [];
   D.procedures = init.اجراءات || [];
+  D.eduReasons = init.أسباب_تعليمية || [];
   D.setUsers = init.عاملون || [];
   D.kpi = init.kpi || {};
 }
