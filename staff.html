@@ -601,9 +601,44 @@ function navFirst(){
 }
 function nav(page){
   closeSidebar();
-  document.querySelectorAll('.nitem').forEach(function(n){n.classList.toggle('active',n.getAttribute('onclick')==="nav('"+page+"')");});
+
+  document.querySelectorAll('.nitem').forEach(function(n){
+    n.classList.toggle('active', n.getAttribute('onclick') === "nav('" + page + "')");
+  });
+
   mc('<div class="empty" style="padding:60px 20px"><div class="spri" style="margin:0 auto 10px"></div><p style="margin:0">جارٍ التحميل…</p></div>');
-  ({tSt:pgTeacherSt,tKpi:pgTeacherKpi,eKpi:pgEduKpi,eW:pgEduW,eSt:pgEduSt,aKpi:pgAdminKpi,aSt:pgAdminSt,aReq:pgAdminReq,aEduW:pgAdminEduW,aAdmW:pgAdminAdmW,aAllW:pgAdminAllW,settings:pgSettings,dirKpi:pgDirectorKpi})[page]();
+
+  var pages = {
+    tSt: function(){ return typeof pgTeacherSt === 'function' ? pgTeacherSt() : missingPageFunction('pgTeacherSt'); },
+    tKpi: function(){ return typeof pgTeacherKpi === 'function' ? pgTeacherKpi() : missingPageFunction('pgTeacherKpi'); },
+    eKpi: function(){ return typeof pgEduKpi === 'function' ? pgEduKpi() : missingPageFunction('pgEduKpi'); },
+    eW: function(){ return typeof pgEduW === 'function' ? pgEduW() : missingPageFunction('pgEduW'); },
+    eSt: function(){ return typeof pgEduSt === 'function' ? pgEduSt() : missingPageFunction('pgEduSt'); },
+    aKpi: function(){ return typeof pgAdminKpi === 'function' ? pgAdminKpi() : missingPageFunction('pgAdminKpi'); },
+    aSt: function(){ return typeof pgAdminSt === 'function' ? pgAdminSt() : missingPageFunction('pgAdminSt'); },
+    aReq: function(){ return typeof pgAdminReq === 'function' ? pgAdminReq() : missingPageFunction('pgAdminReq'); },
+    aEduW: function(){ return typeof pgAdminEduW === 'function' ? pgAdminEduW() : missingPageFunction('pgAdminEduW'); },
+    aAdmW: function(){ return typeof pgAdminAdmW === 'function' ? pgAdminAdmW() : missingPageFunction('pgAdminAdmW'); },
+    aAllW: function(){ return typeof pgAdminAllW === 'function' ? pgAdminAllW() : missingPageFunction('pgAdminAllW'); },
+    settings: function(){ return typeof pgSettings === 'function' ? pgSettings() : missingPageFunction('pgSettings'); },
+    dirKpi: function(){ return typeof pgDirectorKpi === 'function' ? pgDirectorKpi() : missingPageFunction('pgDirectorKpi'); }
+  };
+
+  if (pages[page]) {
+    pages[page]();
+  } else {
+    missingPageFunction(page);
+  }
+}
+  function missingPageFunction(name){
+  console.error('Missing page function:', name);
+  mc(
+    '<div class="empty" style="padding:80px 20px">' +
+      '<i class="fas fa-circle-exclamation"></i>' +
+      '<h3>تعذر فتح الصفحة</h3>' +
+      '<p style="margin-top:8px;color:var(--ts)">الدالة المطلوبة غير متوفرة: ' + name + '</p>' +
+    '</div>'
+  );
 }
 
 // ══════════════════════════════════════════════════════
