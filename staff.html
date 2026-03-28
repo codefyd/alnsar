@@ -599,6 +599,7 @@ function navFirst(){
   var m={معلم:'tSt',مشرف_تعليمي:'eKpi',مشرف_اداري:'aKpi',مدير:'dirKpi'};
   nav(m[D.role]||'aKpi');
 }
+  
 function nav(page){
   closeSidebar();
 
@@ -608,29 +609,65 @@ function nav(page){
 
   mc('<div class="empty" style="padding:60px 20px"><div class="spri" style="margin:0 auto 10px"></div><p style="margin:0">جارٍ التحميل…</p></div>');
 
-  var pages = {
-    tSt: function(){ return typeof pgTeacherSt === 'function' ? pgTeacherSt() : missingPageFunction('pgTeacherSt'); },
-    tKpi: function(){ return typeof pgTeacherKpi === 'function' ? pgTeacherKpi() : missingPageFunction('pgTeacherKpi'); },
-    eKpi: function(){ return typeof pgEduKpi === 'function' ? pgEduKpi() : missingPageFunction('pgEduKpi'); },
-    eW: function(){ return typeof pgEduW === 'function' ? pgEduW() : missingPageFunction('pgEduW'); },
-    eSt: function(){ return typeof pgEduSt === 'function' ? pgEduSt() : missingPageFunction('pgEduSt'); },
-    aKpi: function(){ return typeof pgAdminKpi === 'function' ? pgAdminKpi() : missingPageFunction('pgAdminKpi'); },
-    aSt: function(){ return typeof pgAdminSt === 'function' ? pgAdminSt() : missingPageFunction('pgAdminSt'); },
-    aReq: function(){ return typeof pgAdminReq === 'function' ? pgAdminReq() : missingPageFunction('pgAdminReq'); },
-    aEduW: function(){ return typeof pgAdminEduW === 'function' ? pgAdminEduW() : missingPageFunction('pgAdminEduW'); },
-    aAdmW: function(){ return typeof pgAdminAdmW === 'function' ? pgAdminAdmW() : missingPageFunction('pgAdminAdmW'); },
-    aAllW: function(){ return typeof pgAdminAllW === 'function' ? pgAdminAllW() : missingPageFunction('pgAdminAllW'); },
-    settings: function(){ return typeof pgSettings === 'function' ? pgSettings() : missingPageFunction('pgSettings'); },
-    dirKpi: function(){ return typeof pgDirectorKpi === 'function' ? pgDirectorKpi() : missingPageFunction('pgDirectorKpi'); }
-  };
+  switch(page){
+    case 'tSt':
+      if (typeof window.pgTeacherSt === 'function') return window.pgTeacherSt();
+      return missingPageFunction('pgTeacherSt');
 
-  if (pages[page]) {
-    pages[page]();
-  } else {
-    missingPageFunction(page);
+    case 'tKpi':
+      if (typeof window.pgTeacherKpi === 'function') return window.pgTeacherKpi();
+      return missingPageFunction('pgTeacherKpi');
+
+    case 'eKpi':
+      if (typeof window.pgEduKpi === 'function') return window.pgEduKpi();
+      return missingPageFunction('pgEduKpi');
+
+    case 'eW':
+      if (typeof window.pgEduW === 'function') return window.pgEduW();
+      return missingPageFunction('pgEduW');
+
+    case 'eSt':
+      if (typeof window.pgEduSt === 'function') return window.pgEduSt();
+      return missingPageFunction('pgEduSt');
+
+    case 'aKpi':
+      if (typeof window.pgAdminKpi === 'function') return window.pgAdminKpi();
+      return missingPageFunction('pgAdminKpi');
+
+    case 'aSt':
+      if (typeof window.pgAdminSt === 'function') return window.pgAdminSt();
+      return missingPageFunction('pgAdminSt');
+
+    case 'aReq':
+      if (typeof window.pgAdminReq === 'function') return window.pgAdminReq();
+      return missingPageFunction('pgAdminReq');
+
+    case 'aEduW':
+      if (typeof window.pgAdminEduW === 'function') return window.pgAdminEduW();
+      return missingPageFunction('pgAdminEduW');
+
+    case 'aAdmW':
+      if (typeof window.pgAdminAdmW === 'function') return window.pgAdminAdmW();
+      return missingPageFunction('pgAdminAdmW');
+
+    case 'aAllW':
+      if (typeof window.pgAdminAllW === 'function') return window.pgAdminAllW();
+      return missingPageFunction('pgAdminAllW');
+
+    case 'settings':
+      if (typeof window.pgSettings === 'function') return window.pgSettings();
+      return missingPageFunction('pgSettings');
+
+    case 'dirKpi':
+      if (typeof window.pgDirectorKpi === 'function') return window.pgDirectorKpi();
+      return missingPageFunction('pgDirectorKpi');
+
+    default:
+      return missingPageFunction(page);
   }
 }
-  function missingPageFunction(name){
+
+function missingPageFunction(name){
   console.error('Missing page function:', name);
   mc(
     '<div class="empty" style="padding:80px 20px">' +
@@ -640,6 +677,8 @@ function nav(page){
     '</div>'
   );
 }
+  
+
 
 // ══════════════════════════════════════════════════════
 // TEACHER
