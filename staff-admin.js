@@ -484,44 +484,58 @@ function buildEduReasonsPanel(){
 async function addEduReason(){
   var res=await Swal.fire({
     title:'إضافة سبب إنذار تعليمي',
-    input:'text',inputPlaceholder:'مثال: إخلال بنظام الحلقة',
+    input:'text',
+    inputPlaceholder:'مثال: إخلال بنظام الحلقة',
     inputAttributes:{style:'font-family:Tajawal;direction:rtl'},
-    confirmButtonText:'إضافة',cancelButtonText:'إلغاء',showCancelButton:true,
-    confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'},
-    preConfirm:function(v2){if(!v2||!v2.trim())return Swal.showValidationMessage('لا يمكن أن يكون فارغاً');return v2.trim();}
+    confirmButtonText:'إضافة',
+    cancelButtonText:'إلغاء',
+    showCancelButton:true,
+    confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:function(v2){
+      if(!v2 || !v2.trim()) return Swal.showValidationMessage('لا يمكن أن يكون فارغاً');
+      return v2.trim();
+    }
   });
-  if(!res.isConfirmed||!res.value)return;
+
+  if(!res.isConfirmed || !res.value) return;
+
   spin(true);
   await api('إضافة_إجراء',{نوع_الاجراء:'سبب_تعليمي',اسم_الاجراء:res.value});
   spin(false);
+
+  D.eduReasons = D.eduReasons || [];
   D.eduReasons.push(res.value);
-  D.procedures.push({نوع_الاجراء:'تعليمي',اسم_الاجراء:res.value,نشط:'نعم'});
-  D.eduProcs=D.eduReasons;
+
   saveCache();
-  // تحديث الـ panel مباشرة
   var p=document.getElementById('stEduR');
-  if(p)p.innerHTML=buildEduReasonsPanel();
+  if(p) p.innerHTML = buildEduReasonsPanel();
+
   Swal.fire({icon:'success',title:'تمت الإضافة',timer:1800,timerProgressBar:true,showConfirmButton:false});
 }
 
 async function delEduReason(name){
   var r=await Swal.fire({
-    title:'حذف السبب؟',text:name,showCancelButton:true,
-    confirmButtonColor:'#c0392b',confirmButtonText:'حذف',cancelButtonText:'إلغاء',
+    title:'حذف السبب؟',
+    text:name,
+    showCancelButton:true,
+    confirmButtonColor:'#c0392b',
+    confirmButtonText:'حذف',
+    cancelButtonText:'إلغاء',
     customClass:{popup:'swal-rtl'}
   });
-  if(!r.isConfirmed)return;
+  if(!r.isConfirmed) return;
+
   spin(true);
   await api('حذف_إجراء',{اسم_الاجراء:name});
   spin(false);
-  D.eduReasons=D.eduReasons.filter(function(x){return x!==name;});
-  // نحذف فقط من الأسباب، لا من الإجراءات
-  D.procedures=D.procedures.filter(function(p){
-    return !(p['اسم_الاجراء']===name&&(p['نوع_الاجراء']==='سبب_تعليمي'||p['نوع_الاجراء']==='تعليمي'));
-  });
+
+  D.eduReasons = (D.eduReasons || []).filter(function(x){ return x !== name; });
+
   saveCache();
   var p=document.getElementById('stEduR');
-  if(p)p.innerHTML=buildEduReasonsPanel();
+  if(p) p.innerHTML = buildEduReasonsPanel();
+
   Swal.fire({icon:'success',title:'تم الحذف',timer:1500,timerProgressBar:true,showConfirmButton:false});
 }
 
