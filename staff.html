@@ -440,6 +440,7 @@ async function doLogin(){
       return;
     }
     D.user=r.عامل; D.role=D.user['الوظيفة']||'';
+    console.log('LOGIN ROLE =', D.role, D.user);
     D.sessionToken = r.token || '';
 try { localStorage.setItem('alnsar_staff_token', D.sessionToken); } catch(e) {}
     document.getElementById('loginScreen').style.display='none';
