@@ -830,48 +830,32 @@ async function api(action, data = {}) {
 // ── تحميل البيانات ───────────────────────────────
 async function loadAll() {
   try {
-    const [rStudents, rCircles, rUsers] = await Promise.all([
-      api('جلب_الطلاب', { حجم_الصفحة: 999, الصفحة: 1 }),
-      api('جلب_الحلق', {}),
-      api('جلب_العاملين', {}),
-    ]);
+    const r = await api('جلب_بيانات_الإنجازات_العامة', {});
+    if (!r || !r.نجاح) {
+      throw new Error((r && r.خطأ) || 'فشل تحميل البيانات');
+    }
 
-    const طلاب   = rStudents.طلاب || [];
-    const حلق    = rCircles.حلق || [];
-    const عاملون = rUsers.عاملون || [];
+    const إجمالي_الطلاب = Number(r.إجمالي_الطلاب || 0);
+    const عدد_الحلق = Number(r.عدد_الحلق || 0);
+    const مجموع_الحفظ = Number(r.مجموع_الحفظ || 0);
+    const المنتظمون = Number(r.المنتظمون || 0);
+    const عدد_العاملين = Number(r.عدد_العاملين || 0);
+    const متوسط_الحفظ = r.متوسط_الحفظ || 0;
 
-    // ── حساب الإحصائيات ──
-    const إجمالي_الطلاب  = طلاب.length;
-    const عدد_الحلق      = حلق.length;
-    const مجموع_الحفظ    = طلاب.reduce((s, ط) => s + Number(ط['مجموع_الحفظ'] || 0), 0);
-    const المنتظمون      = طلاب.filter(ط => ط['حالة_الطالب'] === 'منتظم').length;
-    const عدد_العاملين   = عاملون.filter(ع => ع['نشط'] === 'نعم').length;
-    const متوسط_الحفظ    = إجمالي_الطلاب ? (مجموع_الحفظ / إجمالي_الطلاب).toFixed(1) : 0;
-
-    // ── تحديث Hero ──
     animateCounter('hs_students', إجمالي_الطلاب);
-    animateCounter('hs_circles',  عدد_الحلق);
-    animateCounter('hs_hifz',     مجموع_الحفظ);
+    animateCounter('hs_circles', عدد_الحلق);
+    animateCounter('hs_hifz', مجموع_الحفظ);
 
-    // ── تحديث بطاقات الإنجازات ──
     animateCounter('ac_students', إجمالي_الطلاب);
-    animateCounter('ac_circles',  عدد_الحلق);
-    animateCounter('ac_hifz',     مجموع_الحفظ);
-    animateCounter('ac_regular',  المنتظمون);
+    animateCounter('ac_circles', عدد_الحلق);
+    animateCounter('ac_hifz', مجموع_الحفظ);
+    animateCounter('ac_regular', المنتظمون);
     animateCounter('ac_teachers', عدد_العاملين);
     setVal('ac_avg', متوسط_الحفظ);
 
-    // ── رسم الحلق ──
-    renderCircles(حلق, طلاب);
-
-    // ── المتميزون ──
-    const ترتيب = [...طلاب]
-      .filter(ط => Number(ط['مجموع_الحفظ'] || 0) > 0)
-      .sort((a, b) => Number(b['مجموع_الحفظ'] || 0) - Number(a['مجموع_الحفظ'] || 0))
-      .slice(0, 10);
-
-    renderPodium(ترتيب);
-    renderTopRest(ترتيب);
+    renderCirclesFromSummary(r.حلق || []);
+    renderPodium(r.ترتيب || []);
+    renderTopRest(r.ترتيب || []);
 
   } catch (e) {
     console.error('خطأ في تحميل البيانات:', e);
@@ -880,6 +864,45 @@ async function loadAll() {
   }
 }
 
+
+  function renderCirclesFromSummary(حلق) {
+  const el = document.getElementById('circlesGrid');
+
+  if (!حلق.length) {
+    el.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
+      <i class="fas fa-mosque" style="font-size:40px;opacity:.2;display:block;margin-bottom:12px"></i>
+      لم تُضف حلق بعد
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = حلق.map(ح => `
+    <div class="circle-card">
+      <div class="circle-card-header">
+        <div class="circle-icon"><i class="fas fa-mosque"></i></div>
+        <div>
+          <h3>${ح['اسم_الحلقة'] || '—'}</h3>
+          <p><i class="fas fa-chalkboard-user fa-xs me-1"></i>${ح['المعلم'] || 'المعلم غير محدد'}</p>
+        </div>
+      </div>
+      <div class="circle-card-body">
+        <div class="circle-stat">
+          <div class="cs-val">${ح['عدد_الطلاب'] || 0}</div>
+          <div class="cs-lbl">طالب</div>
+        </div>
+        <div class="circle-stat">
+          <div class="cs-val">${ح['مجموع_الحفظ'] || 0}</div>
+          <div class="cs-lbl">جزء محفوظ</div>
+        </div>
+        <div class="circle-stat">
+          <div class="cs-val">${ح['متوسط_الحفظ'] || 0}</div>
+          <div class="cs-lbl">متوسط الحفظ</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+  
 // ── عرض الحلق ────────────────────────────────────
 function renderCircles(حلق, طلاب) {
   const el = document.getElementById('circlesGrid');
