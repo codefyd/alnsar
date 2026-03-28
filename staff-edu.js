@@ -90,35 +90,80 @@ function filterESt(c,q2){document.querySelectorAll('#eStTbl tbody tr').forEach(f
 
 async function issueEduWarn(sdStr){
   var ط=JSON.parse(decodeURIComponent(sdStr));
-  // الأسباب = قائمة الأسباب المخصصة (منفصلة عن إجراءات المتابعة)
-  var procs=arr(D.eduReasons).length ? arr(D.eduReasons) : arr(D.eduProcs);
-  if(!procs.length){
-    var rp=await api('جلب_الاجراءات',{});
-    var allProcs=arr(rp.إجراءات);
-    D.eduReasons=allProcs.filter(function(x){return x['نوع_الاجراء']==='سبب_تعليمي';}).map(function(x){return x['اسم_الاجراء'];}).filter(Boolean);
-    D.eduProcs=allProcs.filter(function(x){return x['نوع_الاجراء']==='تعليمي';}).map(function(x){return x['اسم_الاجراء'];}).filter(Boolean);
-    procs=D.eduReasons.length ? D.eduReasons : D.eduProcs;
+
+  var reasons = arr(D.eduReasons);
+
+  if(!reasons.length){
+    var rp=await api('جلب_الاجراءات',{نوع_الاجراء:'سبب_تعليمي'});
+    var allReasons=arr(rp.إجراءات);
+    D.eduReasons=allReasons
+      .filter(function(x){return x['نوع_الاجراء']==='سبب_تعليمي';})
+      .map(function(x){return x['اسم_الاجراء'];})
+      .filter(Boolean);
+    reasons = arr(D.eduReasons);
   }
-  var opts=procs.map(function(r){return'<option>'+r+'</option>';}).join('');
+
+  if(!reasons.length){
+    return Swal.fire({
+      icon:'info',
+      title:'لا توجد أسباب مضافة',
+      text:'أضف أسباب الإنذارات التعليمية أولاً من الإعدادات',
+      confirmButtonColor:'#1a3c5e',
+      customClass:{popup:'swal-rtl'}
+    });
+  }
+
+  var opts=reasons.map(function(r){return'<option>'+r+'</option>';}).join('');
+
   var res=await Swal.fire({
     title:'إصدار إنذار تعليمي',
     html:'<div style="direction:rtl;text-align:right;display:grid;gap:10px">'
      +'<div style="font-size:13px;color:var(--ts)">الطالب: <strong>'+q(ط['اسم_الطالب']||'—')+'</strong> · الحلقة: <strong>'+q(ط['الحلقة']||'—')+'</strong></div>'
-     +'<div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:5px">سبب الإنذار (من قائمة الإجراءات)</label>'
+     +'<div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:5px">سبب الإنذار</label>'
      +'<select id="ewSel" class="swal2-select" style="font-family:Tajawal;width:100%;margin:0"><option value="">-- اختر --</option>'+opts+'</select></div>'
      +'<div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:5px">ملاحظة إضافية (اختياري)</label>'
      +'<textarea id="ewNote" class="swal2-textarea" style="font-family:Tajawal;direction:rtl;height:80px;width:100%;margin:0"></textarea></div>'
      +'</div>',
-    showCancelButton:true,confirmButtonText:'إصدار',cancelButtonText:'إلغاء',confirmButtonColor:'#1a3c5e',customClass:{popup:'swal-rtl'},
-    preConfirm:function(){var b=val('ewSel'),n=val('ewNote').trim();if(!b)return Swal.showValidationMessage('اختر سبب الإنذار');return n?b+' — '+n:b;}
+    showCancelButton:true,
+    confirmButtonText:'إصدار',
+    cancelButtonText:'إلغاء',
+    confirmButtonColor:'#1a3c5e',
+    customClass:{popup:'swal-rtl'},
+    preConfirm:function(){
+      var b=val('ewSel'),n=val('ewNote').trim();
+      if(!b) return Swal.showValidationMessage('اختر سبب الإنذار');
+      return n ? b+' — '+n : b;
+    }
   });
-  if(!res.isConfirmed||!res.value)return;
+
+  if(!res.isConfirmed||!res.value) return;
+
   spin(true,'جارٍ إصدار الإنذار…');
-  var r=await api('إصدار_إنذار_تعليمي',{اسم_الطالب:ط['اسم_الطالب'],رقم_الطالب:ط['رقم_الطالب']||'',الحلقة:ط['الحلقة'],المرحلة_الدراسية:ط['المرحلة_الدراسية']||'',سبب_الانذار:res.value,اسم_المشرف:D.user['الاسم'],رقم_جوال_الطالب:ط['رقم_الجوال']||''});
+  var r=await api('إصدار_إنذار_تعليمي',{
+    اسم_الطالب:ط['اسم_الطالب'],
+    رقم_الطالب:ط['رقم_الطالب']||'',
+    الحلقة:ط['الحلقة'],
+    المرحلة_الدراسية:ط['المرحلة_الدراسية']||'',
+    سبب_الانذار:res.value,
+    اسم_المشرف:D.user['الاسم'],
+    رقم_جوال_الطالب:ط['رقم_الجوال']||''
+  });
   spin(false);
+
   if(r.نجاح){
     Swal.fire({icon:'success',title:'تم إصدار الإنذار',text:r.رقم_الانذار,timer:2000,showConfirmButton:false});
-    D.eduWarnings.push({رقم_الانذار:r.رقم_الانذار,اسم_الطالب:ط['اسم_الطالب'],الحلقة:ط['الحلقة'],سبب_الانذار:res.value,حالة_الإجراء:'بانتظار الإدارة',تاريخ_الإصدار:new Date().toISOString(),تاريخ_الإغلاق:''});
-    updateEduBadge();saveCache();
-  }else{Swal.fire({icon:'error',title:'خطأ',text:r.خطأ||'حدث خطأ',confirmButtonColor:'#1a3c5e'});}
+    D.eduWarnings.push({
+      رقم_الانذار:r.رقم_الانذار,
+      اسم_الطالب:ط['اسم_الطالب'],
+      الحلقة:ط['الحلقة'],
+      سبب_الانذار:res.value,
+      حالة_الإجراء:'بانتظار الإدارة',
+      تاريخ_الإصدار:new Date().toISOString(),
+      تاريخ_الإغلاق:''
+    });
+    updateEduBadge();
+    saveCache();
+  }else{
+    Swal.fire({icon:'error',title:'خطأ',text:r.خطأ||'حدث خطأ',confirmButtonColor:'#1a3c5e'});
+  }
 }
