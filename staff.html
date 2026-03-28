@@ -212,19 +212,52 @@ html,body{height:100%;font-family:'Tajawal',sans-serif;background:var(--bg);colo
 // ── تحميل ملف JS الخاص بالدور ──
 var _roleScriptLoaded = false;
 function loadRoleScript(role, callback) {
-  if (_roleScriptLoaded) { if(callback) callback(); return; }
+  if (_roleScriptLoaded) {
+    if (callback) callback();
+    return;
+  }
+
   var map = {
-    'معلم':          'staff-teacher.js',
-    'مشرف_تعليمي':  'staff-edu.js',
-    'مشرف_اداري':   'staff-admin.js',
-    'مدير':          'staff-director.js',
+    'معلم': 'staff-teacher.js',
+    'مشرف_تعليمي': 'staff-edu.js',
+    'مشرف_اداري': 'staff-admin.js',
+    'مدير': 'staff-director.js'
   };
+
   var src = map[role];
-  if (!src) { console.warn('No script for role:', role); if(callback) callback(); return; }
+  if (!src) {
+    console.warn('No script for role:', role);
+    if (callback) callback();
+    return;
+  }
+
   var s = document.createElement('script');
-  s.src = src + '?v=1';
-  s.onload = function() { _roleScriptLoaded = true; if(callback) callback(); };
-  s.onerror = function() { console.error('Failed to load', src); if(callback) callback(); };
+  s.src = src + '?v=' + Date.now();
+
+  s.onload = function () {
+    _roleScriptLoaded = true;
+
+    var expected = {
+      'معلم': 'pgTeacherSt',
+      'مشرف_تعليمي': 'pgEduKpi',
+      'مشرف_اداري': 'pgAdminKpi',
+      'مدير': 'pgDirectorKpi'
+    }[role];
+
+    if (expected && typeof window[expected] !== 'function') {
+      console.error('Role script loaded but function missing:', expected);
+      alert('تم تحميل ملف الدور لكن الدالة المطلوبة غير موجودة: ' + expected);
+      return;
+    }
+
+    if (callback) callback();
+  };
+
+  s.onerror = function () {
+    console.error('Failed to load role script:', src);
+    alert('تعذر تحميل ملف الدور: ' + src);
+  };
+
   document.head.appendChild(s);
 }
 
