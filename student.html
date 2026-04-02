@@ -810,7 +810,7 @@ async function requestEdit(key, label, type, el) {
   await sendEditRequest(key, label, القيمة_القديمة, value, isEmpty);
 }
 
-sendEditRequest(key, label, oldVal, newVal, isEmpty) {
+async function sendEditRequest(key, label, oldVal, newVal, isEmpty) {
   showSpinner(true, 'جارٍ إرسال الطلب…');
   try {
     let res;
