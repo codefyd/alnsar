@@ -424,51 +424,79 @@ let currentStudent = null;
 let currentRequest = null;
 
 // ── بحث ────────────────────────────────────────────
+function normalizeSearchPhone(v) {
+  let p = String(v || '').replace(/\D/g, '');
+
+  if (p.startsWith('966') && p.length >= 12) p = p.substring(3);
+  if (p.startsWith('0') && p.length === 10) p = p.substring(1);
+
+  return p;
+}
+
 async function doSearch() {
-  const val = document.getElementById('searchInput').value.trim().replace(/\D/g,'');
+  const raw = document.getElementById('searchInput').value.trim();
+  const digits = raw.replace(/\D/g,'');
+  const val = normalizeSearchPhone(digits);
+
   if (!val || val.length < 8) {
-    Swal.fire({ icon:'warning', title:'تنبيه', text:'يرجى إدخال رقم صحيح (8 أرقام على الأقل)', confirmButtonColor:'#1a3c5e', confirmButtonText:'حسناً' });
+    Swal.fire({
+      icon:'warning',
+      title:'تنبيه',
+      text:'يرجى إدخال رقم صحيح (8 أرقام على الأقل)',
+      confirmButtonColor:'#1a3c5e',
+      confirmButtonText:'حسناً'
+    });
     return;
   }
 
   showSpinner(true, 'جارٍ البحث…');
 
   try {
-    const res  = await callAPI('بحث_عن_طالب', { بحث: val });
-    showSpinner(false);
+    const res = await callAPI('بحث_عن_طالب', { بحث: val });
 
     if (res.طالب) {
+      showSpinner(false);
       currentStudent = res.طالب;
       currentRequest = null;
       renderStudentCard(res.طالب);
+      return;
+    }
+
+    const res2 = await callAPI('جلب_طلبات_التسجيل', {});
+    showSpinner(false);
+
+    const طلب = (res2.طلبات || []).find(ط => {
+      const هوية = String(ط['رقم_هوية_الطالب'] || '').replace(/\D/g,'');
+      const جوال = normalizeSearchPhone(ط['رقم_جوال_ولي_الامر'] || ط['رقم_جوال_الطالب'] || '');
+      return هوية === val || جوال === val;
+    });
+
+    if (طلب) {
+      currentStudent = null;
+      currentRequest = طلب;
+      renderRequestStatus(طلب);
     } else {
-      // بحث في الطلبات
-      const res2 = await callAPI('جلب_طلبات_التسجيل', {});
-      showSpinner(false);
-      const طلب = (res2.طلبات || []).find(ط =>
-        String(ط['رقم_هوية_الطالب']) === val || String(ط['رقم_جوال_الطالب']) === val
-      );
-      if (طلب) {
-        currentStudent = null;
-        currentRequest = طلب;
-        renderRequestStatus(طلب);
-      } else {
-        document.getElementById('resultsContainer').innerHTML = `
-          <div class="student-card mt-4">
-            <div class="tab-content active">
-              <div class="empty-state">
-                <i class="fas fa-user-slash"></i>
-                <h3>لا توجد نتائج</h3>
-                <p>لم يُعثر على طالب أو طلب تسجيل مرتبط بهذا الرقم.<br>
-                تحقق من الرقم وحاول مجدداً، أو <a href="register.html" style="color:var(--primary-light);font-weight:700">سجّل طلباً جديداً</a>.</p>
-              </div>
+      document.getElementById('resultsContainer').innerHTML = `
+        <div class="student-card mt-4">
+          <div class="tab-content active">
+            <div class="empty-state">
+              <i class="fas fa-user-slash"></i>
+              <h3>لا توجد نتائج</h3>
+              <p>لم يُعثر على طالب أو طلب تسجيل مرتبط بهذا الرقم.<br>
+              تحقق من الرقم وحاول مجدداً.</p>
             </div>
-          </div>`;
-      }
+          </div>
+        </div>`;
     }
   } catch(e) {
     showSpinner(false);
-    Swal.fire({ icon:'error', title:'خطأ في الاتصال', text:'تعذّر الاتصال بالخادم. حاول مجدداً.', confirmButtonColor:'#1a3c5e' });
+    Swal.fire({
+      icon:'error',
+      title:'خطأ في الاتصال',
+      text:'تعذّر الاتصال بالخادم.',
+      confirmButtonColor:'#1a3c5e',
+      confirmButtonText:'حسناً'
+    });
   }
 }
 
