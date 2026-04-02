@@ -810,38 +810,61 @@ async function requestEdit(key, label, type, el) {
   await sendEditRequest(key, label, القيمة_القديمة, value, isEmpty);
 }
 
-async function sendEditRequest(key, label, oldVal, newVal, isEmpty) {
+sendEditRequest(key, label, oldVal, newVal, isEmpty) {
   showSpinner(true, 'جارٍ إرسال الطلب…');
   try {
     let res;
+
+    // حقول ولي الأمر
+    const parentFields = [
+      'اسم_ولي_الامر',
+      'رقم_جوال_ولي_الامر',
+      'رقم_هوية_ولي_الامر',
+      'صلة_ولي_الامر'
+    ];
+
     if (isEmpty) {
-      // تعديل مباشر
-      res = await callAPI('تعديل_بيانات_طالب', {
-        رقم_الطالب: currentStudent['رقم_الطالب'],
-        تعديلات: { [key]: newVal },
-      });
+      // تعبئة مباشرة للحقول الفارغة فقط
+      if (parentFields.includes(key)) {
+        res = await callAPI('تعبئة_بيانات_طالب_ناقصة', {
+          رقم_الطالب: currentStudent['رقم_الطالب'],
+          تعديلات_ولي_الامر: { [key]: newVal }
+        });
+      } else {
+        res = await callAPI('تعبئة_بيانات_طالب_ناقصة', {
+          رقم_الطالب: currentStudent['رقم_الطالب'],
+          تعديلات: { [key]: newVal }
+        });
+      }
     } else {
       // طلب تعديل يذهب للمشرف
       res = await callAPI('طلب_تعديل_بيانات', {
-        رقم_الطالب:       currentStudent['رقم_الطالب'],
-        اسم_الطالب:       currentStudent['اسم_الطالب'],
-        الحقل:            key,
-        القيمة_القديمة:   oldVal,
-        القيمة_الجديدة:   newVal,
+        رقم_الطالب: currentStudent['رقم_الطالب'],
+        اسم_الطالب: currentStudent['اسم_الطالب'],
+        الحقل: key,
+        القيمة_القديمة: oldVal || '',
+        القيمة_الجديدة: newVal
       });
     }
+
     showSpinner(false);
 
     if (res.نجاح) {
-      // تحديث العرض
-      currentStudent[key] = newVal;
-      const dfv = document.getElementById('dfv_' + key);
-      if (dfv) { dfv.textContent = newVal; dfv.classList.remove('empty'); }
+      if (isEmpty) {
+        currentStudent[key] = newVal;
+        const dfv = document.getElementById('dfv_' + key);
+        if (dfv) {
+          dfv.textContent = newVal;
+          dfv.classList.remove('empty');
+        }
+      }
 
       Swal.fire({
         icon: 'success',
         title: isEmpty ? 'تم الحفظ!' : 'تم إرسال الطلب!',
-        text: isEmpty ? 'تم تحديث البيانات مباشرة.' : 'سيتم مراجعة طلب التعديل من قِبل المشرف الإداري.',
+        text: isEmpty
+          ? 'تم تحديث البيانات مباشرة.'
+          : 'سيتم مراجعة طلب التعديل من قِبل المشرف الإداري.',
         confirmButtonColor: '#1a3c5e',
         timer: 3000,
         timerProgressBar: true,
@@ -849,11 +872,17 @@ async function sendEditRequest(key, label, oldVal, newVal, isEmpty) {
     } else {
       throw new Error(res.خطأ || 'حدث خطأ');
     }
-  } catch(e) {
+  } catch (e) {
     showSpinner(false);
-    Swal.fire({ icon:'error', title:'خطأ', text: e.message, confirmButtonColor:'#1a3c5e' });
+    Swal.fire({
+      icon: 'error',
+      title: 'خطأ',
+      text: e.message,
+      confirmButtonColor: '#1a3c5e'
+    });
   }
 }
+
 
 // ── تحميل الإنذارات ──────────────────────────────────
 async function loadWarnings(studentId, studentName) {
